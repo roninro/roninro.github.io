@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <title>RoninRo's Blog</title>
+        <link>https://fninit.com</link>
+        <description>Thoughts, stories and ideas.</description>
+        <lastBuildDate>Thu, 05 May 2022 06:40:28 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>https://github.com/jpmonette/feed</generator>
+        <language>en</language>
+        <item>
+            <title><![CDATA[Swift:Automatic Reference Counting in Swift]]></title>
+            <link>/posts/2016/arc-in-swift/</link>
+            <guid>/posts/2016/arc-in-swift</guid>
+            <pubDate>Fri, 30 Dec 2016 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[iOS:关于iOS的推送]]></title>
+            <link>/posts/2016/ios-remotenotification/</link>
+            <guid>/posts/2016/ios-remotenotification</guid>
+            <pubDate>Fri, 23 Dec 2016 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[在Vim中使用fzf]]></title>
+            <link>/posts/2017/fzf-in-vim/</link>
+            <guid>/posts/2017/fzf-in-vim</guid>
+            <pubDate>Sun, 24 Dec 2017 00:54:07 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Hugo 主题 Gemini]]></title>
+            <link>/posts/2017/gemini-theme/</link>
+            <guid>/posts/2017/gemini-theme</guid>
+            <pubDate>Mon, 05 Jun 2017 06:12:20 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Neovim 下配置 golang 开发环境]]></title>
+            <link>/posts/2017/golang-in-vim/</link>
+            <guid>/posts/2017/golang-in-vim</guid>
+            <pubDate>Tue, 19 Dec 2017 03:07:07 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Carthage 的简单使用]]></title>
+            <link>/posts/2017/ios-carthage/</link>
+            <guid>/posts/2017/ios-carthage</guid>
+            <pubDate>Mon, 19 Jun 2017 12:57:37 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[KVO & KVOController]]></title>
+            <link>/posts/2017/ios-KVOController/</link>
+            <guid>/posts/2017/ios-KVOController</guid>
+            <pubDate>Fri, 30 Jun 2017 03:08:26 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[配置SSH登入远程Linux]]></title>
+            <link>/posts/2017/linux-ssh/</link>
+            <guid>/posts/2017/linux-ssh</guid>
+            <pubDate>Mon, 10 Jul 2017 02:12:02 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[关于Vim不能正常显示中文的解决方法]]></title>
+            <link>/posts/2017/linux-vimrc/</link>
+            <guid>/posts/2017/linux-vimrc</guid>
+            <pubDate>Mon, 10 Jul 2017 02:04:03 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[读:《Objective-C高级编程》之GCD]]></title>
+            <link>/posts/2017/objc-gcd/</link>
+            <guid>/posts/2017/objc-gcd</guid>
+            <pubDate>Tue, 17 Jan 2017 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Objective-C Runtime]]></title>
+            <link>/posts/2017/objc-runtime/</link>
+            <guid>/posts/2017/objc-runtime</guid>
+            <pubDate>Wed, 24 May 2017 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Objective-C Messaging]]></title>
+            <link>/posts/2017/runtime-messaging/</link>
+            <guid>/posts/2017/runtime-messaging</guid>
+            <pubDate>Thu, 25 May 2017 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Swift 中的GCD ]]></title>
+            <link>/posts/2018/gcd-swift/</link>
+            <guid>/posts/2018/gcd-swift</guid>
+            <pubDate>Sat, 19 May 2018 02:39:55 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Gem: 使用 --user-install 时的问题]]></title>
+            <link>/posts/2018/gem-install--user-install/</link>
+            <guid>/posts/2018/gem-install--user-install</guid>
+            <pubDate>Tue, 15 May 2018 11:54:45 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Git Submodule]]></title>
+            <link>/posts/2018/git-submodule/</link>
+            <guid>/posts/2018/git-submodule</guid>
+            <pubDate>Mon, 30 Apr 2018 06:17:55 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Go 1.11 新特性：Go Modules]]></title>
+            <link>/posts/2018/go-modules/</link>
+            <guid>/posts/2018/go-modules</guid>
+            <pubDate>Sun, 09 Sep 2018 11:49:47 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[MVVM in Swift]]></title>
+            <link>/posts/2018/mvvm-in-swift/</link>
+            <guid>/posts/2018/mvvm-in-swift</guid>
+            <pubDate>Tue, 08 May 2018 03:16:59 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[使用 Automator 为文件夹添加一个快捷操作]]></title>
+            <link>/posts/2018/sublime-mac-menu/</link>
+            <guid>/posts/2018/sublime-mac-menu</guid>
+            <pubDate>Tue, 06 Mar 2018 08:48:30 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Swift 闭包]]></title>
+            <link>/posts/2018/swift-closures/</link>
+            <guid>/posts/2018/swift-closures</guid>
+            <pubDate>Thu, 15 Mar 2018 01:33:53 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Notes About Debian]]></title>
+            <link>/posts/2019/debian/</link>
+            <guid>/posts/2019/debian</guid>
+            <pubDate>Wed, 29 May 2019 05:33:48 GMT</pubDate>
+            <description><![CDATA[使用 TUNA 的软件源镜像]]></description>
+        </item>
+        <item>
+            <title><![CDATA[git-flow 工作流程]]></title>
+            <link>/posts/2019/git-flow/</link>
+            <guid>/posts/2019/git-flow</guid>
+            <pubDate>Fri, 19 Apr 2019 03:37:38 GMT</pubDate>
+            <description><![CDATA[当我们选择 Git 作为版本控制系统时，使用一个统一的工作流程是非常重要的。 Git 在分支控制上面做得非常好，但是如果团队在开发中没有使用有效的工作流程，混乱将是不可避免的。]]></description>
+        </item>
+        <item>
+            <title><![CDATA[访问 iCloud 云盘文件]]></title>
+            <link>/posts/2019/ios-document-picker/</link>
+            <guid>/posts/2019/ios-document-picker</guid>
+            <pubDate>Fri, 11 Jan 2019 07:11:29 GMT</pubDate>
+            <description><![CDATA[UIDocumentPickerViewController 苹果提供的一个控制器，它为我们提供了访问应用沙盒之外的文件或者目标的能力。]]></description>
+        </item>
+        <item>
+            <title><![CDATA[iOS 高级教程：用 MVVM 处理复杂的TableView]]></title>
+            <link>/posts/2019/ios-mvvm-tableview/</link>
+            <guid>/posts/2019/ios-mvvm-tableview</guid>
+            <pubDate>Thu, 16 May 2019 02:15:54 GMT</pubDate>
+            <description><![CDATA[在本文，我们将讨论如何 用 Model-View-ViewModel(MVVM) 模式来组织 table view 代码。MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可以使用很多 Swift 技术， 使 UI 逻辑包装成数据模型。例如使用协议和闭包简化 table view 中的代码。]]></description>
+        </item>
+        <item>
+            <title><![CDATA[[PIN] Linux 下常用命令]]></title>
+            <link>/posts/2019/linux-cmd/</link>
+            <guid>/posts/2019/linux-cmd</guid>
+            <pubDate>Thu, 05 Dec 2019 07:27:30 GMT</pubDate>
+            <description><![CDATA[ ]]></description>
+        </item>
+        <item>
+            <title><![CDATA[Mac 为 Linux 交叉编译 Rust 程序]]></title>
+            <link>/posts/2019/rust-cross-compile/</link>
+            <guid>/posts/2019/rust-cross-compile</guid>
+            <pubDate>Fri, 27 Dec 2019 03:27:32 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[[转]当我开始做软件开发时，最希望听到的七条建议]]></title>
+            <link>/posts/2020/GergelyOrosz-advice/</link>
+            <guid>/posts/2020/GergelyOrosz-advice</guid>
+            <pubDate>Tue, 16 Jul 2019 08:18:37 GMT</pubDate>
+            <description><![CDATA[Uber 工程师 Gergely Orosz 近日在 Twitter 上发出如题的7条建议]]></description>
+        </item>
+        <item>
+            <title><![CDATA[Zabbix 监控 Postgres 和 Redis]]></title>
+            <link>/posts/2020/zabbix-agent/</link>
+            <guid>/posts/2020/zabbix-agent</guid>
+            <pubDate>Fri, 28 Feb 2020 06:22:13 GMT</pubDate>
+            <description><![CDATA[布署 Zabbix Agent，监控一下 Postgresql 和 Redis ]]></description>
+        </item>
+        <item>
+            <title><![CDATA[Add Tailwind Css to Svelte]]></title>
+            <link>/posts/2021/add-tailwind-css-to-svelte/</link>
+            <guid>/posts/2021/add-tailwind-css-to-svelte</guid>
+            <pubDate>Sat, 08 May 2021 09:36:35 GMT</pubDate>
+            <description><![CDATA[如果在 Svelte 项目中使用 Tailwind Css]]></description>
+        </item>
+        <item>
+            <title><![CDATA[[Go] 添加 Github Webhook]]></title>
+            <link>/posts/2021/github-webhook/</link>
+            <guid>/posts/2021/github-webhook</guid>
+            <pubDate>Sat, 18 Sep 2021 03:34:04 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Shadowsocks-Rust 简介]]></title>
+            <link>/posts/2021/ss-rust/</link>
+            <guid>/posts/2021/ss-rust</guid>
+            <pubDate>Fri, 27 Aug 2021 07:54:29 GMT</pubDate>
+            <description><![CDATA[shadowsocks-rust 是 shadowsocks 的 Rust 语言实现版本]]></description>
+        </item>
+        <item>
+            <title><![CDATA[[Vim] 快速对齐插件 vim-easy-align]]></title>
+            <link>/posts/2021/vim-easy-align/</link>
+            <guid>/posts/2021/vim-easy-align</guid>
+            <pubDate>Tue, 30 Mar 2021 02:59:51 GMT</pubDate>
+            <description><![CDATA[A simple, easy-to-use Vim alignment plugin.]]></description>
+        </item>
+        <item>
+            <title><![CDATA[[Vim] 使用 YouCompleteMe 对 Rust/Golang 代码补全]]></title>
+            <link>/posts/2021/vimrc/</link>
+            <guid>/posts/2021/vimrc</guid>
+            <pubDate>Fri, 22 Jan 2021 10:07:01 GMT</pubDate>
+            <description><![CDATA[YouCompleteMe 是 Vim 下的自动补全插件]]></description>
+        </item>
+        <item>
+            <title><![CDATA[[整理] 五笔基础]]></title>
+            <link>/posts/2021/wubu/</link>
+            <guid>/posts/2021/wubu</guid>
+            <pubDate>Mon, 29 Mar 2021 02:23:25 GMT</pubDate>
+            <description><![CDATA[五笔字型是一种纯字型的编码方案，它由 130 个字根组字，重码少，便于盲打，输入速度快。]]></description>
+        </item>
+    </channel>
+</rss>
