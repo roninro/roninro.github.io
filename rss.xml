@@ -4,7 +4,7 @@
         <title>RoninRo's Blog</title>
         <link>https://fninit.com</link>
         <description>Thoughts, stories and ideas.</description>
-        <lastBuildDate>Mon, 09 May 2022 02:34:35 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 10 May 2022 07:21:01 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>en</language>
@@ -217,6 +217,12 @@
             <guid>/posts/2021/wubu</guid>
             <pubDate>Mon, 29 Mar 2021 02:23:25 GMT</pubDate>
             <description><![CDATA[五笔字型是一种纯字型的编码方案，它由 130 个字根组字，重码少，便于盲打，输入速度快。]]></description>
+        </item>
+        <item>
+            <title><![CDATA[静态博客布署以及图片资源优化]]></title>
+            <link>/posts/2022/static-site-deploy/</link>
+            <guid>/posts/2022/static-site-deploy</guid>
+            <pubDate>Tue, 10 May 2022 02:46:34 GMT</pubDate>
         </item>
     </channel>
 </rss>
