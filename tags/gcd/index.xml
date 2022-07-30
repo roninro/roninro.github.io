@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>gcd on RoninRo's Blog</title><link>https://fninit.com/tags/gcd/</link><description>Recent content in gcd on RoninRo's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sat, 19 May 2018 10:39:55 +0800</lastBuildDate><atom:link href="https://fninit.com/tags/gcd/index.xml" rel="self" type="application/rss+xml"/><item><title>Swift 中的GCD</title><link>https://fninit.com/posts/2018/gcd-swift/</link><pubDate>Sat, 19 May 2018 10:39:55 +0800</pubDate><guid>https://fninit.com/posts/2018/gcd-swift/</guid><description>&lt;blockquote>
+&lt;p>内容主要翻译自：&lt;/p>
+&lt;/blockquote>
+&lt;blockquote>
+&lt;ol>
+&lt;li>&lt;a href="https://www.raywenderlich.com/148513/grand-central-dispatch-tutorial-swift-3-part-1">Grand Central Dispatch Tutorial for Swift 3: Part 1&lt;/a>&lt;/li>
+&lt;/ol>
+&lt;ul>
+&lt;li>&lt;a href="https://www.raywenderlich.com/148515/grand-central-dispatch-tutorial-swift-3-part-2">Grand Central Dispatch Tutorial for Swft 3: Part 2&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;p>Grand Central Dispatch(GCD) 是管理并发操作的低级API，GCD 可以通过将计算量大的任务推迟到后台从而提高应用的响应速度。与锁和线程相比，它是一个更简单的并发模型。&lt;/p></description></item><item><title>读:《Objective-C高级编程》之GCD</title><link>https://fninit.com/posts/2017/objc-gcd/</link><pubDate>Tue, 17 Jan 2017 00:00:00 +0000</pubDate><guid>https://fninit.com/posts/2017/objc-gcd/</guid><description>什么是GCD Grand Central Dispatch(GCD)是异步执任务的技术之一。一般将应用程序中记述的线程管理用的代码在系统级中实现。开发只需要定义想执行</description></item></channel></rss>
