@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>RoninRo&#39;s Blog</title>
+    <title>Categories on RoninRo&#39;s Blog</title>
     <link>https://roninro.github.io/categories/</link>
-    <description>Recent content on RoninRo&#39;s Blog</description>
+    <description>Recent content in Categories on RoninRo&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <lastBuildDate>Sat, 18 Sep 2021 11:34:04 +0800</lastBuildDate><atom:link href="https://roninro.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
