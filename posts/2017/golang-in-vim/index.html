@@ -1,102 +1,548 @@
-<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="ie=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><title>Neovim 下配置 golang 开发环境 | RoninRo's Blog</title><meta name=author content="RoninRo"><meta name=description content="golang 开发者在Vim 上贡献了许多成熟的插件。站在巨人的肩膀上，我们可以非常轻松的在Vim 下配置出属于自己的golang的开发环境。 电脑环境： Mac 10.13"><meta name=keywords content="blog,developer,personal,golang"><meta name=twitter:card content="summary"><meta name=twitter:title content="Neovim 下配置 golang 开发环境"><meta name=twitter:description content="golang 开发者在Vim 上贡献了许多成熟的插件。站在巨人的肩膀上，我们可以非常轻松的在Vim 下配置出属于自己的golang的开发环境。 电脑环境： Mac 10.13"><meta property="og:title" content="Neovim 下配置 golang 开发环境"><meta property="og:description" content="golang 开发者在Vim 上贡献了许多成熟的插件。站在巨人的肩膀上，我们可以非常轻松的在Vim 下配置出属于自己的golang的开发环境。 电脑环境： Mac 10.13"><meta property="og:type" content="article"><meta property="og:url" content="https://fninit.com/posts/2017/golang-in-vim/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2017-12-19T11:07:07+08:00"><meta property="article:modified_time" content="2017-12-19T11:07:07+08:00"><link rel=stylesheet href=/css/bootstrap.min.css crossorigin=anonymous><link href=//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css rel=stylesheet type=text/css><link rel=stylesheet href=https://fninit.com/sass/main.css><link rel=stylesheet href=https://fninit.com/zoomjs/zoom.min.css></head><body><nav class="navbar navbar-default navbar-custom navbar-fixed-top invert"><div class=container-fluid><div class="navbar-header page-scroll"><button type=button class=navbar-toggle>
-<span class=sr-only>Toggle navigation</span>
-<span class=icon-bar></span>
-<span class=icon-bar></span>
-<span class=icon-bar></span></button>
-<a class=navbar-brand href=https://fninit.com>RoninRo's Blog</a></div><div id=huxblog_navbar><div class=navbar-collapse><ul class="nav navbar-nav navbar-right"><li><a href=/ title=Home>Home</a></li><li><a href=/archive/ title=Archive>Archive</a></li><li><a href=/categories/ title=Categories>Categories</a></li><li><a href=/about/ title=About>About</a></li><li class=search-icon><a href=javascript:void(0)><i class="fa fa-search"></i></a></li></ul></div></div></div></nav><script>var $body=document.body,$toggle=document.querySelector(".navbar-toggle"),$navbar=document.querySelector("#huxblog_navbar"),$collapse=document.querySelector(".navbar-collapse"),__HuxNav__={close:function(){$navbar.className=" ",setTimeout(function(){$navbar.className.indexOf("in")<0&&($collapse.style.height="0px")},400)},open:function(){$collapse.style.height="auto",$navbar.className+=" in"}};$toggle.addEventListener("click",function(){$navbar.className.indexOf("in")>0?__HuxNav__.close():__HuxNav__.open()}),document.addEventListener("click",function(e){if(e.target==$toggle)return;if(e.target.className=="icon-bar")return;__HuxNav__.close()})</script><div class=search-page><div class=search-icon-close-container><span class=search-icon-close><i class="fa fa-chevron-down"></i></span></div><div class="search-main container"><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><form></form><input type=text id=search-input placeholder="$ grep..."></form><div id=search-results class=mini-post-list></div></div></div></div></div><style type=text/css>header.intro-header{position:relative;background-image:url('')}</style><header class="intro-header style-text"><div class=header-mask></div><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><div class=post-heading><div class=tags><a class=tag href=https://fninit.com/tags/neovim/ title=neovim>neovim</a>
-<a class=tag href=https://fninit.com/tags/vim/ title=vim>vim</a>
-<a class=tag href=https://fninit.com/tags/golang/ title=golang>golang</a></div><h1>Neovim 下配置 golang 开发环境</h1><h2 class=subheading></h2><p class=post-meta>Posted by RoninRo
-on Tue, Dec 19, 2017</p></div></div></div></div></header><article><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2
-col-md-10 col-md-offset-1
-post-container"><p><code>golang</code> 开发者在<code>Vim</code> 上贡献了许多成熟的插件。站在巨人的肩膀上，我们可以非常轻松的在<code>Vim</code> 下配置出属于自己的<code>golang</code>的开发环境。</p><p>电脑环境： Mac 10.13 + neovim</p><p>实现功能：</p><ul><li>代码高亮</li><li>语法检查</li><li>代码提示</li><li>一个漂亮的主题</li><li>快速的启动体验</li></ul><p><strong>核心插件:</strong>
-<a href=https://github.com/fatih/vim-go>vim-go</a>、
-<a href=https://github.com/morhetz/gruvbox>gruvbox</a>、
-<a href=https://github.com/Shougo/deoplete.nvim>deoplete.nvim</a>、
-<a href=https://github.com/w0rp/ale>ALE</a> &mldr;</p><h3 id=使用neovim>使用Neovim<a class=anchorjs-link href=#%e4%bd%bf%e7%94%a8neovim></a></h3><p><a href=https://github.com/neovim/neovim>neovim</a>用起来与<code>vim</code> 完全兼容，但体验上要更好一些，从 Vim 上的迁移成本也很低。</p><ul><li>使用 <code>brew install neovim</code> 安装 <code>neovim</code>,安装成功后便可以使用<code>nvim</code>命令来使用了。</li><li>从<code>Vim</code>中迁移,创建 <code>~/.config/nvim/init.vim</code> 文件，并写入以下内容：</li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-vim data-lang=vim><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>set runtimepath^=~<span style=color:#f1fa8c>/.vim runtimepath+=~/</span>.vim/after
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span><span style=color:#ff79c6>let</span> &amp;packpath = &amp;runtimepath
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>source ~/.vimrc
-</span></span></code></pre></div><p>至此，<code>vim</code> 的配置便迁移成功了。</p><h3 id=安装-vim-plug>安装 vim-plug<a class=anchorjs-link href=#%e5%ae%89%e8%a3%85-vim-plug></a></h3><p><a href=https://github.com/junegunn/vim-plug>vim-plug</a> 是一个vim插件管理工具，有了它，我们就可以便捷地管理<code>vim</code> 插件了。</p><p>1.安装</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>curl -fLo ~/.vim/autoload/plug.vim --create-dirs <span style=color:#f1fa8c>\
-</span></span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span><span style=color:#f1fa8c></span>    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-</span></span></code></pre></div><p>2.在 <code>.vimrc</code>，或<code>~/.config/nvim/init.vim</code>（neovim）中添加插件：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-vim data-lang=vim><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>filetype plugin indent on
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>syntax on
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>call plug#begin(&#39;~<span style=color:#f1fa8c>/.vim/</span>plugged)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span>Plug <span style=color:#f1fa8c>&#39;fatih/vim-go&#39;</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">5</span><span>call plug#end()
-</span></span></code></pre></div><p>3.普通模式下使用命令 <code>:PlugInstall</code> 安装插件👋。</p><h3 id=安装-vim-go>安装 vim-go<a class=anchorjs-link href=#%e5%ae%89%e8%a3%85-vim-go></a></h3><p>按照上一步，将<code>vim-go</code>安装到<code>vim</code>中，通过<code>:help vim-go.txt</code> 或者到<a href=https://github.com/fatih/vim-go>github.com/fatih/vim-go</a> 了解详细的说明。</p><p>可以使用<code>&lt;C-x>&lt;C-o></code>触发补全机制，且一般需要在 <code>.</code> 之后使用。</p><h3 id=代码补全插件>代码补全插件<a class=anchorjs-link href=#%e4%bb%a3%e7%a0%81%e8%a1%a5%e5%85%a8%e6%8f%92%e4%bb%b6></a></h3><h4 id=deopletenvim>deoplete.nvim<a class=anchorjs-link href=#deopletenvim></a></h4><p>安装 <a href=https://github.com/Shougo/deoplete.nvim>deoplete.nvim</a> 可以实现代码实时提示功能。</p><p><a href=https://github.com/Shougo/deoplete.nvim>deoplete</a> 是 <code>neovim/Vim8</code> 的一个异步补全框架。比起 <code>YouCompleteMe</code>要轻量的多。
-并且在开启自动加载时，也没有对启动速度造成太大的影响。</p><h5 id=for-plug>For Plug<a class=anchorjs-link href=#for-plug></a></h5><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-vim data-lang=vim><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span><span style=color:#ff79c6>if</span> has(<span style=color:#f1fa8c>&#39;nvim&#39;</span>)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>  Plug <span style=color:#f1fa8c>&#39;Shougo/deoplete.nvim&#39;</span>, { <span style=color:#f1fa8c>&#39;do&#39;</span>: <span style=color:#f1fa8c>&#39;:UpdateRemotePlugins&#39;</span> }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span><span style=color:#ff79c6>else</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span>  Plug <span style=color:#f1fa8c>&#39;Shougo/deoplete.nvim&#39;</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">5</span><span>  Plug <span style=color:#f1fa8c>&#39;roxma/nvim-yarp&#39;</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">6</span><span>  Plug <span style=color:#f1fa8c>&#39;roxma/vim-hug-neovim-rpc&#39;</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">7</span><span><span style=color:#ff79c6>endif</span>
-</span></span></code></pre></div><p><code>deoplete.nvim</code> 需要 <code>python3</code> 以及 neovim 的 python 模块。</p><p><strong>注</strong> 检查是否支持 <code>python3</code> 命令<code>:echo has("python3")</code> 输出 <code>1</code>表示支持。</p><p>可以使用下面命令安装所需要的模块.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>brew install python3
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>pip3 install neovim --user
-</span></span></code></pre></div><h5 id=deopletenvim-设置>deoplete.nvim 设置<a class=anchorjs-link href=#deopletenvim-%e8%ae%be%e7%bd%ae></a></h5><p><code>deoplete.nvim</code> 默认使用 <code>&lt;C-p></code>、<code>&lt;C-n></code> 上下选择,根据自己的使用习惯设置使用<code>&lt;TAB></code>选择：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-vim data-lang=vim><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span><span style=color:#ff79c6>let</span> g:deoplete#enable_at_startup = <span style=color:#bd93f9>1</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>inoremap &lt;expr&gt; &lt;Tab&gt; pumvisible() ? <span style=color:#f1fa8c>&#34;\&lt;C-n&gt;&#34;</span> : <span style=color:#f1fa8c>&#34;\&lt;Tab&gt;&#34;</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span>inoremap &lt;expr&gt; &lt;S-Tab&gt; pumvisible() ? <span style=color:#f1fa8c>&#34;\&lt;C-p&gt;&#34;</span> : <span style=color:#f1fa8c>&#34;\&lt;S-Tab&gt;&#34;</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">5</span><span>inoremap &lt;expr&gt; &lt;cr&gt; pumvisible() ? <span style=color:#f1fa8c>&#34;\&lt;C-y&gt;&#34;</span> : <span style=color:#f1fa8c>&#34;\&lt;cr&gt;&#34;</span>
-</span></span></code></pre></div><h4 id=deoplete-go>deoplete-go<a class=anchorjs-link href=#deoplete-go></a></h4><p>下面使用<a href=https://github.com/zchee/deoplete-go>deoplete-go</a></p><ol><li>安装<a href=https://github.com/neovim/python-client>neovim/python-client</a></li></ol><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>pip2 install --upgrade neovim
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>pip3 install --upgrade neovim
-</span></span></code></pre></div><ol start=2><li>安装 <a href=https://github.com/nsf/gocode>nsf/gocode</a></li></ol><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>go get -u github.com/nsf/gocode
-</span></span></code></pre></div><ol start=3><li>安装 <code>deoplete-go</code> 插件，在<code>vim-plug</code>中加入</li></ol><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-vim data-lang=vim><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>Plug <span style=color:#f1fa8c>&#39;Shougo/deoplete.nvim&#39;</span>, { <span style=color:#f1fa8c>&#39;do&#39;</span>: <span style=color:#f1fa8c>&#39;:UpdateRemotePlugins&#39;</span> }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>Plug <span style=color:#f1fa8c>&#39;zchee/deoplete-go&#39;</span>, { <span style=color:#f1fa8c>&#39;do&#39;</span>: <span style=color:#f1fa8c>&#39;make&#39;</span>}
-</span></span></code></pre></div><p>然后执行<code>:PlugInstall</code>安装。。</p><ol start=4><li>简单配置<code>deoplete-go</code></li></ol><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-vim data-lang=vim><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span><span style=color:#6272a4>&#34; deoplete-go settings</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span><span style=color:#ff79c6>let</span> g:deoplete#sources#go#gocode_binary = $GOPATH.<span style=color:#f1fa8c>&#39;/bin/gocode&#39;</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span><span style=color:#ff79c6>let</span> g:deoplete#sources#go#sort_class = [<span style=color:#f1fa8c>&#39;package&#39;</span>, <span style=color:#f1fa8c>&#39;func&#39;</span>, <span style=color:#f1fa8c>&#39;type&#39;</span>, <span style=color:#f1fa8c>&#39;var&#39;</span>, <span style=color:#f1fa8c>&#39;const&#39;</span>]
-</span></span></code></pre></div><h4 id=ultisnips--vim-snippets>UltiSnips & vim-snippets<a class=anchorjs-link href=#ultisnips--vim-snippets></a></h4><p>使用<code>Sirver/ultisnips</code> 和 <code>honza/vin-snippets</code> 拓展代码片断。</p><p>由于<code>deoplete.nvim</code>已经使用了 <code>&lt;Tab></code> 进行候选跳转。为了避免冲突，将<code>UltiSnips</code>快捷键做一些更改：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-vim data-lang=vim><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span><span style=color:#ff79c6>let</span> g:UltiSnipsExpandTrigger=<span style=color:#f1fa8c>&#34;&lt;leader&gt;&lt;tab&gt;&#34;</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span><span style=color:#ff79c6>let</span> g:UltiSnipsJumpForwardTrigger=<span style=color:#f1fa8c>&#34;&lt;Tab&gt;&#34;</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span><span style=color:#ff79c6>let</span> g:UltiSnipsJumpBackwardTrigger=<span style=color:#f1fa8c>&#34;&lt;S-Tab&gt;&#34;</span>
-</span></span></code></pre></div><p>这样便可以通过<code>&lt;tab></code>来选择，<code>&lt;leader>&lt;tab></code>来触发代码块。</p><h3 id=语法检测>语法检测<a class=anchorjs-link href=#%e8%af%ad%e6%b3%95%e6%a3%80%e6%b5%8b></a></h3><p><a href=https://github.com/w0rp/ale>ALE</a> 是 <code>neovim/Vim8</code> 的一款异步语法检测的插件，并且支持多种语言。</p><ol><li>使用<code>vim-plug</code>安装</li></ol><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-vim data-lang=vim><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>Plug <span style=color:#f1fa8c>&#39;w0rp/ale&#39;</span> 
-</span></span></code></pre></div><ol start=2><li>自定义</li></ol><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-vim data-lang=vim><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span><span style=color:#ff79c6>let</span> g:ale_sign_error = <span style=color:#f1fa8c>&#39;&#39;</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span><span style=color:#ff79c6>let</span> g:ale_sign_warning = <span style=color:#f1fa8c>&#39;&#39;</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span><span style=color:#ff79c6>let</span> g:ale_completion_enabled = <span style=color:#bd93f9>1</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span><span><span style=color:#ff79c6>let</span> g:ale_echo_msg_error_str = <span style=color:#f1fa8c>&#39;E&#39;</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span><span><span style=color:#ff79c6>let</span> g:ale_echo_msg_warning_str = <span style=color:#f1fa8c>&#39;W&#39;</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span><span><span style=color:#ff79c6>let</span> g:ale_echo_msg_format = <span style=color:#f1fa8c>&#39;[%linter%] %s [%severity%]&#39;</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span><span><span style=color:#ff79c6>let</span> g:ale_swift_swiftlint_use_defaults = <span style=color:#bd93f9>1</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span><span><span style=color:#ff79c6>let</span> g:ale_open_list = <span style=color:#bd93f9>0</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span><span style=color:#ff79c6>let</span> g:ale_lint_delay = <span style=color:#bd93f9>1000</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span><span><span style=color:#ff79c6>let</span> g:ale_linters = {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11</span><span>      \ <span style=color:#f1fa8c>&#39;go&#39;</span>: [<span style=color:#f1fa8c>&#39;golint&#39;</span>, <span style=color:#f1fa8c>&#39;go vet&#39;</span>, <span style=color:#f1fa8c>&#39;go build&#39;</span>],
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12</span><span>      \ }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13</span><span>nmap ]a &lt;Plug&gt;(ale_next_wrap)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14</span><span>nmap [a &lt;Plug&gt;(ale_previous_wrap)
-</span></span></code></pre></div><h3 id=gruvbox-主题>gruvbox 主题<a class=anchorjs-link href=#gruvbox-%e4%b8%bb%e9%a2%98></a></h3><p><a href=https://github.com/morhetz/gruvbox>gruvbox</a> 是一款比较受欢迎的 <code>Vim</code> 主题，它支持自定义风格，并且实现多种文件类型的语法高亮，并且对许多插件支持。</p><ol><li><p><code>Plug 'morhetz/gruvbox'</code></p></li><li><p>设置<code>colorscheme</code></p></li></ol><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-vim data-lang=vim><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>colorscheme gruvbox
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>set background=<span style=color:#8be9fd;font-style:italic>dark</span>
-</span></span></code></pre></div><p>下面就是我<code>Vim</code> 界面了。左右分别是 <a href=https://github.com/scrooloose/nerdtree>NERDTree</a> 和 <a href=https://github.com/majutsushi/tagbar>Tagbar</a> 以及底部的 <a href=https://github.com/itchyny/lightline.vim>lightline.vim</a>。</p><p>并且在我的电脑上可以做到小于 400ms 的启动速度，感觉还是挺不错的。
-感兴趣的同学可以到我的<code>vimrc</code>中查看设置。</p><p>感兴趣可以到我的<code>vimrc</code>中查看设置。</p><p><figure><a class=paragraph-image><img src=/media/golang_in_vim_01.png data-action=zoom alt=vim-ui loading=lazy decoding=async></a></figure></p><h3 id=附>附<a class=anchorjs-link href=#%e9%99%84></a></h3><ul><li>我的 <a href=https://gist.github.com/mjyi/d6d410e71227321551c7b580205c430e>.vimrc</a></li></ul><hr style=visibility:hidden><ul class=pager><li class=previous><a href=https://fninit.com/posts/2017/linux-ssh/ data-toggle=tooltip data-placement=top title=配置SSH登入远程Linux>Previous<br><span>配置SSH登入远程Linux</span></a></li><li class=next><a href=https://fninit.com/posts/2017/fzf-in-vim/ data-toggle=tooltip data-placement=top title=在Vim中使用fzf>Next<br><span>在Vim中使用fzf</span></a></li></ul><hr style=visibility:hidden></div><div class="col-lg-8 col-lg-offset-2
-col-md-10 col-md-offset-1
-sidebar-container"><section><hr class="hidden-sm hidden-xs"><h5>FEATURED TAGS</h5><div class=tags><a href=https://fninit.com/tags/css/>css</a>
-<a href=https://fninit.com/tags/debian/>debian</a>
-<a href=https://fninit.com/tags/fzf/>fzf</a>
-<a href=https://fninit.com/tags/gcd/>gcd</a>
-<a href=https://fninit.com/tags/gem/>gem</a>
-<a href=https://fninit.com/tags/git/>git</a>
-<a href=https://fninit.com/tags/go/>go</a>
-<a href=https://fninit.com/tags/golang/>golang</a>
-<a href=https://fninit.com/tags/hugo/>hugo</a>
-<a href=https://fninit.com/tags/ios/>iOS</a>
-<a href=https://fninit.com/tags/kindle/>Kindle</a>
-<a href=https://fninit.com/tags/kvocontroller/>KVOController</a>
-<a href=https://fninit.com/tags/linux/>linux</a>
-<a href=https://fninit.com/tags/macos/>MacOS</a>
-<a href=https://fninit.com/tags/neovim/>neovim</a>
-<a href=https://fninit.com/tags/runtime/>runtime</a>
-<a href=https://fninit.com/tags/rust/>rust</a>
-<a href=https://fninit.com/tags/ss/>ss</a>
-<a href=https://fninit.com/tags/ssh/>ssh</a>
-<a href=https://fninit.com/tags/swift/>Swift</a>
-<a href=https://fninit.com/tags/vim/>vim</a>
-<a href=https://fninit.com/tags/webhook/>webhook</a>
-<a href=https://fninit.com/tags/wubi/>wubi</a>
-<a href=https://fninit.com/tags/zabbix/>zabbix</a></div></section><hr><h5>FRIENDS</h5><ul class=list-inline><li><a href></a></li></ul></div></div></div></article><footer><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><ul class="list-inline text-center"><li><a href=/index.xml><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i>
-<i class="fa fa-rss fa-stack-1x fa-inverse"></i></span></a></li><li><a target=_blank href=https://github.com/roninro><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i>
-<i class="fa fa-github fa-stack-1x fa-inverse"></i></span></a></li></ul><p class="copyright text-muted">Copyright &copy; RoninRo's Blog 2022<br>Powered by <a href=https://gohugo.io>Hugo</a></p></div></div></div></footer><script src=/js/jquery.min.js></script>
-<script src=/js/bootstrap.min.js crossorigin=anonymous></script>
-<script src=https://fninit.com/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js></script>
-<script src=/js/simple-jekyll-search.min.js></script>
-<script src=https://fninit.com/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js></script>
-<script></script><script src=/zoomjs/zoom.min.js></script></body></html>
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  
+  
+  
+  
+
+  <title>Neovim 下配置 golang 开发环境 | RoninRo&#39;s Blog</title>
+
+  
+  <meta name="author" content="RoninRo">
+  <meta name="description" content="golang 开发者在Vim 上贡献了许多成熟的插件。站在巨人的肩膀上，我们可以非常轻松的在Vim 下配置出属于自己的golang的开发环境。 电脑环境： Mac 10.13">
+  <meta name="keywords" content="blog,developer,personal,golang">
+
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Neovim 下配置 golang 开发环境"/>
+<meta name="twitter:description" content="golang 开发者在Vim 上贡献了许多成熟的插件。站在巨人的肩膀上，我们可以非常轻松的在Vim 下配置出属于自己的golang的开发环境。 电脑环境： Mac 10.13"/>
+
+  <meta property="og:title" content="Neovim 下配置 golang 开发环境" />
+<meta property="og:description" content="golang 开发者在Vim 上贡献了许多成熟的插件。站在巨人的肩膀上，我们可以非常轻松的在Vim 下配置出属于自己的golang的开发环境。 电脑环境： Mac 10.13" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://roninro.github.io/posts/2017/golang-in-vim/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2017-12-19T11:07:07+08:00" />
+<meta property="article:modified_time" content="2017-12-19T11:07:07+08:00" />
+
+
+
+  <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+  
+  <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"
+    type="text/css">
+
+  
+  
+  <link rel="stylesheet" href="/sass/main.css">
+
+  
+  <link rel="stylesheet" href="/zoomjs/zoom.min.css">
+
+
+  
+  
+  
+
+  </head>
+
+
+
+<body ontouchstart="">
+
+  
+  
+  
+
+  
+
+  
+  
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top invert">
+  <div class="container-fluid">
+    
+    <div class="navbar-header page-scroll">
+      <button type="button" class="navbar-toggle">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://roninro.github.io/">RoninRo&#39;s Blog</a>
+    </div>
+    
+    <div id="huxblog_navbar">
+      <div class="navbar-collapse">
+        <ul class="nav navbar-nav navbar-right">
+          
+          <li><a href="/" title="Home">Home</a></li>
+          
+          <li><a href="/archive/" title="Archive">Archive</a></li>
+          
+          <li><a href="/categories/" title="Categories">Categories</a></li>
+          
+          <li><a href="/about/" title="About">About</a></li>
+          
+
+          <li class="search-icon">
+            <a href="javascript:void(0)">
+              <i class="fa fa-search"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+  </div>
+  
+</nav>
+<script>
+  
+  
+  
+  var $body = document.body;
+  var $toggle = document.querySelector(".navbar-toggle");
+  var $navbar = document.querySelector("#huxblog_navbar");
+  var $collapse = document.querySelector(".navbar-collapse");
+
+  var __HuxNav__ = {
+    close: function () {
+      $navbar.className = " ";
+      
+      setTimeout(function () {
+        
+        if ($navbar.className.indexOf("in") < 0) {
+          $collapse.style.height = "0px";
+        }
+      }, 400);
+    },
+    open: function () {
+      $collapse.style.height = "auto";
+      $navbar.className += " in";
+    },
+  };
+
+  
+  $toggle.addEventListener("click", function (e) {
+    if ($navbar.className.indexOf("in") > 0) {
+      __HuxNav__.close();
+    } else {
+      __HuxNav__.open();
+    }
+  });
+
+  
+
+  document.addEventListener("click", function (e) {
+    if (e.target == $toggle) return;
+    if (e.target.className == "icon-bar") return;
+    __HuxNav__.close();
+  });
+</script>
+  
+<div class="search-page">
+  <div class="search-icon-close-container">
+    <span class="search-icon-close">
+      <i class="fa fa-chevron-down"></i>
+    </span>
+  </div>
+  <div class="search-main container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <form></form>
+        <input type="text" id="search-input" placeholder="$ grep...">
+        </form>
+        <div id="search-results" class="mini-post-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+  
+
+
+<style type="text/css">
+  header.intro-header {
+    position: relative;
+    background-image: url('');
+  }
+</style>
+
+<header class="intro-header style-text">
+
+  <div class="header-mask"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-heading">
+          <div class="tags">
+            
+            <a class="tag" href="/tags/neovim/" title="neovim">neovim</a>
+            
+            <a class="tag" href="/tags/vim/" title="vim">vim</a>
+            
+            <a class="tag" href="/tags/golang/" title="golang">golang</a>
+            
+          </div>
+          <h1>Neovim 下配置 golang 开发环境</h1>
+          <h2 class="subheading"></h2>
+          <p class="post-meta">
+            Posted by  RoninRo 
+            on Tue, Dec 19, 2017
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+  
+
+
+<article>
+  <div class="container">
+    <div class="row">
+
+      
+      <div class="
+              col-lg-8 col-lg-offset-2
+              col-md-10 col-md-offset-1
+              post-container">
+        <p><code>golang</code> 开发者在<code>Vim</code> 上贡献了许多成熟的插件。站在巨人的肩膀上，我们可以非常轻松的在<code>Vim</code> 下配置出属于自己的<code>golang</code>的开发环境。</p>
+<p>电脑环境： Mac 10.13  + neovim</p>
+<p>实现功能：</p>
+<ul>
+<li>代码高亮</li>
+<li>语法检查</li>
+<li>代码提示</li>
+<li>一个漂亮的主题</li>
+<li>快速的启动体验</li>
+</ul>
+<p><strong>核心插件:</strong>
+<a href="https://github.com/fatih/vim-go">vim-go</a>、
+<a href="https://github.com/morhetz/gruvbox">gruvbox</a>、
+<a href="https://github.com/Shougo/deoplete.nvim">deoplete.nvim</a>、
+<a href="https://github.com/w0rp/ale">ALE</a> &hellip;</p>
+<h3 id="使用neovim">使用Neovim<a class="anchorjs-link" href="#%e4%bd%bf%e7%94%a8neovim"></a></h3><p><a href="https://github.com/neovim/neovim">neovim</a>用起来与<code>vim</code> 完全兼容，但体验上要更好一些，从 Vim 上的迁移成本也很低。</p>
+<ul>
+<li>使用 <code>brew install neovim</code> 安装 <code>neovim</code>,安装成功后便可以使用<code>nvim</code>命令来使用了。</li>
+<li>从<code>Vim</code>中迁移,创建 <code>~/.config/nvim/init.vim</code> 文件，并写入以下内容：</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>set runtimepath^=~<span style="color:#f1fa8c">/.vim runtimepath+=~/</span>.vim/after
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span><span style="color:#ff79c6">let</span> &amp;packpath = &amp;runtimepath
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>source ~/.vimrc
+</span></span></code></pre></div><p>至此，<code>vim</code> 的配置便迁移成功了。</p>
+<h3 id="安装-vim-plug">安装 vim-plug<a class="anchorjs-link" href="#%e5%ae%89%e8%a3%85-vim-plug"></a></h3><p><a href="https://github.com/junegunn/vim-plug">vim-plug</a> 是一个vim插件管理工具，有了它，我们就可以便捷地管理<code>vim</code> 插件了。</p>
+<p>1.安装</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>curl -fLo ~/.vim/autoload/plug.vim --create-dirs <span style="color:#f1fa8c">\
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span><span style="color:#f1fa8c"></span>    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+</span></span></code></pre></div><p>2.在 <code>.vimrc</code>，或<code>~/.config/nvim/init.vim</code>（neovim）中添加插件：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>filetype plugin indent on
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>syntax on
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>call plug#begin(&#39;~<span style="color:#f1fa8c">/.vim/</span>plugged)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>Plug <span style="color:#f1fa8c">&#39;fatih/vim-go&#39;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>call plug#end()
+</span></span></code></pre></div><p>3.普通模式下使用命令 <code>:PlugInstall</code> 安装插件👋。</p>
+<h3 id="安装-vim-go">安装 vim-go<a class="anchorjs-link" href="#%e5%ae%89%e8%a3%85-vim-go"></a></h3><p>按照上一步，将<code>vim-go</code>安装到<code>vim</code>中，通过<code>:help vim-go.txt</code> 或者到<a href="https://github.com/fatih/vim-go">github.com/fatih/vim-go</a> 了解详细的说明。</p>
+<p>可以使用<code>&lt;C-x&gt;&lt;C-o&gt;</code>触发补全机制，且一般需要在 <code>.</code> 之后使用。</p>
+<h3 id="代码补全插件">代码补全插件<a class="anchorjs-link" href="#%e4%bb%a3%e7%a0%81%e8%a1%a5%e5%85%a8%e6%8f%92%e4%bb%b6"></a></h3><h4 id="deopletenvim">deoplete.nvim<a class="anchorjs-link" href="#deopletenvim"></a></h4><p>安装 <a href="https://github.com/Shougo/deoplete.nvim">deoplete.nvim</a> 可以实现代码实时提示功能。</p>
+<p><a href="https://github.com/Shougo/deoplete.nvim">deoplete</a> 是 <code>neovim/Vim8</code> 的一个异步补全框架。比起 <code>YouCompleteMe</code>要轻量的多。
+并且在开启自动加载时，也没有对启动速度造成太大的影响。</p>
+<h5 id="for-plug">For Plug<a class="anchorjs-link" href="#for-plug"></a></h5><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#ff79c6">if</span> has(<span style="color:#f1fa8c">&#39;nvim&#39;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>  Plug <span style="color:#f1fa8c">&#39;Shougo/deoplete.nvim&#39;</span>, { <span style="color:#f1fa8c">&#39;do&#39;</span>: <span style="color:#f1fa8c">&#39;:UpdateRemotePlugins&#39;</span> }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span><span style="color:#ff79c6">else</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>  Plug <span style="color:#f1fa8c">&#39;Shougo/deoplete.nvim&#39;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>  Plug <span style="color:#f1fa8c">&#39;roxma/nvim-yarp&#39;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6</span><span>  Plug <span style="color:#f1fa8c">&#39;roxma/vim-hug-neovim-rpc&#39;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7</span><span><span style="color:#ff79c6">endif</span>
+</span></span></code></pre></div><p><code>deoplete.nvim</code> 需要 <code>python3</code> 以及 neovim 的 python 模块。</p>
+<p><strong>注</strong> 检查是否支持 <code>python3</code> 命令<code>:echo has(&quot;python3&quot;)</code> 输出 <code>1</code>表示支持。</p>
+<p>可以使用下面命令安装所需要的模块.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>brew install python3
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>pip3 install neovim --user
+</span></span></code></pre></div><h5 id="deopletenvim-设置">deoplete.nvim 设置<a class="anchorjs-link" href="#deopletenvim-%e8%ae%be%e7%bd%ae"></a></h5><p><code>deoplete.nvim</code> 默认使用 <code>&lt;C-p&gt;</code>、<code>&lt;C-n&gt;</code> 上下选择,根据自己的使用习惯设置使用<code>&lt;TAB&gt;</code>选择：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#ff79c6">let</span> g:deoplete#enable_at_startup = <span style="color:#bd93f9">1</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>inoremap &lt;expr&gt; &lt;Tab&gt; pumvisible() ? <span style="color:#f1fa8c">&#34;\&lt;C-n&gt;&#34;</span> : <span style="color:#f1fa8c">&#34;\&lt;Tab&gt;&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>inoremap &lt;expr&gt; &lt;S-Tab&gt; pumvisible() ? <span style="color:#f1fa8c">&#34;\&lt;C-p&gt;&#34;</span> : <span style="color:#f1fa8c">&#34;\&lt;S-Tab&gt;&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>inoremap &lt;expr&gt; &lt;cr&gt; pumvisible() ? <span style="color:#f1fa8c">&#34;\&lt;C-y&gt;&#34;</span> : <span style="color:#f1fa8c">&#34;\&lt;cr&gt;&#34;</span>
+</span></span></code></pre></div><h4 id="deoplete-go">deoplete-go<a class="anchorjs-link" href="#deoplete-go"></a></h4><p>下面使用<a href="https://github.com/zchee/deoplete-go">deoplete-go</a></p>
+<ol>
+<li>安装<a href="https://github.com/neovim/python-client">neovim/python-client</a></li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>pip2 install --upgrade neovim
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>pip3 install --upgrade neovim
+</span></span></code></pre></div><ol start="2">
+<li>安装 <a href="https://github.com/nsf/gocode">nsf/gocode</a></li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>go get -u github.com/nsf/gocode
+</span></span></code></pre></div><ol start="3">
+<li>安装 <code>deoplete-go</code> 插件，在<code>vim-plug</code>中加入</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>Plug <span style="color:#f1fa8c">&#39;Shougo/deoplete.nvim&#39;</span>, { <span style="color:#f1fa8c">&#39;do&#39;</span>: <span style="color:#f1fa8c">&#39;:UpdateRemotePlugins&#39;</span> }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>Plug <span style="color:#f1fa8c">&#39;zchee/deoplete-go&#39;</span>, { <span style="color:#f1fa8c">&#39;do&#39;</span>: <span style="color:#f1fa8c">&#39;make&#39;</span>}
+</span></span></code></pre></div><p>然后执行<code>:PlugInstall</code>安装。。</p>
+<ol start="4">
+<li>简单配置<code>deoplete-go</code></li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#6272a4">&#34; deoplete-go settings</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span><span style="color:#ff79c6">let</span> g:deoplete#sources#go#gocode_binary = $GOPATH.<span style="color:#f1fa8c">&#39;/bin/gocode&#39;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span><span style="color:#ff79c6">let</span> g:deoplete#sources#go#sort_class = [<span style="color:#f1fa8c">&#39;package&#39;</span>, <span style="color:#f1fa8c">&#39;func&#39;</span>, <span style="color:#f1fa8c">&#39;type&#39;</span>, <span style="color:#f1fa8c">&#39;var&#39;</span>, <span style="color:#f1fa8c">&#39;const&#39;</span>]
+</span></span></code></pre></div><h4 id="ultisnips--vim-snippets">UltiSnips &amp; vim-snippets<a class="anchorjs-link" href="#ultisnips--vim-snippets"></a></h4><p>使用<code>Sirver/ultisnips</code> 和 <code>honza/vin-snippets</code> 拓展代码片断。</p>
+<p>由于<code>deoplete.nvim</code>已经使用了 <code>&lt;Tab&gt;</code> 进行候选跳转。为了避免冲突，将<code>UltiSnips</code>快捷键做一些更改：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#ff79c6">let</span> g:UltiSnipsExpandTrigger=<span style="color:#f1fa8c">&#34;&lt;leader&gt;&lt;tab&gt;&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span><span style="color:#ff79c6">let</span> g:UltiSnipsJumpForwardTrigger=<span style="color:#f1fa8c">&#34;&lt;Tab&gt;&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span><span style="color:#ff79c6">let</span> g:UltiSnipsJumpBackwardTrigger=<span style="color:#f1fa8c">&#34;&lt;S-Tab&gt;&#34;</span>
+</span></span></code></pre></div><p>这样便可以通过<code>&lt;tab&gt;</code>来选择，<code>&lt;leader&gt;&lt;tab&gt;</code>来触发代码块。</p>
+<h3 id="语法检测">语法检测<a class="anchorjs-link" href="#%e8%af%ad%e6%b3%95%e6%a3%80%e6%b5%8b"></a></h3><p><a href="https://github.com/w0rp/ale">ALE</a> 是 <code>neovim/Vim8</code> 的一款异步语法检测的插件，并且支持多种语言。</p>
+<ol>
+<li>使用<code>vim-plug</code>安装</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>Plug <span style="color:#f1fa8c">&#39;w0rp/ale&#39;</span> 
+</span></span></code></pre></div><ol start="2">
+<li>自定义</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#ff79c6">let</span> g:ale_sign_error = <span style="color:#f1fa8c">&#39;&#39;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span><span style="color:#ff79c6">let</span> g:ale_sign_warning = <span style="color:#f1fa8c">&#39;&#39;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span><span style="color:#ff79c6">let</span> g:ale_completion_enabled = <span style="color:#bd93f9">1</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span><span style="color:#ff79c6">let</span> g:ale_echo_msg_error_str = <span style="color:#f1fa8c">&#39;E&#39;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span><span style="color:#ff79c6">let</span> g:ale_echo_msg_warning_str = <span style="color:#f1fa8c">&#39;W&#39;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span><span style="color:#ff79c6">let</span> g:ale_echo_msg_format = <span style="color:#f1fa8c">&#39;[%linter%] %s [%severity%]&#39;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span><span style="color:#ff79c6">let</span> g:ale_swift_swiftlint_use_defaults = <span style="color:#bd93f9">1</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span><span style="color:#ff79c6">let</span> g:ale_open_list = <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span><span style="color:#ff79c6">let</span> g:ale_lint_delay = <span style="color:#bd93f9">1000</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span><span style="color:#ff79c6">let</span> g:ale_linters = {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>      \ <span style="color:#f1fa8c">&#39;go&#39;</span>: [<span style="color:#f1fa8c">&#39;golint&#39;</span>, <span style="color:#f1fa8c">&#39;go vet&#39;</span>, <span style="color:#f1fa8c">&#39;go build&#39;</span>],
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>      \ }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>nmap ]a &lt;Plug&gt;(ale_next_wrap)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>nmap [a &lt;Plug&gt;(ale_previous_wrap)
+</span></span></code></pre></div><h3 id="gruvbox-主题">gruvbox 主题<a class="anchorjs-link" href="#gruvbox-%e4%b8%bb%e9%a2%98"></a></h3><p><a href="https://github.com/morhetz/gruvbox">gruvbox</a> 是一款比较受欢迎的 <code>Vim</code> 主题，它支持自定义风格，并且实现多种文件类型的语法高亮，并且对许多插件支持。</p>
+<ol>
+<li>
+<p><code>Plug 'morhetz/gruvbox'</code></p>
+</li>
+<li>
+<p>设置<code>colorscheme</code></p>
+</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>colorscheme gruvbox
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>set background=<span style="color:#8be9fd;font-style:italic">dark</span>
+</span></span></code></pre></div><p>下面就是我<code>Vim</code> 界面了。左右分别是 <a href="https://github.com/scrooloose/nerdtree">NERDTree</a> 和 <a href="https://github.com/majutsushi/tagbar">Tagbar</a> 以及底部的 <a href="https://github.com/itchyny/lightline.vim">lightline.vim</a>。</p>
+<p>并且在我的电脑上可以做到小于 400ms 的启动速度，感觉还是挺不错的。
+感兴趣的同学可以到我的<code>vimrc</code>中查看设置。</p>
+<p>感兴趣可以到我的<code>vimrc</code>中查看设置。</p>
+<p><figure>
+  <a class="paragraph-image">
+    <img src="/media/golang_in_vim_01.png" data-action="zoom" alt="vim-ui"  loading="lazy" decoding="async">
+  </a>
+  
+</figure></p>
+<h3 id="附">附<a class="anchorjs-link" href="#%e9%99%84"></a></h3><ul>
+<li>我的 <a href="https://gist.github.com/mjyi/d6d410e71227321551c7b580205c430e">.vimrc</a></li>
+</ul>
+
+
+        <hr style="visibility: hidden;" />
+        <ul class="pager">
+          
+          <li class="previous">
+            <a href="/posts/2017/linux-ssh/" data-toggle="tooltip" data-placement="top" title="配置SSH登入远程Linux">
+              Previous<br>
+              <span>配置SSH登入远程Linux</span>
+            </a>
+          </li>
+          
+          
+          <li class="next">
+            <a href="/posts/2017/fzf-in-vim/" data-toggle="tooltip" data-placement="top" title="在Vim中使用fzf">
+              Next<br>
+              <span>在Vim中使用fzf</span>
+            </a>
+          </li>
+          
+        </ul>
+        <hr style="visibility: hidden;" />
+
+        
+        
+
+
+
+
+
+      </div>
+
+      
+      
+      
+      
+      <div class="
+              col-lg-8 col-lg-offset-2
+              col-md-10 col-md-offset-1
+              sidebar-container">
+
+        
+        
+        <section>
+  
+  
+  <hr class="hidden-sm hidden-xs">
+  
+  <h5>FEATURED TAGS</h5>
+  <div class="tags">
+    
+    <a href="/tags/css/">css</a>
+    
+    <a href="/tags/debian/">debian</a>
+    
+    <a href="/tags/fzf/">fzf</a>
+    
+    <a href="/tags/gcd/">gcd</a>
+    
+    <a href="/tags/gem/">gem</a>
+    
+    <a href="/tags/git/">git</a>
+    
+    <a href="/tags/go/">go</a>
+    
+    <a href="/tags/golang/">golang</a>
+    
+    <a href="/tags/hugo/">hugo</a>
+    
+    <a href="/tags/ios/">iOS</a>
+    
+    <a href="/tags/kindle/">Kindle</a>
+    
+    <a href="/tags/kvocontroller/">KVOController</a>
+    
+    <a href="/tags/linux/">linux</a>
+    
+    <a href="/tags/macos/">MacOS</a>
+    
+    <a href="/tags/neovim/">neovim</a>
+    
+    <a href="/tags/runtime/">runtime</a>
+    
+    <a href="/tags/rust/">rust</a>
+    
+    <a href="/tags/ss/">ss</a>
+    
+    <a href="/tags/ssh/">ssh</a>
+    
+    <a href="/tags/swift/">Swift</a>
+    
+    <a href="/tags/vim/">vim</a>
+    
+    <a href="/tags/webhook/">webhook</a>
+    
+    <a href="/tags/wubi/">wubi</a>
+    
+    <a href="/tags/zabbix/">zabbix</a>
+    
+  </div>
+</section>
+
+        
+        
+
+<hr>
+<h5>FRIENDS</h5>
+<ul class="list-inline">
+  
+  <li><a href=""></a></li>
+  
+</ul>
+
+      </div>
+    </div>
+  </div>
+</article>
+
+
+
+  
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        
+        
+
+
+<ul class="list-inline text-center">
+
+  
+  <li>
+    <a href="/index.xml">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+  
+  
+  
+  
+  <li>
+    <a target="_blank" href="https://github.com/roninro">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+</ul>
+        <p class="copyright text-muted">
+          Copyright &copy; RoninRo&#39;s Blog 2022
+          <br>
+          Powered by <a href="https://gohugo.io">Hugo</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+
+
+<script src="/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js"></script>
+
+
+<script src="/js/simple-jekyll-search.min.js"></script>
+
+
+<script src="/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/zoomjs/zoom.min.js"></script>
+</body>
+
+</html>

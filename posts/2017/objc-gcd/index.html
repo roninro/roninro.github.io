@@ -1,165 +1,613 @@
-<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="ie=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><title>读:《Objective-C高级编程》之GCD | RoninRo's Blog</title><meta name=author content="RoninRo"><meta name=description content="什么是GCD Grand Central Dispatch(GCD)是异步执任务的技术之一。一般将应用程序中记述的线程管理用的代码在系统级中实现。开发只需要定义想执行"><meta name=keywords content="blog,developer,personal,golang"><meta name=twitter:card content="summary"><meta name=twitter:title content="读:《Objective-C高级编程》之GCD"><meta name=twitter:description content="什么是GCD Grand Central Dispatch(GCD)是异步执任务的技术之一。一般将应用程序中记述的线程管理用的代码在系统级中实现。开发只需要定义想执行"><meta property="og:title" content="读:《Objective-C高级编程》之GCD"><meta property="og:description" content="什么是GCD Grand Central Dispatch(GCD)是异步执任务的技术之一。一般将应用程序中记述的线程管理用的代码在系统级中实现。开发只需要定义想执行"><meta property="og:type" content="article"><meta property="og:url" content="https://fninit.com/posts/2017/objc-gcd/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2017-01-17T00:00:00+00:00"><meta property="article:modified_time" content="2017-01-17T00:00:00+00:00"><link rel=stylesheet href=/css/bootstrap.min.css crossorigin=anonymous><link href=//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css rel=stylesheet type=text/css><link rel=stylesheet href=https://fninit.com/sass/main.css><link rel=stylesheet href=https://fninit.com/zoomjs/zoom.min.css></head><body><nav class="navbar navbar-default navbar-custom navbar-fixed-top invert"><div class=container-fluid><div class="navbar-header page-scroll"><button type=button class=navbar-toggle>
-<span class=sr-only>Toggle navigation</span>
-<span class=icon-bar></span>
-<span class=icon-bar></span>
-<span class=icon-bar></span></button>
-<a class=navbar-brand href=https://fninit.com>RoninRo's Blog</a></div><div id=huxblog_navbar><div class=navbar-collapse><ul class="nav navbar-nav navbar-right"><li><a href=/ title=Home>Home</a></li><li><a href=/archive/ title=Archive>Archive</a></li><li><a href=/categories/ title=Categories>Categories</a></li><li><a href=/about/ title=About>About</a></li><li class=search-icon><a href=javascript:void(0)><i class="fa fa-search"></i></a></li></ul></div></div></div></nav><script>var $body=document.body,$toggle=document.querySelector(".navbar-toggle"),$navbar=document.querySelector("#huxblog_navbar"),$collapse=document.querySelector(".navbar-collapse"),__HuxNav__={close:function(){$navbar.className=" ",setTimeout(function(){$navbar.className.indexOf("in")<0&&($collapse.style.height="0px")},400)},open:function(){$collapse.style.height="auto",$navbar.className+=" in"}};$toggle.addEventListener("click",function(){$navbar.className.indexOf("in")>0?__HuxNav__.close():__HuxNav__.open()}),document.addEventListener("click",function(e){if(e.target==$toggle)return;if(e.target.className=="icon-bar")return;__HuxNav__.close()})</script><div class=search-page><div class=search-icon-close-container><span class=search-icon-close><i class="fa fa-chevron-down"></i></span></div><div class="search-main container"><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><form></form><input type=text id=search-input placeholder="$ grep..."></form><div id=search-results class=mini-post-list></div></div></div></div></div><style type=text/css>header.intro-header{position:relative;background-image:url('')}</style><header class="intro-header style-text"><div class=header-mask></div><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><div class=post-heading><div class=tags><a class=tag href=https://fninit.com/tags/ios/ title=iOS>iOS</a>
-<a class=tag href=https://fninit.com/tags/gcd/ title=gcd>gcd</a></div><h1>读:《Objective-C高级编程》之GCD</h1><h2 class=subheading></h2><p class=post-meta>Posted by RoninRo
-on Tue, Jan 17, 2017</p></div></div></div></div></header><article><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2
-col-md-10 col-md-offset-1
-post-container"><h1 id=什么是gcd>什么是GCD<a class=anchorjs-link href=#%e4%bb%80%e4%b9%88%e6%98%afgcd></a></h1><blockquote><p><code>Grand Central Dispatch(GCD)</code>是异步执任务的技术之一。一般将应用程序中记述的线程管理用的代码在系统级中实现。开发只需要定义想执行并追加到适当的<code>Dispatch Queue</code> 中，<code>GCD</code>就能生成必要的线程并计划执行任务，由于线程管理是作为系统的一部分来实现的，因此可统一管理，也可以执行任务，这样就比以前的线程更有效率。</p></blockquote><h1 id=关于多线程编程>关于多线程编程<a class=anchorjs-link href=#%e5%85%b3%e4%ba%8e%e5%a4%9a%e7%ba%bf%e7%a8%8b%e7%bc%96%e7%a8%8b></a></h1><p>线程是操作系统能够进行运算调度的最小单位。它被包含在进程之中，是进程中的实际运作单位。一条线程指的是进程中一个单一顺序的控制流。
-一个<code>CPU</code> 一次只能执行一个命令，不能执行某处分开的并列的两个命令。因此通过<code>CPU</code>执行的<code>CPU命令</code>就好比一条无分叉的大道，其执行不会出现分歧。</p><p><code>OS X</code>和<code>iOS</code>的核心<code>XNU内核</code>在发生操作系统事件时，会切换执行路径，执行中的状态，例如<code>CPU</code>的寄存器等信息保存到各自路径专用的内存块中，从切换目标路径专用的内存块中，复原<code>CPU</code>寄存器等信息，继续执行切换路径的<code>CPU</code>命令行。这就称为<code>上下文切换</code>。</p><p>由于使用多线程的程序可以在某个线程和其他线程之间反复多次的进行上下文切换，因此看上去就好像1个<code>CPU</code>核能够并列的执行多个线程一样，而且在具有多个<code>CPU</code>核的情况下，就是真的提供多个<code>CPU</code>核并行执行多个线程的技术。</p><p>这种利用多线程编程的技术就称为“多线程编程”。</p><p>但是，多线程编程实际上是一种易发生各种问题的编程技术。比如多个线程更新相同的资源会导致数据的不一致（数据竞争）、停止等待事件的线程会导致多个线程相互持续等待（死锁）、使用太多线程会消耗大量内存等。</p><h1 id=gcd-的-api>GCD 的 API<a class=anchorjs-link href=#gcd-%e7%9a%84-api></a></h1><h2 id=dispatch-queue>Dispatch Queue<a class=anchorjs-link href=#dispatch-queue></a></h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-objectivec data-lang=objectivec><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>dispatch_async(dispatch_queue_t  _Nonnull queue, <span style=color:#ff79c6>^</span>{
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>   <span style=color:#6272a4>// doSomething     
-</span></span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span><span style=color:#6272a4></span>});
-</span></span></code></pre></div><p><code>Dispatch Queue</code>, 是执行处理的等待队列。</p><p>使用Block语法定义<code>想执行的任务</code>，通过<code>dispatch_async</code>函数追加赋值在变量queue的<code>Dispatch Queue</code>中。仅这样就可以使指定的<code>Block</code>在另外一个线程执行。</p><p><code>Dispatch Queue</code>按照FIFO（First-In-First-Out）执行处理。</p><p><code>Dispatch Queue</code>有两种：</p><table><thead><tr><th>Dispatch Queue</th><th>说明</th></tr></thead><tbody><tr><td>Serial Dispatch Queue</td><td>等待现在执行中处理结果</td></tr><tr><td>Concurrent Dispatch Queue</td><td>不等待现在执行中处理结果</td></tr></tbody></table><h2 id=dispatch_queue_create>dispatch_queue_create<a class=anchorjs-link href=#dispatch_queue_create></a></h2><p>通过<code>dispatch_queue_create</code>生成Dispatch Queue。</p><p>如下生成一个 Serial Dispatch Queue：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-objectivec data-lang=objectivec><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>dispatch_queue_create(<span style=color:#ff79c6>const</span> <span style=color:#8be9fd>char</span> <span style=color:#ff79c6>*</span> _Nullable label, dispatch_queue_attr_t  _Nullable attr);
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>dispatch_queue_t mySerialDispatchQueue <span style=color:#ff79c6>=</span> dispatch_queue_create(<span style=color:#f1fa8c>&#34;com.example.gcd.mySerialDispatchQueue&#34;</span>, <span style=color:#8be9fd;font-style:italic>NULL</span>);
-</span></span></code></pre></div><p>第一个参数指定<code>Dispatch Queue</code>的名称，第二个参数指定<code>NULL/DISPATCH_QUEUE_SERIAL</code> 生成<code>Serial Dispatch Queue</code>。。生成<code>Concurrent Dispatch Queue</code>时，将第二个参数指定为<code>DISPATCH_QUEUE_CONCURRENT</code>，如下：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-objectivec data-lang=objectivec><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>dispatch_queue_t myConcurretnDispatchQueue <span style=color:#ff79c6>=</span> dispatch_queue_create(<span style=color:#f1fa8c>&#34;com.example.gcd.myConCurrentDispatchQueue&#34;</span>, DISPATCH_QUEUE_CONCURRENT);
-</span></span></code></pre></div><p>dispatch_queue_create 函数的返回值为表示Dispatch Queuede的 dispatch_queue_t类型。</p><p><code>Serial Dispatch Queue</code> 一次只能执行一个追加任务。系统对一个<code>Serial Dispatch Queue</code>只生成一并使用一个线程，如果生成2000个<code>Serial Dispatch Queue</code>，那么就生成2000个线程。如果过多使用多线程就会消耗大量内存，引起大量的上下文切换，大幅度降低系统的响应性能。</p><p>只在为了避免多线程编程问题之一——多个线程更新相同资源导致数据竞争时，使用<code>Serial Dispatch Queue</code></p><p>下面分别添加几个block到两个队列中：
-Serial Dispatch Queue</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-objectivec data-lang=objectivec><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>	dispatch_queue_t mySerialDispatchQueue <span style=color:#ff79c6>=</span> dispatch_queue_create(<span style=color:#f1fa8c>&#34;com.example.gcd.mySerialDispatchQueue&#34;</span>, <span style=color:#8be9fd;font-style:italic>NULL</span>);
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>    dispatch_async(mySerialDispatchQueue, <span style=color:#ff79c6>^</span>{ NSLog(<span style=color:#f1fa8c>@&#34;blcok1&#34;</span>); });
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>    dispatch_async(mySerialDispatchQueue, <span style=color:#ff79c6>^</span>{ NSLog(<span style=color:#f1fa8c>@&#34;block2&#34;</span>); });
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span>    dispatch_async(mySerialDispatchQueue, <span style=color:#ff79c6>^</span>{ NSLog(<span style=color:#f1fa8c>@&#34;block3&#34;</span>); });
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">5</span><span>    dispatch_async(mySerialDispatchQueue, <span style=color:#ff79c6>^</span>{ NSLog(<span style=color:#f1fa8c>@&#34;block4&#34;</span>); });
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">6</span><span>    ...
-</span></span></code></pre></div><p>输出：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>2017-01-19 20:23:50.599 gcd<span style=color:#ff79c6>[</span>13765:2856357<span style=color:#ff79c6>]</span> blcok1
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>2017-01-19 20:23:50.599 gcd<span style=color:#ff79c6>[</span>13765:2856357<span style=color:#ff79c6>]</span> block2
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>2017-01-19 20:23:50.599 gcd<span style=color:#ff79c6>[</span>13765:2856357<span style=color:#ff79c6>]</span> block3
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span>2017-01-19 20:23:50.599 gcd<span style=color:#ff79c6>[</span>13765:2856357<span style=color:#ff79c6>]</span> block4
-</span></span></code></pre></div><p>Concurrent Dispatch Queue</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-objectivec data-lang=objectivec><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>    dispatch_queue_t myConcurretnDispatchQueue <span style=color:#ff79c6>=</span> dispatch_queue_create(<span style=color:#f1fa8c>&#34;com.example.gcd.myConcurretnDispatchQueue&#34;</span>, DISPATCH_QUEUE_CONCURRENT);
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>    dispatch_async(myConcurretnDispatchQueue, <span style=color:#ff79c6>^</span>{ NSLog(<span style=color:#f1fa8c>@&#34;blcok1&#34;</span>); });
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>    dispatch_async(myConcurretnDispatchQueue, <span style=color:#ff79c6>^</span>{ NSLog(<span style=color:#f1fa8c>@&#34;block2&#34;</span>); });
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span>    dispatch_async(myConcurretnDispatchQueue, <span style=color:#ff79c6>^</span>{ NSLog(<span style=color:#f1fa8c>@&#34;block3&#34;</span>); });
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">5</span><span>    dispatch_async(myConcurretnDispatchQueue, <span style=color:#ff79c6>^</span>{ NSLog(<span style=color:#f1fa8c>@&#34;block4&#34;</span>); });
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">6</span><span>    ...
-</span></span></code></pre></div><p>输出：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>2017-01-19 20:25:17.937 gcd[13811:2867322] blcok1
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>2017-01-19 20:25:17.937 gcd[13811:2867323] block3
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>2017-01-19 20:25:17.937 gcd[13811:2867325] block2
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span>2017-01-19 20:25:17.937 gcd[13811:2867366] block4
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">5</span><span>...
-</span></span></code></pre></div><p>在 iOS 6+ 和 Mac OS X 10.8+ ARC 可以管理GCD.在此之前，用下面代码释放gcd</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-objectivec data-lang=objectivec><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>dispatch_release(queue);
-</span></span></code></pre></div><h2 id=main-dispatch-queueglobal-dispatch-queue>Main Dispatch Queue/Global Dispatch Queue<a class=anchorjs-link href=#main-dispatch-queueglobal-dispatch-queue></a></h2><p>Main Dispatch Queue 是在主线程中执行的Dispatch Queue。 是Serial Dispatch Queue。
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  
+  
+  
+  
+
+  <title>读:《Objective-C高级编程》之GCD | RoninRo&#39;s Blog</title>
+
+  
+  <meta name="author" content="RoninRo">
+  <meta name="description" content="什么是GCD Grand Central Dispatch(GCD)是异步执任务的技术之一。一般将应用程序中记述的线程管理用的代码在系统级中实现。开发只需要定义想执行">
+  <meta name="keywords" content="blog,developer,personal,golang">
+
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="读:《Objective-C高级编程》之GCD"/>
+<meta name="twitter:description" content="什么是GCD Grand Central Dispatch(GCD)是异步执任务的技术之一。一般将应用程序中记述的线程管理用的代码在系统级中实现。开发只需要定义想执行"/>
+
+  <meta property="og:title" content="读:《Objective-C高级编程》之GCD" />
+<meta property="og:description" content="什么是GCD Grand Central Dispatch(GCD)是异步执任务的技术之一。一般将应用程序中记述的线程管理用的代码在系统级中实现。开发只需要定义想执行" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://roninro.github.io/posts/2017/objc-gcd/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2017-01-17T00:00:00+00:00" />
+<meta property="article:modified_time" content="2017-01-17T00:00:00+00:00" />
+
+
+
+  <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+  
+  <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"
+    type="text/css">
+
+  
+  
+  <link rel="stylesheet" href="/sass/main.css">
+
+  
+  <link rel="stylesheet" href="/zoomjs/zoom.min.css">
+
+
+  
+  
+  
+
+  </head>
+
+
+
+<body ontouchstart="">
+
+  
+  
+  
+
+  
+
+  
+  
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top invert">
+  <div class="container-fluid">
+    
+    <div class="navbar-header page-scroll">
+      <button type="button" class="navbar-toggle">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://roninro.github.io/">RoninRo&#39;s Blog</a>
+    </div>
+    
+    <div id="huxblog_navbar">
+      <div class="navbar-collapse">
+        <ul class="nav navbar-nav navbar-right">
+          
+          <li><a href="/" title="Home">Home</a></li>
+          
+          <li><a href="/archive/" title="Archive">Archive</a></li>
+          
+          <li><a href="/categories/" title="Categories">Categories</a></li>
+          
+          <li><a href="/about/" title="About">About</a></li>
+          
+
+          <li class="search-icon">
+            <a href="javascript:void(0)">
+              <i class="fa fa-search"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+  </div>
+  
+</nav>
+<script>
+  
+  
+  
+  var $body = document.body;
+  var $toggle = document.querySelector(".navbar-toggle");
+  var $navbar = document.querySelector("#huxblog_navbar");
+  var $collapse = document.querySelector(".navbar-collapse");
+
+  var __HuxNav__ = {
+    close: function () {
+      $navbar.className = " ";
+      
+      setTimeout(function () {
+        
+        if ($navbar.className.indexOf("in") < 0) {
+          $collapse.style.height = "0px";
+        }
+      }, 400);
+    },
+    open: function () {
+      $collapse.style.height = "auto";
+      $navbar.className += " in";
+    },
+  };
+
+  
+  $toggle.addEventListener("click", function (e) {
+    if ($navbar.className.indexOf("in") > 0) {
+      __HuxNav__.close();
+    } else {
+      __HuxNav__.open();
+    }
+  });
+
+  
+
+  document.addEventListener("click", function (e) {
+    if (e.target == $toggle) return;
+    if (e.target.className == "icon-bar") return;
+    __HuxNav__.close();
+  });
+</script>
+  
+<div class="search-page">
+  <div class="search-icon-close-container">
+    <span class="search-icon-close">
+      <i class="fa fa-chevron-down"></i>
+    </span>
+  </div>
+  <div class="search-main container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <form></form>
+        <input type="text" id="search-input" placeholder="$ grep...">
+        </form>
+        <div id="search-results" class="mini-post-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+  
+
+
+<style type="text/css">
+  header.intro-header {
+    position: relative;
+    background-image: url('');
+  }
+</style>
+
+<header class="intro-header style-text">
+
+  <div class="header-mask"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-heading">
+          <div class="tags">
+            
+            <a class="tag" href="/tags/ios/" title="iOS">iOS</a>
+            
+            <a class="tag" href="/tags/gcd/" title="gcd">gcd</a>
+            
+          </div>
+          <h1>读:《Objective-C高级编程》之GCD</h1>
+          <h2 class="subheading"></h2>
+          <p class="post-meta">
+            Posted by  RoninRo 
+            on Tue, Jan 17, 2017
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+  
+
+
+<article>
+  <div class="container">
+    <div class="row">
+
+      
+      <div class="
+              col-lg-8 col-lg-offset-2
+              col-md-10 col-md-offset-1
+              post-container">
+        <h1 id="什么是gcd">什么是GCD<a class="anchorjs-link" href="#%e4%bb%80%e4%b9%88%e6%98%afgcd"></a></h1><blockquote>
+<p><code>Grand Central Dispatch(GCD)</code>是异步执任务的技术之一。一般将应用程序中记述的线程管理用的代码在系统级中实现。开发只需要定义想执行并追加到适当的<code>Dispatch Queue</code> 中，<code>GCD</code>就能生成必要的线程并计划执行任务，由于线程管理是作为系统的一部分来实现的，因此可统一管理，也可以执行任务，这样就比以前的线程更有效率。</p>
+</blockquote>
+<h1 id="关于多线程编程">关于多线程编程<a class="anchorjs-link" href="#%e5%85%b3%e4%ba%8e%e5%a4%9a%e7%ba%bf%e7%a8%8b%e7%bc%96%e7%a8%8b"></a></h1><p>线程是操作系统能够进行运算调度的最小单位。它被包含在进程之中，是进程中的实际运作单位。一条线程指的是进程中一个单一顺序的控制流。
+一个<code>CPU</code> 一次只能执行一个命令，不能执行某处分开的并列的两个命令。因此通过<code>CPU</code>执行的<code>CPU命令</code>就好比一条无分叉的大道，其执行不会出现分歧。</p>
+<p><code>OS X</code>和<code>iOS</code>的核心<code>XNU内核</code>在发生操作系统事件时，会切换执行路径，执行中的状态，例如<code>CPU</code>的寄存器等信息保存到各自路径专用的内存块中，从切换目标路径专用的内存块中，复原<code>CPU</code>寄存器等信息，继续执行切换路径的<code>CPU</code>命令行。这就称为<code>上下文切换</code>。</p>
+<p>由于使用多线程的程序可以在某个线程和其他线程之间反复多次的进行上下文切换，因此看上去就好像1个<code>CPU</code>核能够并列的执行多个线程一样，而且在具有多个<code>CPU</code>核的情况下，就是真的提供多个<code>CPU</code>核并行执行多个线程的技术。</p>
+<p>这种利用多线程编程的技术就称为“多线程编程”。</p>
+<p>但是，多线程编程实际上是一种易发生各种问题的编程技术。比如多个线程更新相同的资源会导致数据的不一致（数据竞争）、停止等待事件的线程会导致多个线程相互持续等待（死锁）、使用太多线程会消耗大量内存等。</p>
+<h1 id="gcd-的-api">GCD 的 API<a class="anchorjs-link" href="#gcd-%e7%9a%84-api"></a></h1><h2 id="dispatch-queue">Dispatch Queue<a class="anchorjs-link" href="#dispatch-queue"></a></h2><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-objectivec" data-lang="objectivec"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>dispatch_async(dispatch_queue_t  _Nonnull queue, <span style="color:#ff79c6">^</span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>   <span style="color:#6272a4">// doSomething     
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span><span style="color:#6272a4"></span>});
+</span></span></code></pre></div><p><code>Dispatch Queue</code>, 是执行处理的等待队列。</p>
+<p>使用Block语法定义<code>想执行的任务</code>，通过<code>dispatch_async</code>函数追加赋值在变量queue的<code>Dispatch Queue</code>中。仅这样就可以使指定的<code>Block</code>在另外一个线程执行。</p>
+<p><code>Dispatch Queue</code>按照FIFO（First-In-First-Out）执行处理。</p>
+<p><code>Dispatch Queue</code>有两种：</p>
+<table>
+<thead>
+<tr>
+<th>Dispatch Queue</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Serial Dispatch Queue</td>
+<td>等待现在执行中处理结果</td>
+</tr>
+<tr>
+<td>Concurrent Dispatch Queue</td>
+<td>不等待现在执行中处理结果</td>
+</tr>
+</tbody>
+</table>
+<h2 id="dispatch_queue_create">dispatch_queue_create<a class="anchorjs-link" href="#dispatch_queue_create"></a></h2><p>通过<code>dispatch_queue_create</code>生成Dispatch Queue。</p>
+<p>如下生成一个 Serial Dispatch Queue：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-objectivec" data-lang="objectivec"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>dispatch_queue_create(<span style="color:#ff79c6">const</span> <span style="color:#8be9fd">char</span> <span style="color:#ff79c6">*</span> _Nullable label, dispatch_queue_attr_t  _Nullable attr);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>dispatch_queue_t mySerialDispatchQueue <span style="color:#ff79c6">=</span> dispatch_queue_create(<span style="color:#f1fa8c">&#34;com.example.gcd.mySerialDispatchQueue&#34;</span>, <span style="color:#8be9fd;font-style:italic">NULL</span>);
+</span></span></code></pre></div><p>第一个参数指定<code>Dispatch Queue</code>的名称，第二个参数指定<code>NULL/DISPATCH_QUEUE_SERIAL</code> 生成<code>Serial Dispatch Queue</code>。。生成<code>Concurrent Dispatch Queue</code>时，将第二个参数指定为<code>DISPATCH_QUEUE_CONCURRENT</code>，如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-objectivec" data-lang="objectivec"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>dispatch_queue_t myConcurretnDispatchQueue <span style="color:#ff79c6">=</span> dispatch_queue_create(<span style="color:#f1fa8c">&#34;com.example.gcd.myConCurrentDispatchQueue&#34;</span>, DISPATCH_QUEUE_CONCURRENT);
+</span></span></code></pre></div><p>dispatch_queue_create 函数的返回值为表示Dispatch Queuede的 dispatch_queue_t类型。</p>
+<p><code>Serial Dispatch Queue</code> 一次只能执行一个追加任务。系统对一个<code>Serial Dispatch Queue</code>只生成一并使用一个线程，如果生成2000个<code>Serial Dispatch Queue</code>，那么就生成2000个线程。如果过多使用多线程就会消耗大量内存，引起大量的上下文切换，大幅度降低系统的响应性能。</p>
+<p>只在为了避免多线程编程问题之一——多个线程更新相同资源导致数据竞争时，使用<code>Serial Dispatch Queue</code></p>
+<p>下面分别添加几个block到两个队列中：
+Serial Dispatch Queue</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-objectivec" data-lang="objectivec"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>	dispatch_queue_t mySerialDispatchQueue <span style="color:#ff79c6">=</span> dispatch_queue_create(<span style="color:#f1fa8c">&#34;com.example.gcd.mySerialDispatchQueue&#34;</span>, <span style="color:#8be9fd;font-style:italic">NULL</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>    dispatch_async(mySerialDispatchQueue, <span style="color:#ff79c6">^</span>{ NSLog(<span style="color:#f1fa8c">@&#34;blcok1&#34;</span>); });
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>    dispatch_async(mySerialDispatchQueue, <span style="color:#ff79c6">^</span>{ NSLog(<span style="color:#f1fa8c">@&#34;block2&#34;</span>); });
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>    dispatch_async(mySerialDispatchQueue, <span style="color:#ff79c6">^</span>{ NSLog(<span style="color:#f1fa8c">@&#34;block3&#34;</span>); });
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>    dispatch_async(mySerialDispatchQueue, <span style="color:#ff79c6">^</span>{ NSLog(<span style="color:#f1fa8c">@&#34;block4&#34;</span>); });
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6</span><span>    ...
+</span></span></code></pre></div><p>输出：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>2017-01-19 20:23:50.599 gcd<span style="color:#ff79c6">[</span>13765:2856357<span style="color:#ff79c6">]</span> blcok1
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>2017-01-19 20:23:50.599 gcd<span style="color:#ff79c6">[</span>13765:2856357<span style="color:#ff79c6">]</span> block2
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>2017-01-19 20:23:50.599 gcd<span style="color:#ff79c6">[</span>13765:2856357<span style="color:#ff79c6">]</span> block3
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>2017-01-19 20:23:50.599 gcd<span style="color:#ff79c6">[</span>13765:2856357<span style="color:#ff79c6">]</span> block4
+</span></span></code></pre></div><p>Concurrent Dispatch Queue</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-objectivec" data-lang="objectivec"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>    dispatch_queue_t myConcurretnDispatchQueue <span style="color:#ff79c6">=</span> dispatch_queue_create(<span style="color:#f1fa8c">&#34;com.example.gcd.myConcurretnDispatchQueue&#34;</span>, DISPATCH_QUEUE_CONCURRENT);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>    dispatch_async(myConcurretnDispatchQueue, <span style="color:#ff79c6">^</span>{ NSLog(<span style="color:#f1fa8c">@&#34;blcok1&#34;</span>); });
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>    dispatch_async(myConcurretnDispatchQueue, <span style="color:#ff79c6">^</span>{ NSLog(<span style="color:#f1fa8c">@&#34;block2&#34;</span>); });
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>    dispatch_async(myConcurretnDispatchQueue, <span style="color:#ff79c6">^</span>{ NSLog(<span style="color:#f1fa8c">@&#34;block3&#34;</span>); });
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>    dispatch_async(myConcurretnDispatchQueue, <span style="color:#ff79c6">^</span>{ NSLog(<span style="color:#f1fa8c">@&#34;block4&#34;</span>); });
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6</span><span>    ...
+</span></span></code></pre></div><p>输出：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>2017-01-19 20:25:17.937 gcd[13811:2867322] blcok1
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>2017-01-19 20:25:17.937 gcd[13811:2867323] block3
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>2017-01-19 20:25:17.937 gcd[13811:2867325] block2
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>2017-01-19 20:25:17.937 gcd[13811:2867366] block4
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>...
+</span></span></code></pre></div><p>在 iOS 6+ 和 Mac OS X 10.8+ ARC 可以管理GCD.在此之前，用下面代码释放gcd</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-objectivec" data-lang="objectivec"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>dispatch_release(queue);
+</span></span></code></pre></div><h2 id="main-dispatch-queueglobal-dispatch-queue">Main Dispatch Queue/Global Dispatch Queue<a class="anchorjs-link" href="#main-dispatch-queueglobal-dispatch-queue"></a></h2><p>Main Dispatch Queue 是在主线程中执行的Dispatch Queue。 是Serial Dispatch Queue。
 追加到 Main Dispatch Queue 的处理实在主线程的RunLoop 中执行，由于是在主线程中执行，因此要将用户界面更新等一些必须在主线程中执行的处理追加<code>Main Dispatch Queue</code>。
-Global Dispatch Queue 是所有应用程序能够使用的 Concurrent Dispatch Queue。没必要通过dispatch_queue_create 逐个生成Concurrent Dispatch Queue。只要的Global Dispatch Queue中使用即可。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-objectivec data-lang=objectivec><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span><span style=color:#6272a4>//	Main Dispatch Queue
-</span></span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span><span style=color:#6272a4></span>    dispatch_queue_t mainQueue <span style=color:#ff79c6>=</span> dispatch_get_main_queue();
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span>    <span style=color:#6272a4>/*
-</span></span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span><span><span style=color:#6272a4>     * Global Dispatch Queue 优先级从高到低
-</span></span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span><span><span style=color:#6272a4>	 */</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span><span>    dispatch_queue_t globalQueueHigh <span style=color:#ff79c6>=</span> dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, <span style=color:#bd93f9>0</span>);
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span>    dispatch_queue_t globalQueueDefault <span style=color:#ff79c6>=</span> dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span style=color:#bd93f9>0</span>);
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11</span><span>    dispatch_queue_t globalQueueLow <span style=color:#ff79c6>=</span> dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, <span style=color:#bd93f9>0</span>);
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13</span><span>    dispatch_queue_t globalQueueBackground <span style=color:#ff79c6>=</span> dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, <span style=color:#bd93f9>0</span>);
-</span></span></code></pre></div><p>下面是最常见的Main Dispatch Queue和Global Dispatch Queue的使用方法。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-objectivec data-lang=objectivec><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span style=color:#bd93f9>0</span>), <span style=color:#ff79c6>^</span>{
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>       <span style=color:#6272a4>/*
-</span></span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span><span style=color:#6272a4>        *   可并行的处理
-</span></span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span><span style=color:#6272a4>        */</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">5</span><span>        dispatch_async(dispatch_get_main_queue(), <span style=color:#ff79c6>^</span>{
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">6</span><span>            <span style=color:#6272a4>//只能在主线程中执行的处理
-</span></span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">7</span><span><span style=color:#6272a4></span>        });
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">8</span><span>    });
-</span></span></code></pre></div><h2 id=dispatch_set_target_queue>dispatch_set_target_queue<a class=anchorjs-link href=#dispatch_set_target_queue></a></h2><p>dispatch_set_target_queue函数是变更生成的<code>Dispatch Queue</code>的优先级。</p><p>修改用户队列的目标队列，使多个serial queue在目标queue上一次只有一个执行。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-objectivec data-lang=objectivec><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span> <span style=color:#6272a4>// dispatch_set_target_queue(&lt;#dispatch_object_t  _Nonnull object#&gt;, dispatch_queue_t  _Nullable queue)
-</span></span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span><span style=color:#6272a4></span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>   dispatch_queue_t globalDispatchQueueBackground <span style=color:#ff79c6>=</span> dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, <span style=color:#bd93f9>0</span>);
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">5</span><span>   dispatch_set_target_queue(mySerialDispatchQueue, globalDispatchQueueBackground);
-</span></span></code></pre></div><p>指定要变更执行优先级的Dispatch Queue 为 dispatch_set_target_queue函数的第一个参数，指定与要使用的执行优先级相同优先级的Global Dispatch Queue为第二个参数（目标）。第一个参数如果指定系统提供的Main Dispatch Queue 和 Global Dispatch Queue 则不知道会出现什么情况。因为你不能给系统的queue设置权限，所以这些均不可指定。</p><p>一般都是把一个任务放到一个串行的queue中，如果这个任务被拆分了，被放置到多个串行的queue中，但实际还是需要这个任务同步执行，那么就会有问题，因为多个串行queue之间是并行的。这时使用dispatch_set_target_queue将多个串行的queue指定到了同一目标，那么着多个串行queue在目标queue上就是同步执行的，不再是并行执行。</p><h2 id=dispatch_after>dispatch_after<a class=anchorjs-link href=#dispatch_after></a></h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-objectivec data-lang=objectivec><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>    dispatch_time_t time <span style=color:#ff79c6>=</span> dispatch_time(DISPATCH_TIME_NOW,(int64_t)(<span style=color:#bd93f9>3</span> <span style=color:#ff79c6>*</span> NSEC_PER_SEC));
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(<span style=color:#bd93f9>33</span> <span style=color:#ff79c6>*</span> NSEC_PER_SEC)), dispatch_get_main_queue(), <span style=color:#ff79c6>^</span>{
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>        NSLog(<span style=color:#f1fa8c>@&#34;waited at least three seconds&#34;</span>);
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span>    });
-</span></span></code></pre></div><p>dispatch_after 函数并不是在指定时间后执行，只是在指定时间追加处理到Dispatch Queue中。</p><p>第一个参数是指定时间用的dispatch_time_t 类型的值。使用dispatch_time 或者dispatch_walltimeb</p><p>第二个参数指定要追加处理的Dispatch Queuede，第三个参数指定执行处理的block。</p><h2 id=dispatch-group>Dispatch Group<a class=anchorjs-link href=#dispatch-group></a></h2><p>在追加到<code>Dispatch Queue</code>中的多个处理全部结束后执行结束处理。</p><ul><li>将执行的处理全部追加到 一个<code>Serial Dispatch Queue</code>中，并在最后追加结束处理。</li><li>但是在并行队列中可以使用<code>Dispatch Group</code>实现。</li></ul><p>Target：追加3个<code>block</code>到<code>Global Dispatch Queue</code> 中，这些<code>Block</code>如果全部执行完成，就会执行<code>Main Dispatch Queue</code>中结束处理的<code>Block</code>。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-objectivec data-lang=objectivec><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span>    dispatch_group_t group <span style=color:#ff79c6>=</span> dispatch_group_create();
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span>    dispatch_queue_t queue <span style=color:#ff79c6>=</span> dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span style=color:#bd93f9>0</span>);
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span>    dispatch_group_async(group, queue, <span style=color:#ff79c6>^</span>{  NSLog(<span style=color:#f1fa8c>@&#34;blk0&#34;</span>); });
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span><span>    dispatch_group_async(group, queue, <span style=color:#ff79c6>^</span>{  NSLog(<span style=color:#f1fa8c>@&#34;blk1&#34;</span>); });
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span><span>    dispatch_group_async(group, queue, <span style=color:#ff79c6>^</span>{  NSLog(<span style=color:#f1fa8c>@&#34;blk2&#34;</span>); });
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span><span>    dispatch_group_async(group, queue, <span style=color:#ff79c6>^</span>{  sleep(<span style=color:#bd93f9>3</span>); NSLog(<span style=color:#f1fa8c>@&#34;blk3&#34;</span>); });
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span><span>    dispatch_group_async(group, queue, <span style=color:#ff79c6>^</span>{  NSLog(<span style=color:#f1fa8c>@&#34;blk4&#34;</span>); });
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span><span>    dispatch_group_notify(group, dispatch_get_main_queue(), <span style=color:#ff79c6>^</span>{
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span>        NSLog(<span style=color:#f1fa8c>@&#34;over&#34;</span>);
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span><span>    });
-</span></span></code></pre></div><p><strong>解析：</strong> 向并行线程追加处理，多个线程并行执行，所以执行的顺序不定。 但是<code>”over”</code>一定是最后执行的。另外，也可以使用<code>dispatch_group_wait</code>函数，仅等待全部处理执行结束。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-objectivec data-lang=objectivec><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>    dispatch_group_t group <span style=color:#ff79c6>=</span> dispatch_group_create();
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>    dispatch_queue_t queue <span style=color:#ff79c6>=</span> dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span style=color:#bd93f9>0</span>);
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>    dispatch_group_async(group, queue, <span style=color:#ff79c6>^</span>{  NSLog(<span style=color:#f1fa8c>@&#34;blk0&#34;</span>); });
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span>    dispatch_group_async(group, queue, <span style=color:#ff79c6>^</span>{  NSLog(<span style=color:#f1fa8c>@&#34;blk1&#34;</span>); });
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">5</span><span>    dispatch_group_async(group, queue, <span style=color:#ff79c6>^</span>{  NSLog(<span style=color:#f1fa8c>@&#34;blk2&#34;</span>); });
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">6</span><span>    dispatch_group_async(group, queue, <span style=color:#ff79c6>^</span>{  sleep(<span style=color:#bd93f9>3</span>); NSLog(<span style=color:#f1fa8c>@&#34;blk3&#34;</span>); });
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">7</span><span>    dispatch_group_async(group, queue, <span style=color:#ff79c6>^</span>{  NSLog(<span style=color:#f1fa8c>@&#34;blk4&#34;</span>); });
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">8</span><span>    dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">9</span><span>    NSLog(<span style=color:#f1fa8c>@&#34;over&#34;</span>);
-</span></span></code></pre></div><p><code>dispatch_group_wait</code>的二个参数是等待的时间。如果返回值为0，则表示所有的任务执行完毕。否则，group中仍有任务在执行。</p><h2 id=dispatch_barrier_async>dispatch_barrier_async<a class=anchorjs-link href=#dispatch_barrier_async></a></h2><p>在访问数据库或文件时，使用<code>Serial Dispatch Queue</code>能避免数据竞争的问题。</p><p>写入处理确实不能与其他的写入处理以及包含读取处理的其他某些处理并行执行。但是如果读取处理只是与读取处理并行执行，那么多个并行执行就不会发生问题。</p><p><figure><a class=paragraph-image><img src=/media/blog_gcd_barrier.png data-action=zoom alt=Dispatch_barrier_async函数的处理流程 loading=lazy decoding=async></a></figure></p><p>首先<code>dispatch_queue</code>生成函数<code>Concurrent Dispatch Queue</code>,在<code>dispatch_async</code>中追加读取操作。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-objectivec data-lang=objectivec><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>dispatch_queue_t <span style=color:#ff79c6>=</span> queue <span style=color:#ff79c6>=</span> dispatch_queue_create(<span style=color:#f1fa8c>&#34;com.example.gcd.ForBarrier&#34;</span>, DISPATCH_QUEUE_CONCURRENT);
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>dispatch_async(queue, blk0_for_reading);
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>dispatch_async(queue, blk2_for_reading);
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span>dispatch_async(queue, blk3_for_reading);
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">5</span><span>dispatch_barrier_async(queue, blk_for_writing);
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">6</span><span>dispatch_async(queue, blk4_for_reading);
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">7</span><span>dispatch_async(queue, blk5_for_reading);
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">8</span><span>dispatch_async(queue, blk6_for_reading);
-</span></span></code></pre></div><h2 id=dispatch_sync>dispatch_sync<a class=anchorjs-link href=#dispatch_sync></a></h2><p><code>dispatch_async</code>函数是<code>非同步</code>的，即将指定的Block<code>非同步</code>的加入到指定的<code>Dispatch Queue</code>中，<code>dispatch_sync</code>函数不做任何等待。</p><p><code>dispatch_sync</code>函数<code>同步</code>的将Block追加到<code>Dispatch Queue</code>中，在Block结束之前，函数会一直等待。</p><p>经常使用的一种情形是：执行<code>Main Dispatch Queue</code>时，使用另外的线程<code>Global Dispatch Queue</code>进行处理，处理结束后立即使用所得到的结果。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-objectivec data-lang=objectivec><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span style=color:#bd93f9>0</span>),<span style=color:#ff79c6>^</span>{
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>  <span style=color:#6272a4>/*
-</span></span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span><span style=color:#6272a4>   处理
-</span></span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span><span style=color:#6272a4>   */</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">5</span><span>   dispatch_sync(dispatch_get_main_queue(), <span style=color:#ff79c6>^</span>{
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">6</span><span>     <span style=color:#6272a4>// 主线程操作，如刷新UI
-</span></span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">7</span><span><span style=color:#6272a4></span>     });
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">8</span><span>  });
-</span></span></code></pre></div><p>一旦调用<code>dispatch_sync</code>函数，那么在指定的处理结束之前，该函数都不会返回。也是因为这个特性，在使用不当时，便会造成一个严重的问题，即<code>死锁</code>。</p><p>例如在主线程中使用：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-objectivec data-lang=objectivec><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>dispatch_sync(dispatch_get_main_queue(), <span style=color:#ff79c6>^</span>{
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>  NSLog(<span style=color:#f1fa8c>@&#34;Hello????&#34;</span>);
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>  });
-</span></span></code></pre></div><h2 id=dispatch_apply>dispatch_apply<a class=anchorjs-link href=#dispatch_apply></a></h2><p><code>dispatch_apply</code>函数是<code>dispatch_sync</code>和<code>Dispatch Group</code>的关联API。
-它按指定的次数将指定的<code>Block</code>追加到指定的<code>Dispatch Queue</code>,并等待全部处理执行结束。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-objectivec data-lang=objectivec><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>dispatch_queue queue <span style=color:#ff79c6>=</span> dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span style=color:#bd93f9>0</span>);
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>dispatch_apply(<span style=color:#bd93f9>10</span>, queue, <span style=color:#ff79c6>^</span>(size_t index){
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>  NSLog(<span style=color:#f1fa8c>@&#34;%zu&#34;</span>,index);
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span>  });
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">5</span><span>  NSLog(<span style=color:#f1fa8c>@&#34;Done&#34;</span>); <span style=color:#6272a4>// 最后执行！
-</span></span></span></code></pre></div><h2 id=dispatch_suspenddispatch_resume>dispatch_suspend/dispatch_resume<a class=anchorjs-link href=#dispatch_suspenddispatch_resume></a></h2><p><code>dispatch_suspend</code>挂起指定的<code>Dispatch Queue</code>。
+Global Dispatch Queue 是所有应用程序能够使用的 Concurrent Dispatch Queue。没必要通过dispatch_queue_create 逐个生成Concurrent Dispatch Queue。只要的Global Dispatch Queue中使用即可。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-objectivec" data-lang="objectivec"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#6272a4">//	Main Dispatch Queue
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span><span style="color:#6272a4"></span>    dispatch_queue_t mainQueue <span style="color:#ff79c6">=</span> dispatch_get_main_queue();
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>    <span style="color:#6272a4">/*
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span><span style="color:#6272a4">     * Global Dispatch Queue 优先级从高到低
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span><span style="color:#6272a4">	 */</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>    dispatch_queue_t globalQueueHigh <span style="color:#ff79c6">=</span> dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, <span style="color:#bd93f9">0</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>    dispatch_queue_t globalQueueDefault <span style="color:#ff79c6">=</span> dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span style="color:#bd93f9">0</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>    dispatch_queue_t globalQueueLow <span style="color:#ff79c6">=</span> dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, <span style="color:#bd93f9">0</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>    dispatch_queue_t globalQueueBackground <span style="color:#ff79c6">=</span> dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, <span style="color:#bd93f9">0</span>);
+</span></span></code></pre></div><p>下面是最常见的Main Dispatch Queue和Global Dispatch Queue的使用方法。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-objectivec" data-lang="objectivec"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span style="color:#bd93f9">0</span>), <span style="color:#ff79c6">^</span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>       <span style="color:#6272a4">/*
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span><span style="color:#6272a4">        *   可并行的处理
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span><span style="color:#6272a4">        */</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>        dispatch_async(dispatch_get_main_queue(), <span style="color:#ff79c6">^</span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6</span><span>            <span style="color:#6272a4">//只能在主线程中执行的处理
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7</span><span><span style="color:#6272a4"></span>        });
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8</span><span>    });
+</span></span></code></pre></div><h2 id="dispatch_set_target_queue">dispatch_set_target_queue<a class="anchorjs-link" href="#dispatch_set_target_queue"></a></h2><p>dispatch_set_target_queue函数是变更生成的<code>Dispatch Queue</code>的优先级。</p>
+<p>修改用户队列的目标队列，使多个serial queue在目标queue上一次只有一个执行。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-objectivec" data-lang="objectivec"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span> <span style="color:#6272a4">// dispatch_set_target_queue(&lt;#dispatch_object_t  _Nonnull object#&gt;, dispatch_queue_t  _Nullable queue)
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>   dispatch_queue_t globalDispatchQueueBackground <span style="color:#ff79c6">=</span> dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, <span style="color:#bd93f9">0</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>   dispatch_set_target_queue(mySerialDispatchQueue, globalDispatchQueueBackground);
+</span></span></code></pre></div><p>指定要变更执行优先级的Dispatch Queue 为 dispatch_set_target_queue函数的第一个参数，指定与要使用的执行优先级相同优先级的Global Dispatch Queue为第二个参数（目标）。第一个参数如果指定系统提供的Main Dispatch Queue 和 Global Dispatch Queue 则不知道会出现什么情况。因为你不能给系统的queue设置权限，所以这些均不可指定。</p>
+<p>一般都是把一个任务放到一个串行的queue中，如果这个任务被拆分了，被放置到多个串行的queue中，但实际还是需要这个任务同步执行，那么就会有问题，因为多个串行queue之间是并行的。这时使用dispatch_set_target_queue将多个串行的queue指定到了同一目标，那么着多个串行queue在目标queue上就是同步执行的，不再是并行执行。</p>
+<h2 id="dispatch_after">dispatch_after<a class="anchorjs-link" href="#dispatch_after"></a></h2><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-objectivec" data-lang="objectivec"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>    dispatch_time_t time <span style="color:#ff79c6">=</span> dispatch_time(DISPATCH_TIME_NOW,(int64_t)(<span style="color:#bd93f9">3</span> <span style="color:#ff79c6">*</span> NSEC_PER_SEC));
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(<span style="color:#bd93f9">33</span> <span style="color:#ff79c6">*</span> NSEC_PER_SEC)), dispatch_get_main_queue(), <span style="color:#ff79c6">^</span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>        NSLog(<span style="color:#f1fa8c">@&#34;waited at least three seconds&#34;</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>    });
+</span></span></code></pre></div><p>dispatch_after 函数并不是在指定时间后执行，只是在指定时间追加处理到Dispatch Queue中。</p>
+<p>第一个参数是指定时间用的dispatch_time_t 类型的值。使用dispatch_time 或者dispatch_walltimeb</p>
+<p>第二个参数指定要追加处理的Dispatch Queuede，第三个参数指定执行处理的block。</p>
+<h2 id="dispatch-group">Dispatch Group<a class="anchorjs-link" href="#dispatch-group"></a></h2><p>在追加到<code>Dispatch Queue</code>中的多个处理全部结束后执行结束处理。</p>
+<ul>
+<li>将执行的处理全部追加到 一个<code>Serial Dispatch Queue</code>中，并在最后追加结束处理。</li>
+<li>但是在并行队列中可以使用<code>Dispatch Group</code>实现。</li>
+</ul>
+<p>Target：追加3个<code>block</code>到<code>Global Dispatch Queue</code> 中，这些<code>Block</code>如果全部执行完成，就会执行<code>Main Dispatch Queue</code>中结束处理的<code>Block</code>。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-objectivec" data-lang="objectivec"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span>    dispatch_group_t group <span style="color:#ff79c6">=</span> dispatch_group_create();
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>    dispatch_queue_t queue <span style="color:#ff79c6">=</span> dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span style="color:#bd93f9">0</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>    dispatch_group_async(group, queue, <span style="color:#ff79c6">^</span>{  NSLog(<span style="color:#f1fa8c">@&#34;blk0&#34;</span>); });
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>    dispatch_group_async(group, queue, <span style="color:#ff79c6">^</span>{  NSLog(<span style="color:#f1fa8c">@&#34;blk1&#34;</span>); });
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>    dispatch_group_async(group, queue, <span style="color:#ff79c6">^</span>{  NSLog(<span style="color:#f1fa8c">@&#34;blk2&#34;</span>); });
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>    dispatch_group_async(group, queue, <span style="color:#ff79c6">^</span>{  sleep(<span style="color:#bd93f9">3</span>); NSLog(<span style="color:#f1fa8c">@&#34;blk3&#34;</span>); });
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>    dispatch_group_async(group, queue, <span style="color:#ff79c6">^</span>{  NSLog(<span style="color:#f1fa8c">@&#34;blk4&#34;</span>); });
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>    dispatch_group_notify(group, dispatch_get_main_queue(), <span style="color:#ff79c6">^</span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>        NSLog(<span style="color:#f1fa8c">@&#34;over&#34;</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>    });
+</span></span></code></pre></div><p><strong>解析：</strong> 向并行线程追加处理，多个线程并行执行，所以执行的顺序不定。 但是<code>”over”</code>一定是最后执行的。另外，也可以使用<code>dispatch_group_wait</code>函数，仅等待全部处理执行结束。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-objectivec" data-lang="objectivec"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>    dispatch_group_t group <span style="color:#ff79c6">=</span> dispatch_group_create();
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>    dispatch_queue_t queue <span style="color:#ff79c6">=</span> dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span style="color:#bd93f9">0</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>    dispatch_group_async(group, queue, <span style="color:#ff79c6">^</span>{  NSLog(<span style="color:#f1fa8c">@&#34;blk0&#34;</span>); });
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>    dispatch_group_async(group, queue, <span style="color:#ff79c6">^</span>{  NSLog(<span style="color:#f1fa8c">@&#34;blk1&#34;</span>); });
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>    dispatch_group_async(group, queue, <span style="color:#ff79c6">^</span>{  NSLog(<span style="color:#f1fa8c">@&#34;blk2&#34;</span>); });
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6</span><span>    dispatch_group_async(group, queue, <span style="color:#ff79c6">^</span>{  sleep(<span style="color:#bd93f9">3</span>); NSLog(<span style="color:#f1fa8c">@&#34;blk3&#34;</span>); });
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7</span><span>    dispatch_group_async(group, queue, <span style="color:#ff79c6">^</span>{  NSLog(<span style="color:#f1fa8c">@&#34;blk4&#34;</span>); });
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8</span><span>    dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9</span><span>    NSLog(<span style="color:#f1fa8c">@&#34;over&#34;</span>);
+</span></span></code></pre></div><p><code>dispatch_group_wait</code>的二个参数是等待的时间。如果返回值为0，则表示所有的任务执行完毕。否则，group中仍有任务在执行。</p>
+<h2 id="dispatch_barrier_async">dispatch_barrier_async<a class="anchorjs-link" href="#dispatch_barrier_async"></a></h2><p>在访问数据库或文件时，使用<code>Serial Dispatch Queue</code>能避免数据竞争的问题。</p>
+<p>写入处理确实不能与其他的写入处理以及包含读取处理的其他某些处理并行执行。但是如果读取处理只是与读取处理并行执行，那么多个并行执行就不会发生问题。</p>
+<p><figure>
+  <a class="paragraph-image">
+    <img src="/media/blog_gcd_barrier.png" data-action="zoom" alt="Dispatch_barrier_async函数的处理流程"  loading="lazy" decoding="async">
+  </a>
+  
+</figure></p>
+<p>首先<code>dispatch_queue</code>生成函数<code>Concurrent Dispatch Queue</code>,在<code>dispatch_async</code>中追加读取操作。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-objectivec" data-lang="objectivec"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>dispatch_queue_t <span style="color:#ff79c6">=</span> queue <span style="color:#ff79c6">=</span> dispatch_queue_create(<span style="color:#f1fa8c">&#34;com.example.gcd.ForBarrier&#34;</span>, DISPATCH_QUEUE_CONCURRENT);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>dispatch_async(queue, blk0_for_reading);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>dispatch_async(queue, blk2_for_reading);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>dispatch_async(queue, blk3_for_reading);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>dispatch_barrier_async(queue, blk_for_writing);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6</span><span>dispatch_async(queue, blk4_for_reading);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7</span><span>dispatch_async(queue, blk5_for_reading);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8</span><span>dispatch_async(queue, blk6_for_reading);
+</span></span></code></pre></div><h2 id="dispatch_sync">dispatch_sync<a class="anchorjs-link" href="#dispatch_sync"></a></h2><p><code>dispatch_async</code>函数是<code>非同步</code>的，即将指定的Block<code>非同步</code>的加入到指定的<code>Dispatch Queue</code>中，<code>dispatch_sync</code>函数不做任何等待。</p>
+<p><code>dispatch_sync</code>函数<code>同步</code>的将Block追加到<code>Dispatch Queue</code>中，在Block结束之前，函数会一直等待。</p>
+<p>经常使用的一种情形是：执行<code>Main Dispatch Queue</code>时，使用另外的线程<code>Global Dispatch Queue</code>进行处理，处理结束后立即使用所得到的结果。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-objectivec" data-lang="objectivec"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span style="color:#bd93f9">0</span>),<span style="color:#ff79c6">^</span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>  <span style="color:#6272a4">/*
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span><span style="color:#6272a4">   处理
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span><span style="color:#6272a4">   */</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>   dispatch_sync(dispatch_get_main_queue(), <span style="color:#ff79c6">^</span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6</span><span>     <span style="color:#6272a4">// 主线程操作，如刷新UI
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7</span><span><span style="color:#6272a4"></span>     });
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8</span><span>  });
+</span></span></code></pre></div><p>一旦调用<code>dispatch_sync</code>函数，那么在指定的处理结束之前，该函数都不会返回。也是因为这个特性，在使用不当时，便会造成一个严重的问题，即<code>死锁</code>。</p>
+<p>例如在主线程中使用：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-objectivec" data-lang="objectivec"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>dispatch_sync(dispatch_get_main_queue(), <span style="color:#ff79c6">^</span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>  NSLog(<span style="color:#f1fa8c">@&#34;Hello????&#34;</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>  });
+</span></span></code></pre></div><h2 id="dispatch_apply">dispatch_apply<a class="anchorjs-link" href="#dispatch_apply"></a></h2><p><code>dispatch_apply</code>函数是<code>dispatch_sync</code>和<code>Dispatch Group</code>的关联API。
+它按指定的次数将指定的<code>Block</code>追加到指定的<code>Dispatch Queue</code>,并等待全部处理执行结束。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-objectivec" data-lang="objectivec"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>dispatch_queue queue <span style="color:#ff79c6">=</span> dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span style="color:#bd93f9">0</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>dispatch_apply(<span style="color:#bd93f9">10</span>, queue, <span style="color:#ff79c6">^</span>(size_t index){
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>  NSLog(<span style="color:#f1fa8c">@&#34;%zu&#34;</span>,index);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>  });
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>  NSLog(<span style="color:#f1fa8c">@&#34;Done&#34;</span>); <span style="color:#6272a4">// 最后执行！
+</span></span></span></code></pre></div><h2 id="dispatch_suspenddispatch_resume">dispatch_suspend/dispatch_resume<a class="anchorjs-link" href="#dispatch_suspenddispatch_resume"></a></h2><p><code>dispatch_suspend</code>挂起指定的<code>Dispatch Queue</code>。
 ‵‵‵
 dispatch_suspend(queue);
 ‵‵‵
-<code>dispatch_resume</code>恢复指定的<code>Dispatch Queue</code>。</p><h2 id=dispatch_once>dispatch_once<a class=anchorjs-link href=#dispatch_once></a></h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>static int initialized = NO;
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>if (initialized == NO) {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>    /*
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span>     * 初始化
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">5</span><span>     */
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">6</span><span>}
-</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-objectivec data-lang=objectivec><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span><span style=color:#ff79c6>static</span> dispatch_once_t pred;
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>dispatch_once(<span style=color:#ff79c6>&amp;</span>pred, <span style=color:#ff79c6>^</span>{
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>   <span style=color:#6272a4>/*
-</span></span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span><span style=color:#6272a4>    * 初始化
-</span></span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">5</span><span><span style=color:#6272a4>    */</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">6</span><span>});
-</span></span></code></pre></div><p>通过<code>dispatch_once</code> 函数，代码即使在多线程环境下执行，也可保证百分之百安全。</p><p>第一组代码在大多数情况下也是安全的。但在多核CPU中，在正在更新的表示是否初始化的标志变量时，读取，就有可能多次执行初始化处理。而用<code>dispatch_once</code>函数初始化就不必担心这样的问题。</p><p><a href=http://www.dreamingwish.com/article/gcd-guide-dispatch-once-1.html>GCD外传：dispatch_once(上)</a></p><hr style=visibility:hidden><ul class=pager><li class=previous><a href=https://fninit.com/posts/2016/arc-in-swift/ data-toggle=tooltip data-placement=top title="Swift:Automatic Reference Counting in Swift">Previous<br><span>Swift:Automatic Reference Counting in Swift</span></a></li><li class=next><a href=https://fninit.com/posts/2017/runtime-messaging/ data-toggle=tooltip data-placement=top title="Objective-C Messaging">Next<br><span>Objective-C Messaging</span></a></li></ul><hr style=visibility:hidden></div><div class="col-lg-8 col-lg-offset-2
-col-md-10 col-md-offset-1
-sidebar-container"><section><hr class="hidden-sm hidden-xs"><h5>FEATURED TAGS</h5><div class=tags><a href=https://fninit.com/tags/css/>css</a>
-<a href=https://fninit.com/tags/debian/>debian</a>
-<a href=https://fninit.com/tags/fzf/>fzf</a>
-<a href=https://fninit.com/tags/gcd/>gcd</a>
-<a href=https://fninit.com/tags/gem/>gem</a>
-<a href=https://fninit.com/tags/git/>git</a>
-<a href=https://fninit.com/tags/go/>go</a>
-<a href=https://fninit.com/tags/golang/>golang</a>
-<a href=https://fninit.com/tags/hugo/>hugo</a>
-<a href=https://fninit.com/tags/ios/>iOS</a>
-<a href=https://fninit.com/tags/kindle/>Kindle</a>
-<a href=https://fninit.com/tags/kvocontroller/>KVOController</a>
-<a href=https://fninit.com/tags/linux/>linux</a>
-<a href=https://fninit.com/tags/macos/>MacOS</a>
-<a href=https://fninit.com/tags/neovim/>neovim</a>
-<a href=https://fninit.com/tags/runtime/>runtime</a>
-<a href=https://fninit.com/tags/rust/>rust</a>
-<a href=https://fninit.com/tags/ss/>ss</a>
-<a href=https://fninit.com/tags/ssh/>ssh</a>
-<a href=https://fninit.com/tags/swift/>Swift</a>
-<a href=https://fninit.com/tags/vim/>vim</a>
-<a href=https://fninit.com/tags/webhook/>webhook</a>
-<a href=https://fninit.com/tags/wubi/>wubi</a>
-<a href=https://fninit.com/tags/zabbix/>zabbix</a></div></section><hr><h5>FRIENDS</h5><ul class=list-inline><li><a href></a></li></ul></div></div></div></article><footer><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><ul class="list-inline text-center"><li><a href=/index.xml><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i>
-<i class="fa fa-rss fa-stack-1x fa-inverse"></i></span></a></li><li><a target=_blank href=https://github.com/roninro><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i>
-<i class="fa fa-github fa-stack-1x fa-inverse"></i></span></a></li></ul><p class="copyright text-muted">Copyright &copy; RoninRo's Blog 2022<br>Powered by <a href=https://gohugo.io>Hugo</a></p></div></div></div></footer><script src=/js/jquery.min.js></script>
-<script src=/js/bootstrap.min.js crossorigin=anonymous></script>
-<script src=https://fninit.com/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js></script>
-<script src=/js/simple-jekyll-search.min.js></script>
-<script src=https://fninit.com/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js></script>
-<script></script><script src=/zoomjs/zoom.min.js></script></body></html>
+<code>dispatch_resume</code>恢复指定的<code>Dispatch Queue</code>。</p>
+<h2 id="dispatch_once">dispatch_once<a class="anchorjs-link" href="#dispatch_once"></a></h2><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>static int initialized = NO;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>if (initialized == NO) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>    /*
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>     * 初始化
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>     */
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6</span><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-objectivec" data-lang="objectivec"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#ff79c6">static</span> dispatch_once_t pred;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>dispatch_once(<span style="color:#ff79c6">&amp;</span>pred, <span style="color:#ff79c6">^</span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>   <span style="color:#6272a4">/*
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span><span style="color:#6272a4">    * 初始化
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span><span style="color:#6272a4">    */</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6</span><span>});
+</span></span></code></pre></div><p>通过<code>dispatch_once</code> 函数，代码即使在多线程环境下执行，也可保证百分之百安全。</p>
+<p>第一组代码在大多数情况下也是安全的。但在多核CPU中，在正在更新的表示是否初始化的标志变量时，读取，就有可能多次执行初始化处理。而用<code>dispatch_once</code>函数初始化就不必担心这样的问题。</p>
+<p><a href="http://www.dreamingwish.com/article/gcd-guide-dispatch-once-1.html">GCD外传：dispatch_once(上)</a></p>
+
+
+        <hr style="visibility: hidden;" />
+        <ul class="pager">
+          
+          <li class="previous">
+            <a href="/posts/2016/arc-in-swift/" data-toggle="tooltip" data-placement="top" title="Swift:Automatic Reference Counting in Swift">
+              Previous<br>
+              <span>Swift:Automatic Reference Counting in Swift</span>
+            </a>
+          </li>
+          
+          
+          <li class="next">
+            <a href="/posts/2017/runtime-messaging/" data-toggle="tooltip" data-placement="top" title="Objective-C Messaging">
+              Next<br>
+              <span>Objective-C Messaging</span>
+            </a>
+          </li>
+          
+        </ul>
+        <hr style="visibility: hidden;" />
+
+        
+        
+
+
+
+
+
+      </div>
+
+      
+      
+      
+      
+      <div class="
+              col-lg-8 col-lg-offset-2
+              col-md-10 col-md-offset-1
+              sidebar-container">
+
+        
+        
+        <section>
+  
+  
+  <hr class="hidden-sm hidden-xs">
+  
+  <h5>FEATURED TAGS</h5>
+  <div class="tags">
+    
+    <a href="/tags/css/">css</a>
+    
+    <a href="/tags/debian/">debian</a>
+    
+    <a href="/tags/fzf/">fzf</a>
+    
+    <a href="/tags/gcd/">gcd</a>
+    
+    <a href="/tags/gem/">gem</a>
+    
+    <a href="/tags/git/">git</a>
+    
+    <a href="/tags/go/">go</a>
+    
+    <a href="/tags/golang/">golang</a>
+    
+    <a href="/tags/hugo/">hugo</a>
+    
+    <a href="/tags/ios/">iOS</a>
+    
+    <a href="/tags/kindle/">Kindle</a>
+    
+    <a href="/tags/kvocontroller/">KVOController</a>
+    
+    <a href="/tags/linux/">linux</a>
+    
+    <a href="/tags/macos/">MacOS</a>
+    
+    <a href="/tags/neovim/">neovim</a>
+    
+    <a href="/tags/runtime/">runtime</a>
+    
+    <a href="/tags/rust/">rust</a>
+    
+    <a href="/tags/ss/">ss</a>
+    
+    <a href="/tags/ssh/">ssh</a>
+    
+    <a href="/tags/swift/">Swift</a>
+    
+    <a href="/tags/vim/">vim</a>
+    
+    <a href="/tags/webhook/">webhook</a>
+    
+    <a href="/tags/wubi/">wubi</a>
+    
+    <a href="/tags/zabbix/">zabbix</a>
+    
+  </div>
+</section>
+
+        
+        
+
+<hr>
+<h5>FRIENDS</h5>
+<ul class="list-inline">
+  
+  <li><a href=""></a></li>
+  
+</ul>
+
+      </div>
+    </div>
+  </div>
+</article>
+
+
+
+  
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        
+        
+
+
+<ul class="list-inline text-center">
+
+  
+  <li>
+    <a href="/index.xml">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+  
+  
+  
+  
+  <li>
+    <a target="_blank" href="https://github.com/roninro">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+</ul>
+        <p class="copyright text-muted">
+          Copyright &copy; RoninRo&#39;s Blog 2022
+          <br>
+          Powered by <a href="https://gohugo.io">Hugo</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+
+
+<script src="/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js"></script>
+
+
+<script src="/js/simple-jekyll-search.min.js"></script>
+
+
+<script src="/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/zoomjs/zoom.min.js"></script>
+</body>
+
+</html>

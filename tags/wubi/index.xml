@@ -1,1 +1,20 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>wubi on RoninRo's Blog</title><link>https://fninit.com/tags/wubi/</link><description>Recent content in wubi on RoninRo's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Mon, 29 Mar 2021 10:23:25 +0800</lastBuildDate><atom:link href="https://fninit.com/tags/wubi/index.xml" rel="self" type="application/rss+xml"/><item><title>[整理] 五笔基础</title><link>https://fninit.com/posts/2021/wubu/</link><pubDate>Mon, 29 Mar 2021 10:23:25 +0800</pubDate><guid>https://fninit.com/posts/2021/wubu/</guid><description>概述“五笔” 原意是也指五种基本笔画：横、竖、撇、捺（点）、折，任何一个汉字，也都是由这五种基本笔画及其衍生字根组成，通过使用一定的映射规则，</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>wubi on RoninRo&#39;s Blog</title>
+    <link>https://roninro.github.io/tags/wubi/</link>
+    <description>Recent content in wubi on RoninRo&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Mon, 29 Mar 2021 10:23:25 +0800</lastBuildDate><atom:link href="https://roninro.github.io/tags/wubi/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>[整理] 五笔基础</title>
+      <link>https://roninro.github.io/posts/2021/wubu/</link>
+      <pubDate>Mon, 29 Mar 2021 10:23:25 +0800</pubDate>
+      
+      <guid>https://roninro.github.io/posts/2021/wubu/</guid>
+      <description>概述“五笔” 原意是也指五种基本笔画：横、竖、撇、捺（点）、折，任何一个汉字，也都是由这五种基本笔画及其衍生字根组成，通过使用一定的映射规则，</description>
+    </item>
+    
+  </channel>
+</rss>

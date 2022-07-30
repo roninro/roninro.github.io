@@ -1,1 +1,20 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>分享 on RoninRo's Blog</title><link>https://fninit.com/categories/share/</link><description>Recent content in 分享 on RoninRo's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Tue, 16 Jul 2019 16:18:37 +0800</lastBuildDate><atom:link href="https://fninit.com/categories/share/index.xml" rel="self" type="application/rss+xml"/><item><title>[转]当我开始做软件开发时，最希望听到的七条建议</title><link>https://fninit.com/posts/2020/gergelyorosz-advice/</link><pubDate>Tue, 16 Jul 2019 16:18:37 +0800</pubDate><guid>https://fninit.com/posts/2020/gergelyorosz-advice/</guid><description>Uber 工程师 Gergely Orosz 近日在 Twitter 上发出如题的7条建议（twitter： GergelyOrosz ） 当我开始从事软件工程的时候，我最希望自己听到以下七条建议： 每年花点时间读一两本</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>分享 on RoninRo&#39;s Blog</title>
+    <link>https://roninro.github.io/categories/share/</link>
+    <description>Recent content in 分享 on RoninRo&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Tue, 16 Jul 2019 16:18:37 +0800</lastBuildDate><atom:link href="https://roninro.github.io/categories/share/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>[转]当我开始做软件开发时，最希望听到的七条建议</title>
+      <link>https://roninro.github.io/posts/2020/gergelyorosz-advice/</link>
+      <pubDate>Tue, 16 Jul 2019 16:18:37 +0800</pubDate>
+      
+      <guid>https://roninro.github.io/posts/2020/gergelyorosz-advice/</guid>
+      <description>Uber 工程师 Gergely Orosz 近日在 Twitter 上发出如题的7条建议（twitter： GergelyOrosz ） 当我开始从事软件工程的时候，我最希望自己听到以下七条建议： 每年花点时间读一两本</description>
+    </item>
+    
+  </channel>
+</rss>

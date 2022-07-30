@@ -1,279 +1,863 @@
-<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="ie=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><title>iOS 高级教程：用 MVVM 处理复杂的TableView | RoninRo's Blog</title><meta name=author content="RoninRo"><meta name=description content="在本文，我们将讨论如何 用 Model-View-ViewModel(MVVM) 模式来组织 table view 代码。MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可以使用很多 Swift 技术， 使 UI 逻辑包装成数据模型。例如使用协议和闭包简化 table view 中的代码。"><meta name=keywords content="blog,developer,personal,golang"><meta name=twitter:card content="summary"><meta name=twitter:title content="iOS 高级教程：用 MVVM 处理复杂的TableView"><meta name=twitter:description content="在本文，我们将讨论如何 用 Model-View-ViewModel(MVVM) 模式来组织 table view 代码。MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可以使用很多 Swift 技术， 使 UI 逻辑包装成数据模型。例如使用协议和闭包简化 table view 中的代码。"><meta property="og:title" content="iOS 高级教程：用 MVVM 处理复杂的TableView"><meta property="og:description" content="在本文，我们将讨论如何 用 Model-View-ViewModel(MVVM) 模式来组织 table view 代码。MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可以使用很多 Swift 技术， 使 UI 逻辑包装成数据模型。例如使用协议和闭包简化 table view 中的代码。"><meta property="og:type" content="article"><meta property="og:url" content="https://fninit.com/posts/2019/ios-mvvm-tableview/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2019-05-16T10:15:54+08:00"><meta property="article:modified_time" content="2019-05-16T10:15:54+08:00"><link rel=stylesheet href=/css/bootstrap.min.css crossorigin=anonymous><link href=//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css rel=stylesheet type=text/css><link rel=stylesheet href=https://fninit.com/sass/main.css><link rel=stylesheet href=https://fninit.com/zoomjs/zoom.min.css></head><body><nav class="navbar navbar-default navbar-custom navbar-fixed-top invert"><div class=container-fluid><div class="navbar-header page-scroll"><button type=button class=navbar-toggle>
-<span class=sr-only>Toggle navigation</span>
-<span class=icon-bar></span>
-<span class=icon-bar></span>
-<span class=icon-bar></span></button>
-<a class=navbar-brand href=https://fninit.com>RoninRo's Blog</a></div><div id=huxblog_navbar><div class=navbar-collapse><ul class="nav navbar-nav navbar-right"><li><a href=/ title=Home>Home</a></li><li><a href=/archive/ title=Archive>Archive</a></li><li><a href=/categories/ title=Categories>Categories</a></li><li><a href=/about/ title=About>About</a></li><li class=search-icon><a href=javascript:void(0)><i class="fa fa-search"></i></a></li></ul></div></div></div></nav><script>var $body=document.body,$toggle=document.querySelector(".navbar-toggle"),$navbar=document.querySelector("#huxblog_navbar"),$collapse=document.querySelector(".navbar-collapse"),__HuxNav__={close:function(){$navbar.className=" ",setTimeout(function(){$navbar.className.indexOf("in")<0&&($collapse.style.height="0px")},400)},open:function(){$collapse.style.height="auto",$navbar.className+=" in"}};$toggle.addEventListener("click",function(){$navbar.className.indexOf("in")>0?__HuxNav__.close():__HuxNav__.open()}),document.addEventListener("click",function(e){if(e.target==$toggle)return;if(e.target.className=="icon-bar")return;__HuxNav__.close()})</script><div class=search-page><div class=search-icon-close-container><span class=search-icon-close><i class="fa fa-chevron-down"></i></span></div><div class="search-main container"><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><form></form><input type=text id=search-input placeholder="$ grep..."></form><div id=search-results class=mini-post-list></div></div></div></div></div><style type=text/css>header.intro-header{position:relative;background-image:url('')}</style><header class="intro-header style-text"><div class=header-mask></div><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><div class=post-heading><div class=tags><a class=tag href=https://fninit.com/tags/ios/ title=iOS>iOS</a></div><h1>iOS 高级教程：用 MVVM 处理复杂的TableView</h1><h2 class=subheading></h2><p class=post-meta>Posted by RoninRo
-on Thu, May 16, 2019</p></div></div></div></div></header><article><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2
-col-md-10 col-md-offset-1
-post-container"><blockquote><p>原文：<a href=https://flawlessapp.io/blog/advanced-mvvm-tableview-tutorial/#viewmodel>Advanced iOS tutorial: Use MVVM to tackle complicated TableView</a></p></blockquote><p>在本文，我们将讨论如何 用 Model-View-ViewModel(MVVM) 模式来组织 table view 代码。
-MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可以使用很多 Swift 技术， 使 UI 逻辑包装成数据模型。例如使用协议和闭包简化 table view 中的代码。建议查看 <a href=https://medium.com/flawless-app-stories/how-to-use-a-model-view-viewmodel-architecture-for-ios-46963c67be1b>文章</a> 以全面了解 MVVM 模式。</p><h2 id=newsfeed-app>Newsfeed App<a class=anchorjs-link href=#newsfeed-app></a></h2><p>今天，我们将要做一个 newsfeed app 。App 主页是一个墙（wall）。在墙上，有两种 feed ，一种是照片的 feed，一种是用户的 feed。
-我们包含介绍以下用例：</p><ol><li>tableView 正确显示 Member 的单元格和 Photo 的单元格。</li><li>“+” 按钮显示在等待 follow-a-member API 的响应时的加载。</li></ol><ul><li>当用户按下 Photo 单元格时触发 open-detail 事件。</li></ul><p>界面如下：</p><p><figure><a class=paragraph-image><img src=/media/mvvm-screen.gif data-action=zoom alt loading=lazy decoding=async></a></figure></p><h3 id=membercell>MemberCell<a class=anchorjs-link href=#membercell></a></h3><p>member cell 可以推荐一些你可以想要关注的用户，你可以点击 Cell 上的 <strong>+</strong> 按钮，Cell 有 3种状态：</p><ul><li><p>Normal<figure><a class=paragraph-image><img src=/media/state_normal-3.png data-action=zoom alt loading=lazy decoding=async></a></figure></p></li><li><p>Loading<figure><a class=paragraph-image><img src=/media/state_checked-3.png data-action=zoom alt loading=lazy decoding=async></a></figure></p></li><li><p>Checked<figure><a class=paragraph-image><img src=/media/state_loading-3.png data-action=zoom alt loading=lazy decoding=async></a></figure></p></li></ul><h3 id=photocell>PhotoCell<a class=anchorjs-link href=#photocell></a></h3><p>第二个 cell 会展示照片跟它的标题与介绍，用户点击了这个 cell 就会打开照片的详细介绍。</p><p><figure><a class=paragraph-image><img src=/media/state_normal-3.png data-action=zoom alt loading=lazy decoding=async></a></figure></p><p>我们假设 API 的响应被解析为两种 model: Member 和 Photo.</p><p>你可以在 Github 上找到这个项目的完整代码：<a href=https://github.com/koromiko/TheGreatWall>GitHub – koromiko/TheGreatWall: Using MVVM to tackle complicated feed view</a>。</p><h2 id=开始>开始<a class=anchorjs-link href=#%e5%bc%80%e5%a7%8b></a></h2><p>我们新建一个 FeedListViewController ，并将它设置为 tableView 的 dataSource，这个 viewController 大概会长这个样子：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span><span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>feeds</span>: [Feed] = [Feed]()
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span> 
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span><span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>tableView</span>: UITableView
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span><span> 
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span><span><span style=color:#8be9fd;font-style:italic>func</span> <span style=color:#50fa7b>viewDidLoad</span>() {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span><span>        <span style=color:#ff79c6>self</span>.service.fetchFeeds { [<span style=color:#ff79c6>weak</span> <span style=color:#ff79c6>self</span>] feeds <span style=color:#ff79c6>in</span> 
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span><span>            <span style=color:#ff79c6>self</span>?.feeds = feeds
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span><span>            <span style=color:#ff79c6>self</span>?.tableView.reloadData()
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span>        }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span><span>}
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11</span><span> 
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12</span><span><span style=color:#8be9fd;font-style:italic>func</span> <span style=color:#50fa7b>tableView</span>(<span style=color:#ff79c6>_</span> tableView: UITableView, numberOfRowsInSection section: <span style=color:#8be9fd;font-style:italic>Int</span>) -&gt; <span style=color:#8be9fd;font-style:italic>Int</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13</span><span>    <span style=color:#ff79c6>return</span> feeds.count
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14</span><span>}
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15</span><span> 
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16</span><span><span style=color:#8be9fd;font-style:italic>func</span> <span style=color:#50fa7b>tableView</span>(<span style=color:#ff79c6>_</span> tableView: UITableView, cellForRowAt indexPath: IndexPath) -&gt; UITableViewCell {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17</span><span>    <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>feed</span> = feeds[indexPath.row]
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">18</span><span> 
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">19</span><span>    <span style=color:#ff79c6>if</span> <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>memberFeed</span> = feed <span style=color:#ff79c6>as</span>? Member, <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>cell</span> = tableView.dequeueReusableCell(withIdentifier: MemberCell.cellIdentifier(), <span style=color:#ff79c6>for</span>: indexPath) <span style=color:#ff79c6>as</span>? MemberCell {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">20</span><span>        cell.nameLabel.text = memberFeed.name
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">21</span><span>        cell.profileImageView.image = memberFeed.image
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">22</span><span>        cell.addBtn.isSelected = memberFeed.isFollwing
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">23</span><span>        <span style=color:#ff79c6>return</span> cell
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">24</span><span>    } <span style=color:#ff79c6>else</span> <span style=color:#ff79c6>if</span> <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>photoFeed</span> = feed <span style=color:#ff79c6>as</span>? Photo, <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>cell</span> = tableView.dequeueReusableCell(withIdentifier: PhotoCell.cellIdentifier(), <span style=color:#ff79c6>for</span>: indexPath) <span style=color:#ff79c6>as</span>? PhotoCell {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">25</span><span>        cell.titleLabel.text = photoFeed.captial
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">26</span><span>        cell.descriptionLabel.text = photoFeed.description
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">27</span><span>        cell.coverImageView.image = photoFeed.image
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">28</span><span>        <span style=color:#ff79c6>return</span> cell
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">29</span><span>    } <span style=color:#ff79c6>else</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">30</span><span>            fatalError(<span style=color:#f1fa8c>&#34;Unhandled feed </span><span style=color:#f1fa8c>\(</span>feed<span style=color:#f1fa8c>)</span><span style=color:#f1fa8c>&#34;</span>)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">31</span><span>    }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">32</span><span>}
-</span></span></code></pre></div><p>我们把请求的数据保存在 <code>feeds: [Feed]</code> 中，<code>func tableView(tableView:, indexPath:) -> UITableViewCell</code> 通过 if-else 处理两种 feed 。</p><p>然后我们要处理 Member Cell 的加载状态。通常我们使用数组保存所有 cell 的加载状态。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Swift data-lang=Swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span><span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>cellLoadingStatus</span>: [<span style=color:#8be9fd;font-style:italic>Bool</span>]
-</span></span></code></pre></div><p>然后这样更新 cell ：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span><span style=color:#ff79c6>if</span> cellLoadingStatus[indexPath.row] {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>    cell.loadingIndicator.startAnimation()
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>} <span style=color:#ff79c6>else</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span>    cell.loadingIndicator.stopAnimation()
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">5</span><span>}
-</span></span></code></pre></div><p>我们还有一件事要做。处理状态更新，如下所示：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span><span style=color:#8be9fd;font-style:italic>func</span> <span style=color:#50fa7b>updateLoadingState</span>(isLoading: <span style=color:#8be9fd;font-style:italic>Bool</span>, at indexPath: IndexPath) {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>    cellLoadingStates[indexPath.row] = isLoading
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>    tableView.reloadRows(at indexPaths: [indexPath], with animation: .<span style=color:#ff79c6>none</span>)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span>}
-</span></span></code></pre></div><p>看起来没有什么问题，但是当我们被要求添加一个 cell 类型时，我们应该怎么做呢？在 <code>func tableView(tableView:,indexPath:) -> UITableViewCell</code> 添加一个 else-if 处理。
-如果新 Cell 具有不同的状态，我们将添加一个数组来处理状态更改并添加一个函数来更新状态。唷！碎片化代码使需求变更成为一项具有挑战性的任务。</p><p>下图显示了体系结构：</p><p><figure><a class=paragraph-image><img src=/media/mvvm-table-architecture.png data-action=zoom alt loading=lazy decoding=async></a></figure></p><p>在上面的示例中，dataSource 具有以下职责：</p><ul><li>设置 cell 的 UI 组件，例如 nameLabel，imageView</li><li>记录 cell 的状态，如 cellLoadingStatus</li><li>调用 API 并且保存 model 数据</li></ul><p>每当我们添加一个单元格类型时，我们都会在 FeedListViewController 中执行这些任务，而这些任务根本不可扩展。
-更好的方法是分离职责以提高可扩展性。添加单元格类型应该更像是将 USB 设备插入计算机，这不会改变计算机的设计。</p><h2 id=分拆-cell-ui-设定>分拆 cell UI 设定<a class=anchorjs-link href=#%e5%88%86%e6%8b%86-cell-ui-%e8%ae%be%e5%ae%9a></a></h2><p>回到 <code>func tableView(tableView:, cellForRowAt indexPath: ) -> UITableViewCell</code> ，这里面有 UI 设定，对于 dataSource 来说，了解 cell 的实现细节并不是一个好的主意。所以我们的第一步就是将 UI 设定从 dataSource 转移到 cell 中去。</p><p>基于这个想法，我们在 MemberCell 中添加一个方法：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span><span style=color:#6272a4>// In MemberCell.swift</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span><span style=color:#8be9fd;font-style:italic>func</span> <span style=color:#50fa7b>setup</span>(name: <span style=color:#8be9fd;font-style:italic>String</span>, profileImage: UIImage, isFollowing: <span style=color:#8be9fd;font-style:italic>Bool</span>, isLoading: <span style=color:#8be9fd;font-style:italic>Bool</span>) {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span>    <span style=color:#ff79c6>self</span>.nameLabel.text = name
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span><span>    <span style=color:#ff79c6>self</span>.profileImageView.image = profileImage
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span><span>    <span style=color:#ff79c6>self</span>.addBtn.isSelected = isFollowing
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span><span>    <span style=color:#ff79c6>if</span> isLoading { 
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span><span>        <span style=color:#ff79c6>self</span>.loadingIndicator.startAnimation()
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span><span>    } <span style=color:#ff79c6>else</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span>        <span style=color:#ff79c6>self</span>.loadingIndicator.stopAnimation()
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span><span>    }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11</span><span>}
-</span></span></code></pre></div><p>在 setup 的帮助下，<code>func tableView(tableView:, indexPath:) -> UITableViewCell</code> 会变得更加简单：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span><span style=color:#ff79c6>if</span> <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>memberFeed</span> = feed <span style=color:#ff79c6>as</span>? Member, <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>cell</span> = tableView.dequeueReusableCell(withIdentifier: MemberCell.cellIdentifier(), <span style=color:#ff79c6>for</span>: indexPath) <span style=color:#ff79c6>as</span>? MemberCell {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span>    cell.setup(name: memberFeed.name, 
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span>                     profileImage: memberFeed.image,
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span><span>                     isFollowing: memberFeed.isFollowing,
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span><span>                     isLoading: <span style=color:#ff79c6>self</span>.loadingStatus[indexPath.row])
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span><span>    <span style=color:#ff79c6>return</span> cell
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span><span>} <span style=color:#ff79c6>else</span> <span style=color:#ff79c6>if</span> <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>photoFeed</span> = feed <span style=color:#ff79c6>as</span>? Photo, <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>cell</span> = tableView.dequeueReusableCell(withIdentifier: PhotoCell.cellIdentifier(), <span style=color:#ff79c6>for</span>: indexPath) <span style=color:#ff79c6>as</span>? PhotoCell {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span><span>    cell.setup(title: photoFeed.title, 
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span>                      description: photoFeed.description,
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span><span>                      image: photoFeed.image)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11</span><span>    <span style=color:#ff79c6>return</span> cell
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12</span><span>} <span style=color:#ff79c6>else</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13</span><span>    fatalError(<span style=color:#f1fa8c>&#34;Unhandled feed </span><span style=color:#f1fa8c>\(</span>feed<span style=color:#f1fa8c>)</span><span style=color:#f1fa8c>&#34;</span>)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14</span><span>}
-</span></span></code></pre></div><p>我们可以看到有超过三个参数的函数。有一个对象包装这些参数会更好。因此，这是 MVVM 的好处！ MVVM 可以帮助您将所有 UI 逻辑封装到一个简单的对象中。</p><p>通过将 UI 操作转换为对象操作，我们可以显着减少 dataSource 和 ViewController 的开销。</p><h2 id=为-cell-设计-viewmodel>为 Cell 设计 ViewModel<a class=anchorjs-link href=#%e4%b8%ba-cell-%e8%ae%be%e8%ae%a1-viewmodel></a></h2><p>先看架构：</p><p><figure><a class=paragraph-image><img src=/media/mvvm-architecture-viewmodel.png data-action=zoom alt loading=lazy decoding=async></a></figure></p><p>我们用两种 viewmodel ：MemberViewModel 和 PhotoViewModel ，分别代表 MemberCell 和 PhotoCell 。 我们使用绑定技术将 ViewModel 的属性绑定到相应 Cell 中的UI组件。这意味着每当我们更改ViewModel的属性时，单元格中的绑定UI组件都会相应地更改。</p><p>MemberViewModel 的实现如下：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span><span style=color:#8be9fd;font-style:italic>class</span> <span style=color:#50fa7b>MemberCellViewModel</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>    <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#8be9fd;font-style:italic>String</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>    <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>avatar</span>: UIImage
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span>    <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>isLoading</span>: Observable&lt;<span style=color:#8be9fd;font-style:italic>Bool</span>&gt;
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">5</span><span>}
-</span></span></code></pre></div><p>我们使用自定义对象 Observable 作为绑定工具。它保留泛型类型值，并通过触发名为 valueChanged的闭包来通知将存储值更改为观察者。实现非常简单</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span><span style=color:#8be9fd;font-style:italic>class</span> <span style=color:#50fa7b>Observable</span>&lt;T&gt; {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span>    <span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>value</span>: T {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span>        <span style=color:#ff79c6>didSet</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span><span>            DispatchQueue.main.async {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span><span>                <span style=color:#ff79c6>self</span>.valueChanged?(<span style=color:#ff79c6>self</span>.value)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span><span>            }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span><span>        }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span><span>    }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span>    <span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>valueChanged</span>: ((T) -&gt; <span style=color:#8be9fd;font-style:italic>Void</span>)?
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span><span>}
-</span></span></code></pre></div><p>如果你对更多的 绑定技术感兴趣，请看 Srđan Rašić 的文章 <a href=https://five.agency/solving-the-binding-problem-with-swift/>Solving the binding problem with Swfit - Five</a></p><p>回到文章， 相应的 MemberCell 看起来如下：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span><span style=color:#6272a4>// In MemberCell.swift</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span><span style=color:#8be9fd;font-style:italic>func</span> <span style=color:#50fa7b>setup</span>(viewModel: MemberViewModel) {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span>    <span style=color:#6272a4>// The imange and the name won&#39;t be changed after setup </span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span><span>    profileImageView.image = viewModel.image 
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span><span>    nameLabel.text = viewModel.name
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span><span>        
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span><span>    <span style=color:#6272a4>// Listen to the change of the isLoading property to update the UI state</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span><span>    viewModel.isLoading.valueChanged { [<span style=color:#ff79c6>weak</span> <span style=color:#ff79c6>self</span>] (isLoading) <span style=color:#ff79c6>in</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span>        <span style=color:#ff79c6>if</span> isLoading {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span><span>            <span style=color:#ff79c6>self</span>?.loadingIndicator.startAnimating()
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11</span><span>        } <span style=color:#ff79c6>else</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12</span><span>            <span style=color:#ff79c6>self</span>?.loadingIndicator.stopAnimating()
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13</span><span>        }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14</span><span>    }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15</span><span>}
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  
+  
+  
+  
+
+  <title>iOS 高级教程：用 MVVM 处理复杂的TableView | RoninRo&#39;s Blog</title>
+
+  
+  <meta name="author" content="RoninRo">
+  <meta name="description" content="在本文，我们将讨论如何 用 Model-View-ViewModel(MVVM) 模式来组织 table view 代码。MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可以使用很多 Swift 技术， 使 UI 逻辑包装成数据模型。例如使用协议和闭包简化 table view 中的代码。">
+  <meta name="keywords" content="blog,developer,personal,golang">
+
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="iOS 高级教程：用 MVVM 处理复杂的TableView"/>
+<meta name="twitter:description" content="在本文，我们将讨论如何 用 Model-View-ViewModel(MVVM) 模式来组织 table view 代码。MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可以使用很多 Swift 技术， 使 UI 逻辑包装成数据模型。例如使用协议和闭包简化 table view 中的代码。"/>
+
+  <meta property="og:title" content="iOS 高级教程：用 MVVM 处理复杂的TableView" />
+<meta property="og:description" content="在本文，我们将讨论如何 用 Model-View-ViewModel(MVVM) 模式来组织 table view 代码。MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可以使用很多 Swift 技术， 使 UI 逻辑包装成数据模型。例如使用协议和闭包简化 table view 中的代码。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://roninro.github.io/posts/2019/ios-mvvm-tableview/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2019-05-16T10:15:54+08:00" />
+<meta property="article:modified_time" content="2019-05-16T10:15:54+08:00" />
+
+
+
+  <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+  
+  <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"
+    type="text/css">
+
+  
+  
+  <link rel="stylesheet" href="/sass/main.css">
+
+  
+  <link rel="stylesheet" href="/zoomjs/zoom.min.css">
+
+
+  
+  
+  
+
+  </head>
+
+
+
+<body ontouchstart="">
+
+  
+  
+  
+
+  
+  
+  
+
+  
+  
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top invert">
+  <div class="container-fluid">
+    
+    <div class="navbar-header page-scroll">
+      <button type="button" class="navbar-toggle">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://roninro.github.io/">RoninRo&#39;s Blog</a>
+    </div>
+    
+    <div id="huxblog_navbar">
+      <div class="navbar-collapse">
+        <ul class="nav navbar-nav navbar-right">
+          
+          <li><a href="/" title="Home">Home</a></li>
+          
+          <li><a href="/archive/" title="Archive">Archive</a></li>
+          
+          <li><a href="/categories/" title="Categories">Categories</a></li>
+          
+          <li><a href="/about/" title="About">About</a></li>
+          
+
+          <li class="search-icon">
+            <a href="javascript:void(0)">
+              <i class="fa fa-search"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+  </div>
+  
+</nav>
+<script>
+  
+  
+  
+  var $body = document.body;
+  var $toggle = document.querySelector(".navbar-toggle");
+  var $navbar = document.querySelector("#huxblog_navbar");
+  var $collapse = document.querySelector(".navbar-collapse");
+
+  var __HuxNav__ = {
+    close: function () {
+      $navbar.className = " ";
+      
+      setTimeout(function () {
+        
+        if ($navbar.className.indexOf("in") < 0) {
+          $collapse.style.height = "0px";
+        }
+      }, 400);
+    },
+    open: function () {
+      $collapse.style.height = "auto";
+      $navbar.className += " in";
+    },
+  };
+
+  
+  $toggle.addEventListener("click", function (e) {
+    if ($navbar.className.indexOf("in") > 0) {
+      __HuxNav__.close();
+    } else {
+      __HuxNav__.open();
+    }
+  });
+
+  
+
+  document.addEventListener("click", function (e) {
+    if (e.target == $toggle) return;
+    if (e.target.className == "icon-bar") return;
+    __HuxNav__.close();
+  });
+</script>
+  
+<div class="search-page">
+  <div class="search-icon-close-container">
+    <span class="search-icon-close">
+      <i class="fa fa-chevron-down"></i>
+    </span>
+  </div>
+  <div class="search-main container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <form></form>
+        <input type="text" id="search-input" placeholder="$ grep...">
+        </form>
+        <div id="search-results" class="mini-post-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+  
+
+
+<style type="text/css">
+  header.intro-header {
+    position: relative;
+    background-image: url('');
+  }
+</style>
+
+<header class="intro-header style-text">
+
+  <div class="header-mask"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-heading">
+          <div class="tags">
+            
+            <a class="tag" href="/tags/ios/" title="iOS">iOS</a>
+            
+          </div>
+          <h1>iOS 高级教程：用 MVVM 处理复杂的TableView</h1>
+          <h2 class="subheading"></h2>
+          <p class="post-meta">
+            Posted by  RoninRo 
+            on Thu, May 16, 2019
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+  
+
+
+<article>
+  <div class="container">
+    <div class="row">
+
+      
+      <div class="
+              col-lg-8 col-lg-offset-2
+              col-md-10 col-md-offset-1
+              post-container">
+        <blockquote>
+<p>原文：<a href="https://flawlessapp.io/blog/advanced-mvvm-tableview-tutorial/#viewmodel">Advanced iOS tutorial: Use MVVM to tackle complicated TableView</a></p>
+</blockquote>
+<p>在本文，我们将讨论如何 用 Model-View-ViewModel(MVVM) 模式来组织 table view 代码。
+MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可以使用很多 Swift 技术， 使 UI 逻辑包装成数据模型。例如使用协议和闭包简化 table view 中的代码。建议查看 <a href="https://medium.com/flawless-app-stories/how-to-use-a-model-view-viewmodel-architecture-for-ios-46963c67be1b">文章</a> 以全面了解 MVVM 模式。</p>
+<h2 id="newsfeed-app">Newsfeed App<a class="anchorjs-link" href="#newsfeed-app"></a></h2><p>今天，我们将要做一个 newsfeed app 。App 主页是一个墙（wall）。在墙上，有两种 feed ，一种是照片的 feed，一种是用户的 feed。
+我们包含介绍以下用例：</p>
+<ol>
+<li>tableView 正确显示 Member 的单元格和 Photo 的单元格。</li>
+<li>“+” 按钮显示在等待 follow-a-member API 的响应时的加载。</li>
+</ol>
+<ul>
+<li>当用户按下 Photo 单元格时触发 open-detail 事件。</li>
+</ul>
+<p>界面如下：</p>
+<p><figure>
+  <a class="paragraph-image">
+    <img src="/media/mvvm-screen.gif" data-action="zoom" alt=""  loading="lazy" decoding="async">
+  </a>
+  
+</figure></p>
+<h3 id="membercell">MemberCell<a class="anchorjs-link" href="#membercell"></a></h3><p>member cell 可以推荐一些你可以想要关注的用户，你可以点击 Cell 上的 <strong>+</strong> 按钮，Cell 有 3种状态：</p>
+<ul>
+<li>
+<p>Normal
+<figure>
+  <a class="paragraph-image">
+    <img src="/media/state_normal-3.png" data-action="zoom" alt=""  loading="lazy" decoding="async">
+  </a>
+  
+</figure></p>
+</li>
+<li>
+<p>Loading
+<figure>
+  <a class="paragraph-image">
+    <img src="/media/state_checked-3.png" data-action="zoom" alt=""  loading="lazy" decoding="async">
+  </a>
+  
+</figure></p>
+</li>
+<li>
+<p>Checked
+<figure>
+  <a class="paragraph-image">
+    <img src="/media/state_loading-3.png" data-action="zoom" alt=""  loading="lazy" decoding="async">
+  </a>
+  
+</figure></p>
+</li>
+</ul>
+<h3 id="photocell">PhotoCell<a class="anchorjs-link" href="#photocell"></a></h3><p>第二个 cell 会展示照片跟它的标题与介绍，用户点击了这个 cell 就会打开照片的详细介绍。</p>
+<p><figure>
+  <a class="paragraph-image">
+    <img src="/media/state_normal-3.png" data-action="zoom" alt=""  loading="lazy" decoding="async">
+  </a>
+  
+</figure></p>
+<p>我们假设 API 的响应被解析为两种 model: Member 和 Photo.</p>
+<p>你可以在 Github 上找到这个项目的完整代码：<a href="https://github.com/koromiko/TheGreatWall">GitHub – koromiko/TheGreatWall: Using MVVM to tackle complicated feed view</a>。</p>
+<h2 id="开始">开始<a class="anchorjs-link" href="#%e5%bc%80%e5%a7%8b"></a></h2><p>我们新建一个 FeedListViewController ，并将它设置为 tableView 的 dataSource，这个 viewController 大概会长这个样子：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">feeds</span>: [Feed] = [Feed]()
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span> 
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span><span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">tableView</span>: UITableView
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span> 
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">viewDidLoad</span>() {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>        <span style="color:#ff79c6">self</span>.service.fetchFeeds { [<span style="color:#ff79c6">weak</span> <span style="color:#ff79c6">self</span>] feeds <span style="color:#ff79c6">in</span> 
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>            <span style="color:#ff79c6">self</span>?.feeds = feeds
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>            <span style="color:#ff79c6">self</span>?.tableView.reloadData()
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>        }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span> 
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">tableView</span>(<span style="color:#ff79c6">_</span> tableView: UITableView, numberOfRowsInSection section: <span style="color:#8be9fd;font-style:italic">Int</span>) -&gt; <span style="color:#8be9fd;font-style:italic">Int</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>    <span style="color:#ff79c6">return</span> feeds.count
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span> 
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">tableView</span>(<span style="color:#ff79c6">_</span> tableView: UITableView, cellForRowAt indexPath: IndexPath) -&gt; UITableViewCell {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span><span>    <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">feed</span> = feeds[indexPath.row]
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span><span> 
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span><span>    <span style="color:#ff79c6">if</span> <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">memberFeed</span> = feed <span style="color:#ff79c6">as</span>? Member, <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">cell</span> = tableView.dequeueReusableCell(withIdentifier: MemberCell.cellIdentifier(), <span style="color:#ff79c6">for</span>: indexPath) <span style="color:#ff79c6">as</span>? MemberCell {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span><span>        cell.nameLabel.text = memberFeed.name
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21</span><span>        cell.profileImageView.image = memberFeed.image
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22</span><span>        cell.addBtn.isSelected = memberFeed.isFollwing
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23</span><span>        <span style="color:#ff79c6">return</span> cell
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24</span><span>    } <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">photoFeed</span> = feed <span style="color:#ff79c6">as</span>? Photo, <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">cell</span> = tableView.dequeueReusableCell(withIdentifier: PhotoCell.cellIdentifier(), <span style="color:#ff79c6">for</span>: indexPath) <span style="color:#ff79c6">as</span>? PhotoCell {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25</span><span>        cell.titleLabel.text = photoFeed.captial
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26</span><span>        cell.descriptionLabel.text = photoFeed.description
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27</span><span>        cell.coverImageView.image = photoFeed.image
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28</span><span>        <span style="color:#ff79c6">return</span> cell
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29</span><span>    } <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30</span><span>            fatalError(<span style="color:#f1fa8c">&#34;Unhandled feed </span><span style="color:#f1fa8c">\(</span>feed<span style="color:#f1fa8c">)</span><span style="color:#f1fa8c">&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32</span><span>}
+</span></span></code></pre></div><p>我们把请求的数据保存在 <code>feeds: [Feed]</code> 中，<code>func tableView(tableView:, indexPath:) -&gt; UITableViewCell</code> 通过 if-else 处理两种 feed 。</p>
+<p>然后我们要处理 Member Cell 的加载状态。通常我们使用数组保存所有 cell 的加载状态。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Swift" data-lang="Swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">cellLoadingStatus</span>: [<span style="color:#8be9fd;font-style:italic">Bool</span>]
+</span></span></code></pre></div><p>然后这样更新 cell ：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#ff79c6">if</span> cellLoadingStatus[indexPath.row] {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>    cell.loadingIndicator.startAnimation()
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>} <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>    cell.loadingIndicator.stopAnimation()
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>}
+</span></span></code></pre></div><p>我们还有一件事要做。处理状态更新，如下所示：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">updateLoadingState</span>(isLoading: <span style="color:#8be9fd;font-style:italic">Bool</span>, at indexPath: IndexPath) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>    cellLoadingStates[indexPath.row] = isLoading
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>    tableView.reloadRows(at indexPaths: [indexPath], with animation: .<span style="color:#ff79c6">none</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>}
+</span></span></code></pre></div><p>看起来没有什么问题，但是当我们被要求添加一个 cell 类型时，我们应该怎么做呢？在 <code>func tableView(tableView:,indexPath:) -&gt; UITableViewCell</code> 添加一个 else-if 处理。
+如果新 Cell 具有不同的状态，我们将添加一个数组来处理状态更改并添加一个函数来更新状态。唷！碎片化代码使需求变更成为一项具有挑战性的任务。</p>
+<p>下图显示了体系结构：</p>
+<p><figure>
+  <a class="paragraph-image">
+    <img src="/media/mvvm-table-architecture.png" data-action="zoom" alt=""  loading="lazy" decoding="async">
+  </a>
+  
+</figure></p>
+<p>在上面的示例中，dataSource 具有以下职责：</p>
+<ul>
+<li>设置 cell 的 UI 组件，例如 nameLabel，imageView</li>
+<li>记录 cell 的状态，如 cellLoadingStatus</li>
+<li>调用 API 并且保存 model 数据</li>
+</ul>
+<p>每当我们添加一个单元格类型时，我们都会在 FeedListViewController 中执行这些任务，而这些任务根本不可扩展。
+更好的方法是分离职责以提高可扩展性。添加单元格类型应该更像是将 USB 设备插入计算机，这不会改变计算机的设计。</p>
+<h2 id="分拆-cell-ui-设定">分拆 cell UI 设定<a class="anchorjs-link" href="#%e5%88%86%e6%8b%86-cell-ui-%e8%ae%be%e5%ae%9a"></a></h2><p>回到 <code>func tableView(tableView:, cellForRowAt indexPath: ) -&gt; UITableViewCell</code> ，这里面有 UI 设定，对于 dataSource 来说，了解 cell 的实现细节并不是一个好的主意。所以我们的第一步就是将 UI 设定从 dataSource 转移到 cell 中去。</p>
+<p>基于这个想法，我们在 MemberCell 中添加一个方法：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#6272a4">// In MemberCell.swift</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">setup</span>(name: <span style="color:#8be9fd;font-style:italic">String</span>, profileImage: UIImage, isFollowing: <span style="color:#8be9fd;font-style:italic">Bool</span>, isLoading: <span style="color:#8be9fd;font-style:italic">Bool</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>    <span style="color:#ff79c6">self</span>.nameLabel.text = name
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>    <span style="color:#ff79c6">self</span>.profileImageView.image = profileImage
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>    <span style="color:#ff79c6">self</span>.addBtn.isSelected = isFollowing
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>    <span style="color:#ff79c6">if</span> isLoading { 
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>        <span style="color:#ff79c6">self</span>.loadingIndicator.startAnimation()
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>    } <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>        <span style="color:#ff79c6">self</span>.loadingIndicator.stopAnimation()
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>}
+</span></span></code></pre></div><p>在 setup 的帮助下，<code>func tableView(tableView:, indexPath:) -&gt; UITableViewCell</code> 会变得更加简单：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#ff79c6">if</span> <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">memberFeed</span> = feed <span style="color:#ff79c6">as</span>? Member, <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">cell</span> = tableView.dequeueReusableCell(withIdentifier: MemberCell.cellIdentifier(), <span style="color:#ff79c6">for</span>: indexPath) <span style="color:#ff79c6">as</span>? MemberCell {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>    cell.setup(name: memberFeed.name, 
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>                     profileImage: memberFeed.image,
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>                     isFollowing: memberFeed.isFollowing,
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>                     isLoading: <span style="color:#ff79c6">self</span>.loadingStatus[indexPath.row])
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>    <span style="color:#ff79c6">return</span> cell
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>} <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">photoFeed</span> = feed <span style="color:#ff79c6">as</span>? Photo, <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">cell</span> = tableView.dequeueReusableCell(withIdentifier: PhotoCell.cellIdentifier(), <span style="color:#ff79c6">for</span>: indexPath) <span style="color:#ff79c6">as</span>? PhotoCell {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>    cell.setup(title: photoFeed.title, 
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>                      description: photoFeed.description,
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>                      image: photoFeed.image)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>    <span style="color:#ff79c6">return</span> cell
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>} <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>    fatalError(<span style="color:#f1fa8c">&#34;Unhandled feed </span><span style="color:#f1fa8c">\(</span>feed<span style="color:#f1fa8c">)</span><span style="color:#f1fa8c">&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>}
+</span></span></code></pre></div><p>我们可以看到有超过三个参数的函数。有一个对象包装这些参数会更好。因此，这是 MVVM 的好处！ MVVM 可以帮助您将所有 UI 逻辑封装到一个简单的对象中。</p>
+<p>通过将 UI 操作转换为对象操作，我们可以显着减少 dataSource 和 ViewController 的开销。</p>
+<h2 id="为-cell-设计-viewmodel">为 Cell 设计 ViewModel<a class="anchorjs-link" href="#%e4%b8%ba-cell-%e8%ae%be%e8%ae%a1-viewmodel"></a></h2><p>先看架构：</p>
+<p><figure>
+  <a class="paragraph-image">
+    <img src="/media/mvvm-architecture-viewmodel.png" data-action="zoom" alt=""  loading="lazy" decoding="async">
+  </a>
+  
+</figure></p>
+<p>我们用两种 viewmodel ：MemberViewModel 和 PhotoViewModel ，分别代表 MemberCell 和 PhotoCell 。 我们使用绑定技术将 ViewModel 的属性绑定到相应 Cell 中的UI组件。这意味着每当我们更改ViewModel的属性时，单元格中的绑定UI组件都会相应地更改。</p>
+<p>MemberViewModel 的实现如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">MemberCellViewModel</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>    <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">name</span>: <span style="color:#8be9fd;font-style:italic">String</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>    <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">avatar</span>: UIImage
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>    <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">isLoading</span>: Observable&lt;<span style="color:#8be9fd;font-style:italic">Bool</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>}
+</span></span></code></pre></div><p>我们使用自定义对象 Observable 作为绑定工具。它保留泛型类型值，并通过触发名为 valueChanged的闭包来通知将存储值更改为观察者。实现非常简单</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">Observable</span>&lt;T&gt; {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>    <span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">value</span>: T {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>        <span style="color:#ff79c6">didSet</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>            DispatchQueue.main.async {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>                <span style="color:#ff79c6">self</span>.valueChanged?(<span style="color:#ff79c6">self</span>.value)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>            }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>        }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>    <span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">valueChanged</span>: ((T) -&gt; <span style="color:#8be9fd;font-style:italic">Void</span>)?
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>}
+</span></span></code></pre></div><p>如果你对更多的 绑定技术感兴趣，请看 Srđan Rašić 的文章 <a href="https://five.agency/solving-the-binding-problem-with-swift/">Solving the binding problem with Swfit - Five</a></p>
+<p>回到文章， 相应的 MemberCell 看起来如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#6272a4">// In MemberCell.swift</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">setup</span>(viewModel: MemberViewModel) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>    <span style="color:#6272a4">// The imange and the name won&#39;t be changed after setup </span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>    profileImageView.image = viewModel.image 
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>    nameLabel.text = viewModel.name
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>        
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>    <span style="color:#6272a4">// Listen to the change of the isLoading property to update the UI state</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>    viewModel.isLoading.valueChanged { [<span style="color:#ff79c6">weak</span> <span style="color:#ff79c6">self</span>] (isLoading) <span style="color:#ff79c6">in</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>        <span style="color:#ff79c6">if</span> isLoading {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>            <span style="color:#ff79c6">self</span>?.loadingIndicator.startAnimating()
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>        } <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>            <span style="color:#ff79c6">self</span>?.loadingIndicator.stopAnimating()
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>        }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>}
 </span></span></code></pre></div><p>在 <code>setup(viewModel:)</code> 函数中，我们使用 viewModel 参数中的信息在单元格上设置 UI 组件。
 此外，我们设置 valueChanged 闭包来监听 isLoading 属性的值更改。 当用户按下单元格上的 “+” 按钮时，isLoading 变为 “true” 。通过使用 MVVM ，我们简化了设置功能的参数。
-此外，将 UI 逻辑转换为对象操作对于更多Swift技术非常有益，这将在下一节中介绍。</p><p>在这里，我们还有一件事要做。在单元格中，我们使用转义闭包 valueChanged 来通知单元格 UI 更新。基本上，当用户滚动表视图时，将重用该单元格。 ViewModel 和 Cell 之间的关系可以用下图表示</p><p><figure><a class=paragraph-image><img src=/media/mvvm-img1.004-3.png data-action=zoom alt loading=lazy decoding=async></a></figure></p><p>当用户不断地向下滚动，离开屏幕的 <em>MemberCell A</em> 原本是与 <em>MemberViewModel 1</em> 绑定的，现在被 reuse ,给 <em>MemberViewModel 3</em> 使用，但是因为 <em>MemberViewModel 1</em> 的 valueChanged closure 还没有释放，所以当 MemberViewModel 的 isLoading 修改后， <em>MemberViewModel 1</em> 仍然会通知 <em>MemberCell A</em> 。也就是说, <em>MemberViewModel 1</em> 和 <em>MemberViewModel 3</em> 的 isLoading 属性更新了同一个单元格。</p><p>所以在设定绑定的同时，也要记得在 reuse 时把 closure 清空：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span><span style=color:#ff79c6>override</span> <span style=color:#8be9fd;font-style:italic>func</span> <span style=color:#50fa7b>prepareForReuse</span>() {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>    <span style=color:#ff79c6>super</span>.prepareForReuse()
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>    viewModel?.isLoading.valueChanged = <span style=color:#ff79c6>nil</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span>}
-</span></span></code></pre></div><p>这样就可以确保 cell 只针对正确的 ViewModel 做反应，而不会因为 reuse 造成错误的更新。</p><p>现在，可以对 dataSource 再进一步简化：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span><span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>viewModel</span> = viewModels[indexPath.row]
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span><span style=color:#ff79c6>if</span> <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>memberViewModel</span> = viewModel <span style=color:#ff79c6>as</span>? MemberViewModel, <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>cell</span> = tableView.dequeueReusableCell(withIdentifier: MemberCell.cellIdentifier(), <span style=color:#ff79c6>for</span>: indexPath) <span style=color:#ff79c6>as</span>? MemberCell {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span>    cell.setup(viewModel: memberViewModel)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span><span>    <span style=color:#ff79c6>return</span> cell
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span><span>} <span style=color:#ff79c6>else</span> <span style=color:#ff79c6>if</span> <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>photoViewModel</span> = viewModel <span style=color:#ff79c6>as</span>? PhotoViewModel, <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>cell</span> = tableView.dequeueReusableCell(withIdentifier: PhotoCell.cellIdentifier(), <span style=color:#ff79c6>for</span>: indexPath) <span style=color:#ff79c6>as</span>? PhotoCell {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span><span>    cell.setup(viewModel: photoViewModel)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span><span>    <span style=color:#ff79c6>return</span> cell
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span><span>} <span style=color:#ff79c6>else</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span>    fatalError(<span style=color:#f1fa8c>&#34;Unhandled feed </span><span style=color:#f1fa8c>\(</span>feed<span style=color:#f1fa8c>)</span><span style=color:#f1fa8c>&#34;</span>)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span><span>}
-</span></span></code></pre></div><p>dataSource 的职责非常简单：使用 cell 的 ViewModel 设置 tableview 。 另一方面，设置 UI 组件的细节被委托给 cell 。cell 的状态储存在 ViewModel 中（由Controller 而不是 ViewController 拥有）。</p><p>实际上，还有改进的余地！由于我们统一了单元的接口，我们可以通过使用 Protocol 来减少冗余！</p><h2 id=利用-protocol-减少冗余>利用 Protocol 减少冗余<a class=anchorjs-link href=#%e5%88%a9%e7%94%a8-protocol-%e5%87%8f%e5%b0%91%e5%86%97%e4%bd%99></a></h2><p><code>func tableView(tableView:, indexPath:) -> UITableViewCell</code> 中调用了两次 <code>setup(viewModel:) </code>。我们可以使用 Swift Protocol 为各种 cell 创建通用设置函数。
-让我们创建一个名为 CellConfigurable 的协议</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span><span style=color:#8be9fd;font-style:italic>protocol</span> <span style=color:#50fa7b>CellConfigurable</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>    <span style=color:#8be9fd;font-style:italic>func</span> <span style=color:#50fa7b>setup</span>(viewModel: RowViewModel) <span style=color:#6272a4>// Provide a generic function</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>}
+此外，将 UI 逻辑转换为对象操作对于更多Swift技术非常有益，这将在下一节中介绍。</p>
+<p>在这里，我们还有一件事要做。在单元格中，我们使用转义闭包 valueChanged 来通知单元格 UI 更新。基本上，当用户滚动表视图时，将重用该单元格。 ViewModel 和 Cell 之间的关系可以用下图表示</p>
+<p><figure>
+  <a class="paragraph-image">
+    <img src="/media/mvvm-img1.004-3.png" data-action="zoom" alt=""  loading="lazy" decoding="async">
+  </a>
+  
+</figure></p>
+<p>当用户不断地向下滚动，离开屏幕的 <em>MemberCell A</em> 原本是与 <em>MemberViewModel 1</em> 绑定的，现在被 reuse ,给 <em>MemberViewModel 3</em> 使用，但是因为 <em>MemberViewModel 1</em> 的 valueChanged closure 还没有释放，所以当 MemberViewModel 的 isLoading 修改后， <em>MemberViewModel 1</em> 仍然会通知 <em>MemberCell A</em> 。也就是说, <em>MemberViewModel 1</em> 和 <em>MemberViewModel 3</em> 的 isLoading 属性更新了同一个单元格。</p>
+<p>所以在设定绑定的同时，也要记得在 reuse 时把 closure 清空：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#ff79c6">override</span> <span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">prepareForReuse</span>() {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>    <span style="color:#ff79c6">super</span>.prepareForReuse()
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>    viewModel?.isLoading.valueChanged = <span style="color:#ff79c6">nil</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>}
+</span></span></code></pre></div><p>这样就可以确保 cell 只针对正确的 ViewModel 做反应，而不会因为 reuse 造成错误的更新。</p>
+<p>现在，可以对 dataSource 再进一步简化：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">viewModel</span> = viewModels[indexPath.row]
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span><span style="color:#ff79c6">if</span> <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">memberViewModel</span> = viewModel <span style="color:#ff79c6">as</span>? MemberViewModel, <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">cell</span> = tableView.dequeueReusableCell(withIdentifier: MemberCell.cellIdentifier(), <span style="color:#ff79c6">for</span>: indexPath) <span style="color:#ff79c6">as</span>? MemberCell {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>    cell.setup(viewModel: memberViewModel)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>    <span style="color:#ff79c6">return</span> cell
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>} <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">photoViewModel</span> = viewModel <span style="color:#ff79c6">as</span>? PhotoViewModel, <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">cell</span> = tableView.dequeueReusableCell(withIdentifier: PhotoCell.cellIdentifier(), <span style="color:#ff79c6">for</span>: indexPath) <span style="color:#ff79c6">as</span>? PhotoCell {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>    cell.setup(viewModel: photoViewModel)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>    <span style="color:#ff79c6">return</span> cell
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>} <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>    fatalError(<span style="color:#f1fa8c">&#34;Unhandled feed </span><span style="color:#f1fa8c">\(</span>feed<span style="color:#f1fa8c">)</span><span style="color:#f1fa8c">&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>}
+</span></span></code></pre></div><p>dataSource 的职责非常简单：使用 cell 的 ViewModel 设置 tableview 。 另一方面，设置 UI 组件的细节被委托给 cell 。cell 的状态储存在 ViewModel 中（由Controller 而不是 ViewController 拥有）。</p>
+<p>实际上，还有改进的余地！由于我们统一了单元的接口，我们可以通过使用 Protocol 来减少冗余！</p>
+<h2 id="利用-protocol-减少冗余">利用 Protocol 减少冗余<a class="anchorjs-link" href="#%e5%88%a9%e7%94%a8-protocol-%e5%87%8f%e5%b0%91%e5%86%97%e4%bd%99"></a></h2><p><code>func tableView(tableView:, indexPath:) -&gt; UITableViewCell</code> 中调用了两次 <code>setup(viewModel:) </code>。我们可以使用 Swift Protocol 为各种 cell 创建通用设置函数。
+让我们创建一个名为 CellConfigurable 的协议</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#8be9fd;font-style:italic">protocol</span> <span style="color:#50fa7b">CellConfigurable</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>    <span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">setup</span>(viewModel: RowViewModel) <span style="color:#6272a4">// Provide a generic function</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>}
 </span></span></code></pre></div><p>这是 cell 协议。可以使用 RowViewModel 实例设置确认协议的单元。
-同时，RowViewModel是另一种协议：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span><span style=color:#8be9fd;font-style:italic>protocol</span> <span style=color:#50fa7b>RowViewModel</span> {}
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span><span style=color:#6272a4>// make view models conform the RowViewModel protocol</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span><span style=color:#8be9fd;font-style:italic>class</span> <span style=color:#50fa7b>MemberViewModel</span>: RowViewModel {...}
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">5</span><span><span style=color:#8be9fd;font-style:italic>class</span> <span style=color:#50fa7b>PhotoViewModel</span>: RowViewModel {...}
-</span></span></code></pre></div><p>符合 RowViewModel 的 ViewModel 可以用来设置 CellConfigurable 。通过使用协议，我们可以进一步简化 dataSource :</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span><span style=color:#8be9fd;font-style:italic>func</span> <span style=color:#50fa7b>tableView</span>(<span style=color:#ff79c6>_</span> tableView: UITableView, cellForRowAt indexPath: IndexPath) -&gt; UITableViewCell {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span>    <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>rowViewModel</span> = <span style=color:#ff79c6>self</span>.viewModels[indexPath.row]
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span><span>    <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>cell</span> = tableView.dequeueReusableCell(withIdentifier: <span style=color:#ff79c6>self</span>.cellIdentifier(<span style=color:#ff79c6>for</span>: rowViewModel), <span style=color:#ff79c6>for</span>: indexPath)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span><span>    <span style=color:#ff79c6>if</span> <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>cell</span> = cell <span style=color:#ff79c6>as</span>? CellConfigurable {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span><span>        cell.setup(viewModel: rowViewModel)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span><span>    }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span>    <span style=color:#ff79c6>return</span> cell
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span><span>}
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12</span><span><span style=color:#6272a4>/// Map the view model with the cell identifier (which will be moved to the Controller)</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13</span><span><span style=color:#8be9fd;font-style:italic>private</span> <span style=color:#8be9fd;font-style:italic>func</span> <span style=color:#50fa7b>cellIdentifier</span>(<span style=color:#ff79c6>for</span> viewModel: RowViewModel) {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14</span><span>    <span style=color:#ff79c6>switch</span> viewModel {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15</span><span>    <span style=color:#ff79c6>case</span> <span style=color:#ff79c6>is</span> PhotoCellViewModel:
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16</span><span>        <span style=color:#ff79c6>return</span> PhotoCell.cellIdentifier()
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17</span><span>    <span style=color:#ff79c6>case</span> <span style=color:#ff79c6>is</span> MemberCellViewModel:
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">18</span><span>        <span style=color:#ff79c6>return</span> MemberCell.cellIdentifier()
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">19</span><span>    <span style=color:#ff79c6>default</span>:
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">20</span><span>        fatalError(<span style=color:#f1fa8c>&#34;Unexpected view model type: </span><span style=color:#f1fa8c>\(</span>viewModel<span style=color:#f1fa8c>)</span><span style=color:#f1fa8c>&#34;</span>)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">21</span><span>    }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">22</span><span>}
-</span></span></code></pre></div><p>现在添加一个单元格类型不会改变 <code>func tableView（tableView：，indexPath :) - > UITableViewCell</code> 的实现！换句话说，dataSource 的可扩展性变得很好：无论我们添加多少种 cell，复杂性都保持不变！</p><h2 id=更多的-protocol>更多的 Protocol<a class=anchorjs-link href=#%e6%9b%b4%e5%a4%9a%e7%9a%84-protocol></a></h2><p>Protocol 还可以用来简化与 cell 的交互：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span><span style=color:#8be9fd;font-style:italic>protocol</span> <span style=color:#50fa7b>ViewModelPressible</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span>    <span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>cellPressed</span>: (()-&gt;<span style=color:#8be9fd;font-style:italic>Void</span>)? { <span style=color:#ff79c6>get</span> <span style=color:#ff79c6>set</span> }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span>}
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span><span><span style=color:#8be9fd;font-style:italic>class</span> <span style=color:#50fa7b>PhotoViewModel</span>: RowViewModel, ViewModelPressible {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span><span>    <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>title</span>: <span style=color:#8be9fd;font-style:italic>String</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span><span>    <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>desc</span>: <span style=color:#8be9fd;font-style:italic>String</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span><span>    <span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>image</span>: AsyncImage
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span><span>    <span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>cellPressed</span>: (() -&gt; <span style=color:#8be9fd;font-style:italic>Void</span>)? <span style=color:#6272a4>// Conform the ViewModelPressible protocol</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11</span><span>}
+同时，RowViewModel是另一种协议：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#8be9fd;font-style:italic">protocol</span> <span style="color:#50fa7b">RowViewModel</span> {}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span><span style="color:#6272a4">// make view models conform the RowViewModel protocol</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span><span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">MemberViewModel</span>: RowViewModel {...}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span><span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">PhotoViewModel</span>: RowViewModel {...}
+</span></span></code></pre></div><p>符合 RowViewModel 的 ViewModel 可以用来设置 CellConfigurable 。通过使用协议，我们可以进一步简化 dataSource :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">tableView</span>(<span style="color:#ff79c6">_</span> tableView: UITableView, cellForRowAt indexPath: IndexPath) -&gt; UITableViewCell {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>    <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">rowViewModel</span> = <span style="color:#ff79c6">self</span>.viewModels[indexPath.row]
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>    <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">cell</span> = tableView.dequeueReusableCell(withIdentifier: <span style="color:#ff79c6">self</span>.cellIdentifier(<span style="color:#ff79c6">for</span>: rowViewModel), <span style="color:#ff79c6">for</span>: indexPath)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>    <span style="color:#ff79c6">if</span> <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">cell</span> = cell <span style="color:#ff79c6">as</span>? CellConfigurable {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>        cell.setup(viewModel: rowViewModel)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>    <span style="color:#ff79c6">return</span> cell
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span><span style="color:#6272a4">/// Map the view model with the cell identifier (which will be moved to the Controller)</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span><span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">cellIdentifier</span>(<span style="color:#ff79c6">for</span> viewModel: RowViewModel) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>    <span style="color:#ff79c6">switch</span> viewModel {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>    <span style="color:#ff79c6">case</span> <span style="color:#ff79c6">is</span> PhotoCellViewModel:
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span>        <span style="color:#ff79c6">return</span> PhotoCell.cellIdentifier()
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span><span>    <span style="color:#ff79c6">case</span> <span style="color:#ff79c6">is</span> MemberCellViewModel:
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span><span>        <span style="color:#ff79c6">return</span> MemberCell.cellIdentifier()
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span><span>    <span style="color:#ff79c6">default</span>:
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span><span>        fatalError(<span style="color:#f1fa8c">&#34;Unexpected view model type: </span><span style="color:#f1fa8c">\(</span>viewModel<span style="color:#f1fa8c">)</span><span style="color:#f1fa8c">&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22</span><span>}
+</span></span></code></pre></div><p>现在添加一个单元格类型不会改变 <code>func tableView（tableView：，indexPath :)  - &gt; UITableViewCell</code> 的实现！换句话说，dataSource 的可扩展性变得很好：无论我们添加多少种 cell，复杂性都保持不变！</p>
+<h2 id="更多的-protocol">更多的 Protocol<a class="anchorjs-link" href="#%e6%9b%b4%e5%a4%9a%e7%9a%84-protocol"></a></h2><p>Protocol 还可以用来简化与 cell 的交互：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#8be9fd;font-style:italic">protocol</span> <span style="color:#50fa7b">ViewModelPressible</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>    <span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">cellPressed</span>: (()-&gt;<span style="color:#8be9fd;font-style:italic">Void</span>)? { <span style="color:#ff79c6">get</span> <span style="color:#ff79c6">set</span> }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span><span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">PhotoViewModel</span>: RowViewModel, ViewModelPressible {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>    <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">title</span>: <span style="color:#8be9fd;font-style:italic">String</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>    <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">desc</span>: <span style="color:#8be9fd;font-style:italic">String</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>    <span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">image</span>: AsyncImage
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>    <span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">cellPressed</span>: (() -&gt; <span style="color:#8be9fd;font-style:italic">Void</span>)? <span style="color:#6272a4">// Conform the ViewModelPressible protocol</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>}
 </span></span></code></pre></div><p>创建一个 ViewModelPressible 协议。有一个必需的实现：一个名为cellPressed的闭包变量。
-然后，我们通过添加变量 cellPressed 使 PhotoViewModel 符合 ViewModelPressible 。符合 ViewModelPressible 意味着 ViewModel 能够处理用户按下事件。</p><p>在 tableView 的代理，我们添加 <code>func tableView(_ tableView:, indexPath:)</code> 的实现代码：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span><span style=color:#8be9fd;font-style:italic>func</span> <span style=color:#50fa7b>tableView</span>(<span style=color:#ff79c6>_</span> tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>    <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>viewModel</span> = <span style=color:#ff79c6>self</span>.viewModels[indexPath.row]
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>    <span style=color:#ff79c6>if</span> <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>viewModel</span> = viewModel <span style=color:#ff79c6>as</span>? ViewModelPressible {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span>        rowViewModel.cellPressed?()
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">5</span><span>    }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">6</span><span>}
-</span></span></code></pre></div><p>现在所有 didSelectRow 事件都转换为相应的 ViewModel 。以下示例显示了用法：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>// When creating the view model
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>let photoCellViewModel = PhotoCellViewModel()
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>photoCellViewModel.cellPressed = {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span>                    print(&#34;Ask the coordinator or the view controller to open a photo viewer!&#34;)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">5</span><span>                }
-</span></span></code></pre></div><p>同样，我们成功地将交互包装到 ViewModel 对象中，并保持表视图委托的干净！</p><p>完成所有这些工作后，我們稍微把镜头拉远一点，回头看一下我们的 FeedListViewController 。</p><h2 id=处理业务逻辑>处理业务逻辑<a class=anchorjs-link href=#%e5%a4%84%e7%90%86%e4%b8%9a%e5%8a%a1%e9%80%bb%e8%be%91></a></h2><p>FeedListViewController还有一个不相关的作业：</p><ul><li>设定 cell 的 UI 组件，如 nameLabel, imageView</li><li>记录单元格的状态，例如 cellLoadingStates</li><li>进行 API 调用并保存数据</li></ul><p>新的构架：</p><p><figure><a class=paragraph-image><img src=/media/mvvm-img1.006-3.png data-action=zoom alt loading=lazy decoding=async></a></figure></p><p>我们想让 FeedListViewController 成为一个简单的视图，并将业务逻辑移动到另一个：FeedListController 。 FeedListController 负责进行 API 调用并保存数据模型。
-我们可以说 FeedListController 的职责是处理业务逻辑。基于这个想法，让我们创建一个FeedListController：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span><span style=color:#6272a4>// FeedListController.swift</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span><span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>viewModels</span> = Observable<span style=color:#ff79c6>&lt;</span>[RowViewModel]<span style=color:#ff79c6>&gt;</span>(value: [])
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span><span><span style=color:#8be9fd;font-style:italic>func</span> <span style=color:#50fa7b>start</span>() {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span><span>    service.fetchFeed { [<span style=color:#ff79c6>weak</span> <span style=color:#ff79c6>self</span>] feeds <span style=color:#ff79c6>in</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span><span>        <span style=color:#ff79c6>self</span>?.buildViewModels(feeds: feeds)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span><span>    }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span><span>}
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span><span><span style=color:#8be9fd;font-style:italic>func</span> <span style=color:#50fa7b>buildViewModels</span>(feeds: [Feed]) {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11</span><span>    <span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>viewModels</span> = [RowViewModel]()
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12</span><span>    <span style=color:#ff79c6>for</span> feed <span style=color:#ff79c6>in</span> feeds {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13</span><span>        <span style=color:#ff79c6>if</span> <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>feed</span> = feed <span style=color:#ff79c6>as</span>? Member {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14</span><span>            viewModels.append( MemberViewModel.from(feed) )
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15</span><span>        } <span style=color:#ff79c6>else</span> <span style=color:#ff79c6>if</span> <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>feed</span> = feed <span style=color:#ff79c6>as</span>? Photo {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16</span><span>            <span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>photoViewModel</span> = PhotoViewModel.from(feed)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17</span><span>            photoViewModel.cellPressed = { [<span style=color:#ff79c6>weak</span> <span style=color:#ff79c6>self</span>] <span style=color:#ff79c6>in</span>  
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">18</span><span>                <span style=color:#ff79c6>self</span>?.handleCellPressed(feed)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">19</span><span>            }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">20</span><span>            viewModels.append(photoViewModel)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">21</span><span>        }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">22</span><span>    }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">23</span><span>    <span style=color:#ff79c6>self</span>.viewModels.value = viewModels
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">24</span><span>}
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">25</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">26</span><span><span style=color:#8be9fd;font-style:italic>func</span> <span style=color:#50fa7b>handleCellPressed</span>(<span style=color:#ff79c6>_</span> feed: Feed) {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">27</span><span>    <span style=color:#6272a4>// Send analytics, fetch detail data, etc</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">28</span><span>    <span style=color:#6272a4>// Open detail photo view</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">29</span><span>}
-</span></span></code></pre></div><p>从上面的代码中可以看到，controller 不知道任何 UI 组件的逻辑，相反， ViewModel 在此处成为了 View 和 ViewController 的中间人。</p><p>从另一个角度来看，FeedListViewController变为：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span><span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>viewModels</span>: Observable<span style=color:#ff79c6>&lt;</span>[RowViewModel]<span style=color:#ff79c6>&gt;</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span>    <span style=color:#ff79c6>return</span> controller.viewModels
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span>}
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span><span><span style=color:#ff79c6>override</span> <span style=color:#8be9fd;font-style:italic>func</span> <span style=color:#50fa7b>viewDidLoad</span>() {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span><span>    viewModels.valueUpdate { [<span style=color:#ff79c6>weak</span> <span style=color:#ff79c6>self</span>] (<span style=color:#ff79c6>_</span>) <span style=color:#ff79c6>in</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span><span>        <span style=color:#ff79c6>self</span>?.tableView.reloadData()
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span><span>    }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span>    controller.start()
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span><span>}
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12</span><span><span style=color:#8be9fd;font-style:italic>func</span> <span style=color:#50fa7b>tableView</span>(<span style=color:#ff79c6>_</span> tableView: UITableView, numberOfRowsInSection section: <span style=color:#8be9fd;font-style:italic>Int</span>) -&gt; <span style=color:#8be9fd;font-style:italic>Int</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13</span><span>    <span style=color:#ff79c6>return</span> rowViewModels.value.count
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14</span><span>}
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16</span><span><span style=color:#8be9fd;font-style:italic>func</span> <span style=color:#50fa7b>tableView</span>(<span style=color:#ff79c6>_</span> tableView: UITableView, cellForRowAt indexPath: IndexPath) -&gt; UITableViewCell {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17</span><span>    <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>rowViewModel</span> = <span style=color:#ff79c6>self</span>.rowViewModels.value[indexPath.row]
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">18</span><span>    <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>cell</span> = tableView.dequeueReusableCell(withIdentifier: controller.cellIdentifier(<span style=color:#ff79c6>for</span>: rowViewModel), <span style=color:#ff79c6>for</span>: indexPath)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">19</span><span>    <span style=color:#ff79c6>if</span> <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>cell</span> = cell <span style=color:#ff79c6>as</span>? CellConfigurable {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">20</span><span>        cell.setup(viewModel: rowViewModel)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">21</span><span>    }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">22</span><span>    <span style=color:#ff79c6>return</span> cell
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">23</span><span>}
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">24</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">25</span><span><span style=color:#8be9fd;font-style:italic>func</span> <span style=color:#50fa7b>tableView</span>(<span style=color:#ff79c6>_</span> tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">26</span><span>    <span style=color:#ff79c6>if</span> <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>rowViewModel</span> = rowViewModels.value[indexPath.row] <span style=color:#ff79c6>as</span>? ViewModelPressible {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">27</span><span>        rowViewModel.cellPressed?()
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">28</span><span>    }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">29</span><span>}
-</span></span></code></pre></div><p>FeedViewController 的唯一职责是设置表视图，充当 dataSource 和表视图的委托。添加单元格类型或修改交互不会更改此 ViewController。</p><p>这样做有很多好处：可以编写单元测试来测试 UI 状态，用户交互以及服务器连接行为！
-除了可测试性的提高外，整个 feed 模块的可扩展性也得到了提高！</p><h2 id=summary>Summary<a class=anchorjs-link href=#summary></a></h2><p>在本文中，我们展示了如何通过执行这些更改来简化复杂的 TableView ：</p><ol><li>使单元格处理UI组件设置;</li></ol><ul><li>使用MVVM抽象UI组件和交互;</li><li>使用协议来整合设置界面;</li><li>使用 Controller 来处理业务逻辑。</li></ul><p>Massive View Controller 是一个臭名昭着的反模式。现在我们知道问题不是 MVC 模式本身。有许多方法可以分离系统的职责，包括但不限于 MVVM 模式。我会说 MVVM 模式是提高代码质量的少数工具，但它不是一个灵丹妙药。
-除了 MVVM 之外，我们还需要处理诸如可扩展性，可测试性以及 <a href=https://en.wikipedia.org/wiki/SOLID>SOLID-Wikipedia</a> 等更多原则之类的事情。
-因此，在采用任何架构之前，请彻底了解架构的设计，仔细选择最适合您需求的架构。</p><h2 id=相关文章>相关文章<a class=anchorjs-link href=#%e7%9b%b8%e5%85%b3%e6%96%87%e7%ab%a0></a></h2><ul><li><a href=https://medium.com/@stasost/ios-how-to-build-a-table-view-with-multiple-cell-types-2df91a206429>iOS: How to build a Table View with multiple cell types</a></li><li><a href=https://medium.cobeisfresh.com/dealing-with-complex-table-views-in-ios-and-keeping-your-sanity-ff5fee1fbb83>Dealing with Complex Table Views in iOS and Keeping Your Sanity</a></li><li><a href=https://academy.realm.io/posts/doios-natasha-murashev-protocol-oriented-mvvm/>Introduction to Protocol-Oriented MVVM</a></li><li><a href=https://blog.jayway.com/2016/11/15/clean-table-view-code-using-swift-protocols/>Clean Table View Code Using Swift Protocols - Jayway</a></li></ul><hr style=visibility:hidden><ul class=pager><li class=previous><a href=https://fninit.com/posts/2019/git-flow/ data-toggle=tooltip data-placement=top title="git-flow 工作流程">Previous<br><span>git-flow 工作流程</span></a></li><li class=next><a href=https://fninit.com/posts/2019/debian/ data-toggle=tooltip data-placement=top title="Notes About Debian">Next<br><span>Notes About Debian</span></a></li></ul><hr style=visibility:hidden></div><div class="col-lg-2 col-lg-offset-0
-visible-lg-block
-sidebar-container
-catalog-container"><div class=side-catalog><hr class="hidden-sm hidden-xs"><h5><a class=catalog-toggle href=#>CATALOG</a></h5><ul class=catalog-body></ul></div></div><div class="col-lg-8 col-lg-offset-2
-col-md-10 col-md-offset-1
-sidebar-container"><section><hr class="hidden-sm hidden-xs"><h5>FEATURED TAGS</h5><div class=tags><a href=https://fninit.com/tags/css/>css</a>
-<a href=https://fninit.com/tags/debian/>debian</a>
-<a href=https://fninit.com/tags/fzf/>fzf</a>
-<a href=https://fninit.com/tags/gcd/>gcd</a>
-<a href=https://fninit.com/tags/gem/>gem</a>
-<a href=https://fninit.com/tags/git/>git</a>
-<a href=https://fninit.com/tags/go/>go</a>
-<a href=https://fninit.com/tags/golang/>golang</a>
-<a href=https://fninit.com/tags/hugo/>hugo</a>
-<a href=https://fninit.com/tags/ios/>iOS</a>
-<a href=https://fninit.com/tags/kindle/>Kindle</a>
-<a href=https://fninit.com/tags/kvocontroller/>KVOController</a>
-<a href=https://fninit.com/tags/linux/>linux</a>
-<a href=https://fninit.com/tags/macos/>MacOS</a>
-<a href=https://fninit.com/tags/neovim/>neovim</a>
-<a href=https://fninit.com/tags/runtime/>runtime</a>
-<a href=https://fninit.com/tags/rust/>rust</a>
-<a href=https://fninit.com/tags/ss/>ss</a>
-<a href=https://fninit.com/tags/ssh/>ssh</a>
-<a href=https://fninit.com/tags/swift/>Swift</a>
-<a href=https://fninit.com/tags/vim/>vim</a>
-<a href=https://fninit.com/tags/webhook/>webhook</a>
-<a href=https://fninit.com/tags/wubi/>wubi</a>
-<a href=https://fninit.com/tags/zabbix/>zabbix</a></div></section><hr><h5>FRIENDS</h5><ul class=list-inline><li><a href></a></li></ul></div></div></div></article><footer><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><ul class="list-inline text-center"><li><a href=/index.xml><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i>
-<i class="fa fa-rss fa-stack-1x fa-inverse"></i></span></a></li><li><a target=_blank href=https://github.com/roninro><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i>
-<i class="fa fa-github fa-stack-1x fa-inverse"></i></span></a></li></ul><p class="copyright text-muted">Copyright &copy; RoninRo's Blog 2022<br>Powered by <a href=https://gohugo.io>Hugo</a></p></div></div></div></footer><script src=/js/jquery.min.js></script>
-<script src=/js/bootstrap.min.js crossorigin=anonymous></script>
-<script src=https://fninit.com/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js></script>
-<script src=/js/simple-jekyll-search.min.js></script>
-<script src=https://fninit.com/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js></script>
-<script type=text/javascript>function generateCatalog(e){_containerSelector="div.post-container";var t,n,s,o,i,r=$(_containerSelector),a=r.find("h1,h2,h3,h4");return $(e).html(""),a.each(function(){n=$(this).prop("tagName").toLowerCase(),i="#"+$(this).prop("id"),s=$(this).text(),t=$('<a href="'+i+'" rel="nofollow">'+s+"</a>"),o=$('<li class="'+n+'_nav"></li>').append(t),$(e).append(o)}),!0}generateCatalog(".catalog-body"),$(".catalog-toggle").click(function(e){e.preventDefault(),$(".side-catalog").toggleClass("fold")})</script><script type=text/javascript src=https://fninit.com/js/jquery.nav.min.ade6bde8f9fcc6a4b40852cb892e9f5912340ab8fe1305149d917fdd16fffd8d.js></script>
-<script>$(document).ready(function(){$(".catalog-body").onePageNav({currentClass:"active",changeHash:!1,easing:"swing",filter:"",scrollSpeed:700,scrollOffset:0,scrollThreshold:.2,begin:null,end:null,scrollChange:null,padding:80})})</script><script></script><script src=/zoomjs/zoom.min.js></script></body></html>
+然后，我们通过添加变量 cellPressed 使 PhotoViewModel 符合 ViewModelPressible 。符合 ViewModelPressible 意味着 ViewModel 能够处理用户按下事件。</p>
+<p>在 tableView 的代理，我们添加 <code>func tableView(_ tableView:, indexPath:)</code> 的实现代码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">tableView</span>(<span style="color:#ff79c6">_</span> tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>    <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">viewModel</span> = <span style="color:#ff79c6">self</span>.viewModels[indexPath.row]
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>    <span style="color:#ff79c6">if</span> <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">viewModel</span> = viewModel <span style="color:#ff79c6">as</span>? ViewModelPressible {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>        rowViewModel.cellPressed?()
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6</span><span>}
+</span></span></code></pre></div><p>现在所有 didSelectRow 事件都转换为相应的 ViewModel 。以下示例显示了用法：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>// When creating the view model
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>let photoCellViewModel = PhotoCellViewModel()
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>photoCellViewModel.cellPressed = {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>                    print(&#34;Ask the coordinator or the view controller to open a photo viewer!&#34;)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>                }
+</span></span></code></pre></div><p>同样，我们成功地将交互包装到 ViewModel 对象中，并保持表视图委托的干净！</p>
+<p>完成所有这些工作后，我們稍微把镜头拉远一点，回头看一下我们的 FeedListViewController 。</p>
+<h2 id="处理业务逻辑">处理业务逻辑<a class="anchorjs-link" href="#%e5%a4%84%e7%90%86%e4%b8%9a%e5%8a%a1%e9%80%bb%e8%be%91"></a></h2><p>FeedListViewController还有一个不相关的作业：</p>
+<ul>
+<li>设定 cell 的 UI 组件，如 nameLabel, imageView</li>
+<li>记录单元格的状态，例如 cellLoadingStates</li>
+<li>进行 API 调用并保存数据</li>
+</ul>
+<p>新的构架：</p>
+<p><figure>
+  <a class="paragraph-image">
+    <img src="/media/mvvm-img1.006-3.png" data-action="zoom" alt=""  loading="lazy" decoding="async">
+  </a>
+  
+</figure></p>
+<p>我们想让 FeedListViewController 成为一个简单的视图，并将业务逻辑移动到另一个：FeedListController 。 FeedListController 负责进行 API 调用并保存数据模型。
+我们可以说 FeedListController 的职责是处理业务逻辑。基于这个想法，让我们创建一个FeedListController：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#6272a4">// FeedListController.swift</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span><span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">viewModels</span> = Observable<span style="color:#ff79c6">&lt;</span>[RowViewModel]<span style="color:#ff79c6">&gt;</span>(value: [])
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">start</span>() {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>    service.fetchFeed { [<span style="color:#ff79c6">weak</span> <span style="color:#ff79c6">self</span>] feeds <span style="color:#ff79c6">in</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>        <span style="color:#ff79c6">self</span>?.buildViewModels(feeds: feeds)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">buildViewModels</span>(feeds: [Feed]) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>    <span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">viewModels</span> = [RowViewModel]()
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>    <span style="color:#ff79c6">for</span> feed <span style="color:#ff79c6">in</span> feeds {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>        <span style="color:#ff79c6">if</span> <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">feed</span> = feed <span style="color:#ff79c6">as</span>? Member {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>            viewModels.append( MemberViewModel.from(feed) )
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>        } <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">feed</span> = feed <span style="color:#ff79c6">as</span>? Photo {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span>            <span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">photoViewModel</span> = PhotoViewModel.from(feed)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span><span>            photoViewModel.cellPressed = { [<span style="color:#ff79c6">weak</span> <span style="color:#ff79c6">self</span>] <span style="color:#ff79c6">in</span>  
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span><span>                <span style="color:#ff79c6">self</span>?.handleCellPressed(feed)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span><span>            }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span><span>            viewModels.append(photoViewModel)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21</span><span>        }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23</span><span>    <span style="color:#ff79c6">self</span>.viewModels.value = viewModels
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26</span><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">handleCellPressed</span>(<span style="color:#ff79c6">_</span> feed: Feed) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27</span><span>    <span style="color:#6272a4">// Send analytics, fetch detail data, etc</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28</span><span>    <span style="color:#6272a4">// Open detail photo view</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29</span><span>}
+</span></span></code></pre></div><p>从上面的代码中可以看到，controller 不知道任何 UI 组件的逻辑，相反， ViewModel 在此处成为了 View 和 ViewController 的中间人。</p>
+<p>从另一个角度来看，FeedListViewController变为：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">viewModels</span>: Observable<span style="color:#ff79c6">&lt;</span>[RowViewModel]<span style="color:#ff79c6">&gt;</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>    <span style="color:#ff79c6">return</span> controller.viewModels
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span><span style="color:#ff79c6">override</span> <span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">viewDidLoad</span>() {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>    viewModels.valueUpdate { [<span style="color:#ff79c6">weak</span> <span style="color:#ff79c6">self</span>] (<span style="color:#ff79c6">_</span>) <span style="color:#ff79c6">in</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>        <span style="color:#ff79c6">self</span>?.tableView.reloadData()
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>    controller.start()
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">tableView</span>(<span style="color:#ff79c6">_</span> tableView: UITableView, numberOfRowsInSection section: <span style="color:#8be9fd;font-style:italic">Int</span>) -&gt; <span style="color:#8be9fd;font-style:italic">Int</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>    <span style="color:#ff79c6">return</span> rowViewModels.value.count
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">tableView</span>(<span style="color:#ff79c6">_</span> tableView: UITableView, cellForRowAt indexPath: IndexPath) -&gt; UITableViewCell {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span><span>    <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">rowViewModel</span> = <span style="color:#ff79c6">self</span>.rowViewModels.value[indexPath.row]
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span><span>    <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">cell</span> = tableView.dequeueReusableCell(withIdentifier: controller.cellIdentifier(<span style="color:#ff79c6">for</span>: rowViewModel), <span style="color:#ff79c6">for</span>: indexPath)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span><span>    <span style="color:#ff79c6">if</span> <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">cell</span> = cell <span style="color:#ff79c6">as</span>? CellConfigurable {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span><span>        cell.setup(viewModel: rowViewModel)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22</span><span>    <span style="color:#ff79c6">return</span> cell
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25</span><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">tableView</span>(<span style="color:#ff79c6">_</span> tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26</span><span>    <span style="color:#ff79c6">if</span> <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">rowViewModel</span> = rowViewModels.value[indexPath.row] <span style="color:#ff79c6">as</span>? ViewModelPressible {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27</span><span>        rowViewModel.cellPressed?()
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29</span><span>}
+</span></span></code></pre></div><p>FeedViewController 的唯一职责是设置表视图，充当 dataSource 和表视图的委托。添加单元格类型或修改交互不会更改此 ViewController。</p>
+<p>这样做有很多好处：可以编写单元测试来测试 UI 状态，用户交互以及服务器连接行为！
+除了可测试性的提高外，整个 feed 模块的可扩展性也得到了提高！</p>
+<h2 id="summary">Summary<a class="anchorjs-link" href="#summary"></a></h2><p>在本文中，我们展示了如何通过执行这些更改来简化复杂的 TableView ：</p>
+<ol>
+<li>使单元格处理UI组件设置;</li>
+</ol>
+<ul>
+<li>使用MVVM抽象UI组件和交互;</li>
+<li>使用协议来整合设置界面;</li>
+<li>使用 Controller 来处理业务逻辑。</li>
+</ul>
+<p>Massive View Controller 是一个臭名昭着的反模式。现在我们知道问题不是 MVC 模式本身。有许多方法可以分离系统的职责，包括但不限于 MVVM 模式。我会说 MVVM 模式是提高代码质量的少数工具，但它不是一个灵丹妙药。
+除了 MVVM 之外，我们还需要处理诸如可扩展性，可测试性以及 <a href="https://en.wikipedia.org/wiki/SOLID">SOLID-Wikipedia</a> 等更多原则之类的事情。
+因此，在采用任何架构之前，请彻底了解架构的设计，仔细选择最适合您需求的架构。</p>
+<h2 id="相关文章">相关文章<a class="anchorjs-link" href="#%e7%9b%b8%e5%85%b3%e6%96%87%e7%ab%a0"></a></h2><ul>
+<li><a href="https://medium.com/@stasost/ios-how-to-build-a-table-view-with-multiple-cell-types-2df91a206429">iOS: How to build a Table View with multiple cell types</a></li>
+<li><a href="https://medium.cobeisfresh.com/dealing-with-complex-table-views-in-ios-and-keeping-your-sanity-ff5fee1fbb83">Dealing with Complex Table Views in iOS and Keeping Your Sanity</a></li>
+<li><a href="https://academy.realm.io/posts/doios-natasha-murashev-protocol-oriented-mvvm/">Introduction to Protocol-Oriented MVVM</a></li>
+<li><a href="https://blog.jayway.com/2016/11/15/clean-table-view-code-using-swift-protocols/">Clean Table View Code Using Swift Protocols - Jayway</a></li>
+</ul>
+
+        <hr style="visibility: hidden;" />
+        <ul class="pager">
+          
+          <li class="previous">
+            <a href="/posts/2019/git-flow/" data-toggle="tooltip" data-placement="top" title="git-flow 工作流程">
+              Previous<br>
+              <span>git-flow 工作流程</span>
+            </a>
+          </li>
+          
+          
+          <li class="next">
+            <a href="/posts/2019/debian/" data-toggle="tooltip" data-placement="top" title="Notes About Debian">
+              Next<br>
+              <span>Notes About Debian</span>
+            </a>
+          </li>
+          
+        </ul>
+        <hr style="visibility: hidden;" />
+
+        
+        
+
+
+
+
+
+      </div>
+
+      
+      
+      
+      <div class="
+              col-lg-2 col-lg-offset-0
+              visible-lg-block
+              sidebar-container
+              catalog-container">
+        <div class="side-catalog">
+          <hr class="hidden-sm hidden-xs">
+          <h5>
+            <a class="catalog-toggle" href="#">CATALOG</a>
+          </h5>
+          <ul class="catalog-body"></ul>
+        </div>
+      </div>
+      
+      
+      <div class="
+              col-lg-8 col-lg-offset-2
+              col-md-10 col-md-offset-1
+              sidebar-container">
+
+        
+        
+        <section>
+  
+  
+  <hr class="hidden-sm hidden-xs">
+  
+  <h5>FEATURED TAGS</h5>
+  <div class="tags">
+    
+    <a href="/tags/css/">css</a>
+    
+    <a href="/tags/debian/">debian</a>
+    
+    <a href="/tags/fzf/">fzf</a>
+    
+    <a href="/tags/gcd/">gcd</a>
+    
+    <a href="/tags/gem/">gem</a>
+    
+    <a href="/tags/git/">git</a>
+    
+    <a href="/tags/go/">go</a>
+    
+    <a href="/tags/golang/">golang</a>
+    
+    <a href="/tags/hugo/">hugo</a>
+    
+    <a href="/tags/ios/">iOS</a>
+    
+    <a href="/tags/kindle/">Kindle</a>
+    
+    <a href="/tags/kvocontroller/">KVOController</a>
+    
+    <a href="/tags/linux/">linux</a>
+    
+    <a href="/tags/macos/">MacOS</a>
+    
+    <a href="/tags/neovim/">neovim</a>
+    
+    <a href="/tags/runtime/">runtime</a>
+    
+    <a href="/tags/rust/">rust</a>
+    
+    <a href="/tags/ss/">ss</a>
+    
+    <a href="/tags/ssh/">ssh</a>
+    
+    <a href="/tags/swift/">Swift</a>
+    
+    <a href="/tags/vim/">vim</a>
+    
+    <a href="/tags/webhook/">webhook</a>
+    
+    <a href="/tags/wubi/">wubi</a>
+    
+    <a href="/tags/zabbix/">zabbix</a>
+    
+  </div>
+</section>
+
+        
+        
+
+<hr>
+<h5>FRIENDS</h5>
+<ul class="list-inline">
+  
+  <li><a href=""></a></li>
+  
+</ul>
+
+      </div>
+    </div>
+  </div>
+</article>
+
+
+
+  
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        
+        
+
+
+<ul class="list-inline text-center">
+
+  
+  <li>
+    <a href="/index.xml">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+  
+  
+  
+  
+  <li>
+    <a target="_blank" href="https://github.com/roninro">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+</ul>
+        <p class="copyright text-muted">
+          Copyright &copy; RoninRo&#39;s Blog 2022
+          <br>
+          Powered by <a href="https://gohugo.io">Hugo</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+
+
+<script src="/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js"></script>
+
+
+<script src="/js/simple-jekyll-search.min.js"></script>
+
+
+<script src="/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js"></script>
+
+
+
+
+
+
+<script type="text/javascript">
+  function generateCatalog(selector) {
+    _containerSelector = 'div.post-container'
+    
+    var P = $(_containerSelector), a, n, t, l, i, c;
+    a = P.find('h1,h2,h3,h4');
+    
+    $(selector).html('')
+    
+    a.each(function () {
+      n = $(this).prop('tagName').toLowerCase();
+      i = "#" + $(this).prop('id');
+      t = $(this).text();
+      c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+      l = $('<li class="' + n + '_nav"></li>').append(c);
+      $(selector).append(l);
+    });
+    return true;
+  }
+
+  generateCatalog(".catalog-body");
+
+  
+  $(".catalog-toggle").click((function (e) {
+    e.preventDefault();
+    $('.side-catalog').toggleClass("fold")
+  }))
+</script>
+
+
+<script type="text/javascript" src='/js/jquery.nav.min.ade6bde8f9fcc6a4b40852cb892e9f5912340ab8fe1305149d917fdd16fffd8d.js'></script>
+<script>
+   $(document).ready( function () {
+    $('.catalog-body').onePageNav({
+      currentClass: "active",
+      changeHash: !1,
+      easing: "swing",
+      filter: "",
+      scrollSpeed: 700,
+      scrollOffset: 0,
+      scrollThreshold: .2,
+      begin: null,
+      end: null,
+      scrollChange: null,
+      padding: 80
+    });
+  });
+</script>
+
+
+
+
+
+
+
+
+
+<script src="/zoomjs/zoom.min.js"></script>
+</body>
+
+</html>

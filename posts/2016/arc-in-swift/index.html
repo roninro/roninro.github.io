@@ -1,242 +1,698 @@
-<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="ie=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><title>Swift:Automatic Reference Counting in Swift | RoninRo's Blog</title><meta name=author content="RoninRo"><meta name=description content="原文地址：Automatic Reference Counting 翻译： https://www.cnswift.org/ Swift 使用自动引用计数*(ARC)*机制来追踪和管理你的APP的内存使用。在大多数情况下，这意味着内存管"><meta name=keywords content="blog,developer,personal,golang"><meta name=twitter:card content="summary"><meta name=twitter:title content="Swift:Automatic Reference Counting in Swift"><meta name=twitter:description content="原文地址：Automatic Reference Counting 翻译： https://www.cnswift.org/ Swift 使用自动引用计数*(ARC)*机制来追踪和管理你的APP的内存使用。在大多数情况下，这意味着内存管"><meta property="og:title" content="Swift:Automatic Reference Counting in Swift"><meta property="og:description" content="原文地址：Automatic Reference Counting 翻译： https://www.cnswift.org/ Swift 使用自动引用计数*(ARC)*机制来追踪和管理你的APP的内存使用。在大多数情况下，这意味着内存管"><meta property="og:type" content="article"><meta property="og:url" content="https://fninit.com/posts/2016/arc-in-swift/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2016-12-30T00:00:00+00:00"><meta property="article:modified_time" content="2016-12-30T00:00:00+00:00"><link rel=stylesheet href=/css/bootstrap.min.css crossorigin=anonymous><link href=//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css rel=stylesheet type=text/css><link rel=stylesheet href=https://fninit.com/sass/main.css><link rel=stylesheet href=https://fninit.com/zoomjs/zoom.min.css></head><body><nav class="navbar navbar-default navbar-custom navbar-fixed-top invert"><div class=container-fluid><div class="navbar-header page-scroll"><button type=button class=navbar-toggle>
-<span class=sr-only>Toggle navigation</span>
-<span class=icon-bar></span>
-<span class=icon-bar></span>
-<span class=icon-bar></span></button>
-<a class=navbar-brand href=https://fninit.com>RoninRo's Blog</a></div><div id=huxblog_navbar><div class=navbar-collapse><ul class="nav navbar-nav navbar-right"><li><a href=/ title=Home>Home</a></li><li><a href=/archive/ title=Archive>Archive</a></li><li><a href=/categories/ title=Categories>Categories</a></li><li><a href=/about/ title=About>About</a></li><li class=search-icon><a href=javascript:void(0)><i class="fa fa-search"></i></a></li></ul></div></div></div></nav><script>var $body=document.body,$toggle=document.querySelector(".navbar-toggle"),$navbar=document.querySelector("#huxblog_navbar"),$collapse=document.querySelector(".navbar-collapse"),__HuxNav__={close:function(){$navbar.className=" ",setTimeout(function(){$navbar.className.indexOf("in")<0&&($collapse.style.height="0px")},400)},open:function(){$collapse.style.height="auto",$navbar.className+=" in"}};$toggle.addEventListener("click",function(){$navbar.className.indexOf("in")>0?__HuxNav__.close():__HuxNav__.open()}),document.addEventListener("click",function(e){if(e.target==$toggle)return;if(e.target.className=="icon-bar")return;__HuxNav__.close()})</script><div class=search-page><div class=search-icon-close-container><span class=search-icon-close><i class="fa fa-chevron-down"></i></span></div><div class="search-main container"><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><form></form><input type=text id=search-input placeholder="$ grep..."></form><div id=search-results class=mini-post-list></div></div></div></div></div><style type=text/css>header.intro-header{position:relative;background-image:url('')}</style><header class="intro-header style-text"><div class=header-mask></div><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><div class=post-heading><div class=tags><a class=tag href=https://fninit.com/tags/ios/ title=iOS>iOS</a>
-<a class=tag href=https://fninit.com/tags/swift/ title=Swift>Swift</a></div><h1>Swift:Automatic Reference Counting in Swift</h1><h2 class=subheading></h2><p class=post-meta>Posted by RoninRo
-on Fri, Dec 30, 2016</p></div></div></div></div></header><article><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2
-col-md-10 col-md-offset-1
-post-container"><p>原文地址：<a href=https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/AutomaticReferenceCounting.html#//apple_ref/doc/uid/TP40014097-CH20-ID48>Automatic Reference Counting</a></br>翻译： <a href=https://www.cnswift.org/>https://www.cnswift.org/</a></p><p><code>Swift</code> 使用自动引用计数*(ARC)*机制来追踪和管理你的APP的内存使用。在大多数情况下，这意味着内存管理在Swift中“正常工作”，不需要自己考虑内存管理。ARC会自动释放类实例所占用的内存。</br>但是，少数情况下，<code>ARC </code>需要更多关于你和你代码之间的关系信息，以方便帮助你管理内存。</br><strong>NOTE:</strong> 引用计数仅适用于类的实例。结构和枚举是值类型，而不是引用类型，不会通过引用存储和传递。</p><h2 id=arc工作机制>ARC工作机制<a class=anchorjs-link href=#arc%e5%b7%a5%e4%bd%9c%e6%9c%ba%e5%88%b6></a></h2><p>当我们创建一个类的实例时，<code>ARC</code> 会分类一块内存来存储这个实例的信息。包括实例的内存信息，以及实例所有存储属性值的信息。</p><p>另外，当实例不再需要时，<code>ARC</code> 会释放实例所占用的内存。这样确保类实例当它不需要时，不会一直占着内存。</p><p>但是，如果<code>ARC</code>释放了一个正在使用的实例的内存，将无法再访问该实例的属性，或者调用该实例的方法。事实上，如果你试图访问实例，你的应用程序很可能会崩溃。</p><p>为了确保实例在仍然需要时不消失，ARC跟踪有多少属性，常量和变量当前指向每个类实例。只要至少有一个对该实例的活动引用仍然存在，ARC就不会释放实例。</p><p>为了实现这些，无论你将实例分配给属性，常量或变量，它们都会创建该实例的<code>强引用</code>(strong)。之所以称之为“强”引用，是因为它会将实例保持住，只要强引用还在，实例是不允许被销毁的。</p><h2 id=arc>ARC<a class=anchorjs-link href=#arc></a></h2><p>下面的例子展示了自动引用计数的工作机制、</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span><span style=color:#8be9fd;font-style:italic>class</span> <span style=color:#50fa7b>Person</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span>    <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#8be9fd;font-style:italic>String</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span>    <span style=color:#8be9fd;font-style:italic>init</span>(name: <span style=color:#8be9fd;font-style:italic>String</span>) {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span><span>        <span style=color:#ff79c6>self</span>.name = name
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span><span>        print(<span style=color:#f1fa8c>&#34;</span><span style=color:#f1fa8c>\(</span>name<span style=color:#f1fa8c>)</span><span style=color:#f1fa8c> is being initialized&#34;</span>)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span><span>    }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span><span>    <span style=color:#8be9fd;font-style:italic>deinit</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span><span>        print(<span style=color:#f1fa8c>&#34;</span><span style=color:#f1fa8c>\(</span>name<span style=color:#f1fa8c>)</span><span style=color:#f1fa8c> is being deinitialized&#34;</span>)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span>    }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span><span>}
-</span></span></code></pre></div><p><code>Person</code> 类有一个初始化器， 它设定了实例的<code>name</code> 属性。一个反初始化器，会在类的实例被销毁的时候打印一条信息。</p><p>现在定义三个<code>Person?</code> 类型的变量，用来按照代码的顺序，为新的<code>Person</code> 实例设置引用。由于可选类型的变量会被自动初始化为一个<code>nil</code>值，目前还不会引用到<code>Person</code> 类的实例。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span><span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>reference1</span>: Person?   <span style=color:#6272a4>// nil</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span><span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>reference2</span>: Person?	  <span style=color:#6272a4>// nil</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span><span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>reference3</span>: Person?   <span style=color:#6272a4>// nil</span>
-</span></span></code></pre></div><p>创建一个新的 Person 实例并且将它赋值<code>reference1</code></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>reference1 = Person(name: <span style=color:#f1fa8c>&#34;John Appleseed&#34;</span>)		<span style=color:#6272a4>// Person</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span><span style=color:#6272a4>// print &#34;John Appleseed is being initialized&#34;</span>
-</span></span></code></pre></div><h2 id=类实例之间的循环强引用>类实例之间的循环强引用<a class=anchorjs-link href=#%e7%b1%bb%e5%ae%9e%e4%be%8b%e4%b9%8b%e9%97%b4%e7%9a%84%e5%be%aa%e7%8e%af%e5%bc%ba%e5%bc%95%e7%94%a8></a></h2><p>如果两个类实例彼此持有对方的强引用，因而每个实例都让对方一直存在，就会发生这种情况。这就是所谓的<code>循环强引用</code>。(Strong reference Cycles Between Class Instances)</p><p>解决循环强引用问题，可以通过定义类之间的关系为弱引用(<code>weak</code>)或无主引用(<code>unowned</code>)来代替强引用。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span><span style=color:#8be9fd;font-style:italic>class</span> <span style=color:#50fa7b>Person</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span>    <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#8be9fd;font-style:italic>String</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span>    <span style=color:#8be9fd;font-style:italic>init</span>(name: <span style=color:#8be9fd;font-style:italic>String</span>) { <span style=color:#ff79c6>self</span>.name = name }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span><span>    <span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>apartment</span>: Apartment?
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span><span>    <span style=color:#8be9fd;font-style:italic>deinit</span> { print(<span style=color:#f1fa8c>&#34;</span><span style=color:#f1fa8c>\(</span>name<span style=color:#f1fa8c>)</span><span style=color:#f1fa8c> is being deinitialized&#34;</span>) }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span><span>}
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span><span> 
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span><span><span style=color:#8be9fd;font-style:italic>class</span> <span style=color:#50fa7b>Apartment</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span>    <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>unit</span>: <span style=color:#8be9fd;font-style:italic>String</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span><span>    <span style=color:#8be9fd;font-style:italic>init</span>(unit: <span style=color:#8be9fd;font-style:italic>String</span>) { <span style=color:#ff79c6>self</span>.unit = unit }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11</span><span>    <span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>tenant</span>: Person?
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12</span><span>    <span style=color:#8be9fd;font-style:italic>deinit</span> { print(<span style=color:#f1fa8c>&#34;Apartment </span><span style=color:#f1fa8c>\(</span>unit<span style=color:#f1fa8c>)</span><span style=color:#f1fa8c> is being deinitialized&#34;</span>) }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13</span><span>}
-</span></span></code></pre></div><p>这两个类都定义了反初始化器，用以在类实例被反初始化时输出信息.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span><span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>john</span>: Person?			<span style=color:#6272a4>// nil</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span><span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>unit4A</span>: Apartment?		<span style=color:#6272a4>// nil</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span>john = Person(name: <span style=color:#f1fa8c>&#34;John Appleseed&#34;</span>)	<span style=color:#6272a4>// Person</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">5</span><span>unit4A = Apartment(unit: <span style=color:#f1fa8c>&#34;4A&#34;</span>)			<span style=color:#6272a4>// Apartment</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">6</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">7</span><span>john!.apartment = unit4A
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">8</span><span>unit4A!.tenant = john
-</span></span></code></pre></div><p>感叹号( ! )是用来展开和访问可选变量 john 和 unit4A 里的实例的，所以这些实例的属性可以设置。</p><p>这两个实例关联后会产生一个循环强引用。 <code>Person</code> 实例现在有了一个指向 <code>Apartment</code> 实例的强引用，而 <code>Apartment</code> 实例也有了一个指向 <code>Person</code> 实例的强引用。因此，当你断开 <code>john</code> 和 <code>unit4A </code>变量所持有的强引用时，引用计数并不会降零，实例也不会被 ARC 释放：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>john = <span style=color:#ff79c6>nil</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>unit4A = <span style=color:#ff79c6>nil</span>
-</span></span></code></pre></div><p>注意，当你把这两个变量设为 <code>nil</code> 时，没有任何一个反初始化器被调用。循环强引用会一直阻止 <code>Person</code> 和 <code>Apartment</code> 类实例的释放，这就在你的应用程序中造成了内存泄漏。</p><h2 id=解决实例之间的循环强引用>解决实例之间的循环强引用<a class=anchorjs-link href=#%e8%a7%a3%e5%86%b3%e5%ae%9e%e4%be%8b%e4%b9%8b%e9%97%b4%e7%9a%84%e5%be%aa%e7%8e%af%e5%bc%ba%e5%bc%95%e7%94%a8></a></h2><p><code>Swift</code> 提供了两种办法用来解决你在使用类的属性时所遇到的循环强引用问题：弱引用（ <code>weak reference</code> ）和无主引用（ <code>unowned reference</code> )。</p><h4 id=弱引用-weak>弱引用 weak<a class=anchorjs-link href=#%e5%bc%b1%e5%bc%95%e7%94%a8-weak></a></h4><p>弱引用不会对其引用的实例保持强引用，因而不会阻止<code>ARC</code> 释放被引用的实例。这个特性阻止了引用变为循环强引用。声明属性或者变量时，在前面加上<code>weak</code>关键字表明这是一个弱引用。</p><p>由于弱引用不会强保持对实例的引用，所以说实例被释放了弱引用仍旧引用着这个实例也是有可能的。因此，<code>ARC</code> 会在被引用的实例被释放是自动地设置弱引用为 <code>nil</code> 。由于弱引用需要允许它们的值为 <code>nil</code> ，它们一定得是可选类型。</p><blockquote><p><strong>NOTE</strong>
-在<code>ARC</code>给弱引用设置<code>nil</code>时不会调用属性观察者。</p></blockquote><p>下面的例子跟上面 <code>Person</code> 和 <code>Apartment</code> 的例子一致，但是有一个重要的区别。这次，<code> Apartment</code> 的 <code>tenant</code> 属性被声明为弱引用：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span><span style=color:#8be9fd;font-style:italic>class</span> <span style=color:#50fa7b>Person</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span>    <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#8be9fd;font-style:italic>String</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span>    <span style=color:#8be9fd;font-style:italic>init</span>(name: <span style=color:#8be9fd;font-style:italic>String</span>) {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span><span>        <span style=color:#ff79c6>self</span>.name = name
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span><span>        print(<span style=color:#f1fa8c>&#34;</span><span style=color:#f1fa8c>\(</span>name<span style=color:#f1fa8c>)</span><span style=color:#f1fa8c> is being initialized&#34;</span>)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span><span>    }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span><span>    <span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>apartment</span>: Apartment?
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span><span>    <span style=color:#8be9fd;font-style:italic>deinit</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span>        print(<span style=color:#f1fa8c>&#34;</span><span style=color:#f1fa8c>\(</span>name<span style=color:#f1fa8c>)</span><span style=color:#f1fa8c> is being deinitialized&#34;</span>)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span><span>    }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11</span><span>}
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13</span><span><span style=color:#8be9fd;font-style:italic>class</span> <span style=color:#50fa7b>Apartment</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14</span><span>    <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>unit</span>: <span style=color:#8be9fd;font-style:italic>String</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15</span><span>    <span style=color:#8be9fd;font-style:italic>init</span>(unit: <span style=color:#8be9fd;font-style:italic>String</span>) {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16</span><span>        <span style=color:#ff79c6>self</span>.unit = unit
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17</span><span>    }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">18</span><span>    <span style=color:#ff79c6>weak</span> <span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>tenant</span>: Person?
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">19</span><span>    <span style=color:#8be9fd;font-style:italic>deinit</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">20</span><span>        print(<span style=color:#f1fa8c>&#34;Apartment </span><span style=color:#f1fa8c>\(</span>unit<span style=color:#f1fa8c>)</span><span style=color:#f1fa8c> is being deinitialized&#34;</span>)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">21</span><span>    }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">22</span><span>}
-</span></span></code></pre></div><p>将两个变量关联起来</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span><span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>john</span>: Person?
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span><span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>unit4A</span>: Apartment?
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span> 
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span>john = Person(name: <span style=color:#f1fa8c>&#34;John Appleseed&#34;</span>)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">5</span><span>unit4A = Apartment(unit: <span style=color:#f1fa8c>&#34;4A&#34;</span>)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">6</span><span> 
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">7</span><span>john!.apartment = unit4A
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">8</span><span>unit4A!.tenant = john
-</span></span></code></pre></div><p><code>Person</code>实例保持对<code>Apartment</code>实例的强引用，但是<code>Apartment</code>实例现在对<code>Person</code>实例是弱引用。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>unit4A = <span style=color:#ff79c6>nil</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span><span style=color:#6272a4>// </span>
-</span></span></code></pre></div><p>此时，<code>Person</code>实例保持对<code>Apartment</code>实例的强引用，所以 <code>Apartment</code>实例 并没有被释放掉。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>john = <span style=color:#ff79c6>nil</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span><span style=color:#6272a4>//	John Appleseed is being deinitialized</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span><span style=color:#6272a4>//	Apartment 4A is being deinitialized</span>
-</span></span></code></pre></div><p><code>john</code>设置nil 后，没有对<code>Apartment</code>实例的引用，所以 <code>Apartment</code> 实例也被释放掉了。</p><blockquote><p><strong>NOTE</strong>
-在使用垃圾回收机制的系统中，由于没有强引用的对象会在内存有压力时触发垃圾回收而被释放，弱指针有时用来实现简单的缓存机制。总之，对于 ARC 来说，一旦最后的强引用被移除，值就会被释放，这样的话弱引用就不再适合这类用法了。</p></blockquote><h4 id=无主引用>无主引用<a class=anchorjs-link href=#%e6%97%a0%e4%b8%bb%e5%bc%95%e7%94%a8></a></h4><p>和<code>弱引用</code>类似，<code>无主引用</code>不会牢牢保持住引用的实例。但是不像<code>弱引用</code>，总之，<code>无主引用</code>假定是永远有值的。因此，<code>无主引用</code>总是被定义为<em>非可选类型</em>。你可以在声明属性或者变量时，在前面加上关键字 <code>unowned</code> 表示这是一个<code>无主引用</code>。</p><p>由于无主引用是<code>非可选类型</code>，你不需要在使用它的时候将它展开。无主引用总是可以直接访问。不过 <code>ARC</code> 无法在实例被释放后将无主引用设为 <code>nil</code> ，因为非可选类型的变量不允许被赋值为 <code>nil</code> 。</p><blockquote><p><strong>NOTE</strong>
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  
+  
+  
+  
+
+  <title>Swift:Automatic Reference Counting in Swift | RoninRo&#39;s Blog</title>
+
+  
+  <meta name="author" content="RoninRo">
+  <meta name="description" content="原文地址：Automatic Reference Counting 翻译： https://www.cnswift.org/ Swift 使用自动引用计数*(ARC)*机制来追踪和管理你的APP的内存使用。在大多数情况下，这意味着内存管">
+  <meta name="keywords" content="blog,developer,personal,golang">
+
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Swift:Automatic Reference Counting in Swift"/>
+<meta name="twitter:description" content="原文地址：Automatic Reference Counting 翻译： https://www.cnswift.org/ Swift 使用自动引用计数*(ARC)*机制来追踪和管理你的APP的内存使用。在大多数情况下，这意味着内存管"/>
+
+  <meta property="og:title" content="Swift:Automatic Reference Counting in Swift" />
+<meta property="og:description" content="原文地址：Automatic Reference Counting 翻译： https://www.cnswift.org/ Swift 使用自动引用计数*(ARC)*机制来追踪和管理你的APP的内存使用。在大多数情况下，这意味着内存管" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://roninro.github.io/posts/2016/arc-in-swift/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2016-12-30T00:00:00+00:00" />
+<meta property="article:modified_time" content="2016-12-30T00:00:00+00:00" />
+
+
+
+  <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+  
+  <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"
+    type="text/css">
+
+  
+  
+  <link rel="stylesheet" href="/sass/main.css">
+
+  
+  <link rel="stylesheet" href="/zoomjs/zoom.min.css">
+
+
+  
+  
+  
+
+  </head>
+
+
+
+<body ontouchstart="">
+
+  
+  
+  
+
+  
+
+  
+  
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top invert">
+  <div class="container-fluid">
+    
+    <div class="navbar-header page-scroll">
+      <button type="button" class="navbar-toggle">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://roninro.github.io/">RoninRo&#39;s Blog</a>
+    </div>
+    
+    <div id="huxblog_navbar">
+      <div class="navbar-collapse">
+        <ul class="nav navbar-nav navbar-right">
+          
+          <li><a href="/" title="Home">Home</a></li>
+          
+          <li><a href="/archive/" title="Archive">Archive</a></li>
+          
+          <li><a href="/categories/" title="Categories">Categories</a></li>
+          
+          <li><a href="/about/" title="About">About</a></li>
+          
+
+          <li class="search-icon">
+            <a href="javascript:void(0)">
+              <i class="fa fa-search"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+  </div>
+  
+</nav>
+<script>
+  
+  
+  
+  var $body = document.body;
+  var $toggle = document.querySelector(".navbar-toggle");
+  var $navbar = document.querySelector("#huxblog_navbar");
+  var $collapse = document.querySelector(".navbar-collapse");
+
+  var __HuxNav__ = {
+    close: function () {
+      $navbar.className = " ";
+      
+      setTimeout(function () {
+        
+        if ($navbar.className.indexOf("in") < 0) {
+          $collapse.style.height = "0px";
+        }
+      }, 400);
+    },
+    open: function () {
+      $collapse.style.height = "auto";
+      $navbar.className += " in";
+    },
+  };
+
+  
+  $toggle.addEventListener("click", function (e) {
+    if ($navbar.className.indexOf("in") > 0) {
+      __HuxNav__.close();
+    } else {
+      __HuxNav__.open();
+    }
+  });
+
+  
+
+  document.addEventListener("click", function (e) {
+    if (e.target == $toggle) return;
+    if (e.target.className == "icon-bar") return;
+    __HuxNav__.close();
+  });
+</script>
+  
+<div class="search-page">
+  <div class="search-icon-close-container">
+    <span class="search-icon-close">
+      <i class="fa fa-chevron-down"></i>
+    </span>
+  </div>
+  <div class="search-main container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <form></form>
+        <input type="text" id="search-input" placeholder="$ grep...">
+        </form>
+        <div id="search-results" class="mini-post-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+  
+
+
+<style type="text/css">
+  header.intro-header {
+    position: relative;
+    background-image: url('');
+  }
+</style>
+
+<header class="intro-header style-text">
+
+  <div class="header-mask"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-heading">
+          <div class="tags">
+            
+            <a class="tag" href="/tags/ios/" title="iOS">iOS</a>
+            
+            <a class="tag" href="/tags/swift/" title="Swift">Swift</a>
+            
+          </div>
+          <h1>Swift:Automatic Reference Counting in Swift</h1>
+          <h2 class="subheading"></h2>
+          <p class="post-meta">
+            Posted by  RoninRo 
+            on Fri, Dec 30, 2016
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+  
+
+
+<article>
+  <div class="container">
+    <div class="row">
+
+      
+      <div class="
+              col-lg-8 col-lg-offset-2
+              col-md-10 col-md-offset-1
+              post-container">
+        <p>原文地址：<a href="https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/AutomaticReferenceCounting.html#//apple_ref/doc/uid/TP40014097-CH20-ID48">Automatic Reference Counting</a></br>
+翻译： <a href="https://www.cnswift.org/">https://www.cnswift.org/</a></p>
+<p><code>Swift</code> 使用自动引用计数*(ARC)*机制来追踪和管理你的APP的内存使用。在大多数情况下，这意味着内存管理在Swift中“正常工作”，不需要自己考虑内存管理。ARC会自动释放类实例所占用的内存。</br>
+但是，少数情况下，<code>ARC </code>需要更多关于你和你代码之间的关系信息，以方便帮助你管理内存。</br>
+<strong>NOTE:</strong> 引用计数仅适用于类的实例。结构和枚举是值类型，而不是引用类型，不会通过引用存储和传递。</p>
+<h2 id="arc工作机制">ARC工作机制<a class="anchorjs-link" href="#arc%e5%b7%a5%e4%bd%9c%e6%9c%ba%e5%88%b6"></a></h2><p>当我们创建一个类的实例时，<code>ARC</code> 会分类一块内存来存储这个实例的信息。包括实例的内存信息，以及实例所有存储属性值的信息。</p>
+<p>另外，当实例不再需要时，<code>ARC</code> 会释放实例所占用的内存。这样确保类实例当它不需要时，不会一直占着内存。</p>
+<p>但是，如果<code>ARC</code>释放了一个正在使用的实例的内存，将无法再访问该实例的属性，或者调用该实例的方法。事实上，如果你试图访问实例，你的应用程序很可能会崩溃。</p>
+<p>为了确保实例在仍然需要时不消失，ARC跟踪有多少属性，常量和变量当前指向每个类实例。只要至少有一个对该实例的活动引用仍然存在，ARC就不会释放实例。</p>
+<p>为了实现这些，无论你将实例分配给属性，常量或变量，它们都会创建该实例的<code>强引用</code>(strong)。之所以称之为“强”引用，是因为它会将实例保持住，只要强引用还在，实例是不允许被销毁的。</p>
+<h2 id="arc">ARC<a class="anchorjs-link" href="#arc"></a></h2><p>下面的例子展示了自动引用计数的工作机制、</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">Person</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>    <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">name</span>: <span style="color:#8be9fd;font-style:italic">String</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>    <span style="color:#8be9fd;font-style:italic">init</span>(name: <span style="color:#8be9fd;font-style:italic">String</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>        <span style="color:#ff79c6">self</span>.name = name
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>        print(<span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\(</span>name<span style="color:#f1fa8c">)</span><span style="color:#f1fa8c"> is being initialized&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>    <span style="color:#8be9fd;font-style:italic">deinit</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>        print(<span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\(</span>name<span style="color:#f1fa8c">)</span><span style="color:#f1fa8c"> is being deinitialized&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>}
+</span></span></code></pre></div><p><code>Person</code> 类有一个初始化器， 它设定了实例的<code>name</code> 属性。一个反初始化器，会在类的实例被销毁的时候打印一条信息。</p>
+<p>现在定义三个<code>Person?</code> 类型的变量，用来按照代码的顺序，为新的<code>Person</code> 实例设置引用。由于可选类型的变量会被自动初始化为一个<code>nil</code>值，目前还不会引用到<code>Person</code> 类的实例。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">reference1</span>: Person?   <span style="color:#6272a4">// nil</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span><span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">reference2</span>: Person?	  <span style="color:#6272a4">// nil</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span><span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">reference3</span>: Person?   <span style="color:#6272a4">// nil</span>
+</span></span></code></pre></div><p>创建一个新的 Person 实例并且将它赋值<code>reference1</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>reference1 = Person(name: <span style="color:#f1fa8c">&#34;John Appleseed&#34;</span>)		<span style="color:#6272a4">// Person</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span><span style="color:#6272a4">// print &#34;John Appleseed is being initialized&#34;</span>
+</span></span></code></pre></div><h2 id="类实例之间的循环强引用">类实例之间的循环强引用<a class="anchorjs-link" href="#%e7%b1%bb%e5%ae%9e%e4%be%8b%e4%b9%8b%e9%97%b4%e7%9a%84%e5%be%aa%e7%8e%af%e5%bc%ba%e5%bc%95%e7%94%a8"></a></h2><p>如果两个类实例彼此持有对方的强引用，因而每个实例都让对方一直存在，就会发生这种情况。这就是所谓的<code>循环强引用</code>。(Strong reference Cycles Between Class Instances)</p>
+<p>解决循环强引用问题，可以通过定义类之间的关系为弱引用(<code>weak</code>)或无主引用(<code>unowned</code>)来代替强引用。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">Person</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>    <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">name</span>: <span style="color:#8be9fd;font-style:italic">String</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>    <span style="color:#8be9fd;font-style:italic">init</span>(name: <span style="color:#8be9fd;font-style:italic">String</span>) { <span style="color:#ff79c6">self</span>.name = name }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>    <span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">apartment</span>: Apartment?
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>    <span style="color:#8be9fd;font-style:italic">deinit</span> { print(<span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\(</span>name<span style="color:#f1fa8c">)</span><span style="color:#f1fa8c"> is being deinitialized&#34;</span>) }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span> 
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span><span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">Apartment</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>    <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">unit</span>: <span style="color:#8be9fd;font-style:italic">String</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>    <span style="color:#8be9fd;font-style:italic">init</span>(unit: <span style="color:#8be9fd;font-style:italic">String</span>) { <span style="color:#ff79c6">self</span>.unit = unit }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>    <span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">tenant</span>: Person?
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>    <span style="color:#8be9fd;font-style:italic">deinit</span> { print(<span style="color:#f1fa8c">&#34;Apartment </span><span style="color:#f1fa8c">\(</span>unit<span style="color:#f1fa8c">)</span><span style="color:#f1fa8c"> is being deinitialized&#34;</span>) }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>}
+</span></span></code></pre></div><p>这两个类都定义了反初始化器，用以在类实例被反初始化时输出信息.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">john</span>: Person?			<span style="color:#6272a4">// nil</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span><span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">unit4A</span>: Apartment?		<span style="color:#6272a4">// nil</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>john = Person(name: <span style="color:#f1fa8c">&#34;John Appleseed&#34;</span>)	<span style="color:#6272a4">// Person</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>unit4A = Apartment(unit: <span style="color:#f1fa8c">&#34;4A&#34;</span>)			<span style="color:#6272a4">// Apartment</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7</span><span>john!.apartment = unit4A
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8</span><span>unit4A!.tenant = john
+</span></span></code></pre></div><p>感叹号( ! )是用来展开和访问可选变量 john 和 unit4A 里的实例的，所以这些实例的属性可以设置。</p>
+<p>这两个实例关联后会产生一个循环强引用。 <code>Person</code> 实例现在有了一个指向 <code>Apartment</code> 实例的强引用，而 <code>Apartment</code> 实例也有了一个指向 <code>Person</code> 实例的强引用。因此，当你断开 <code>john</code> 和 <code>unit4A </code>变量所持有的强引用时，引用计数并不会降零，实例也不会被 ARC 释放：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>john = <span style="color:#ff79c6">nil</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>unit4A = <span style="color:#ff79c6">nil</span>
+</span></span></code></pre></div><p>注意，当你把这两个变量设为 <code>nil</code> 时，没有任何一个反初始化器被调用。循环强引用会一直阻止 <code>Person</code> 和 <code>Apartment</code> 类实例的释放，这就在你的应用程序中造成了内存泄漏。</p>
+<h2 id="解决实例之间的循环强引用">解决实例之间的循环强引用<a class="anchorjs-link" href="#%e8%a7%a3%e5%86%b3%e5%ae%9e%e4%be%8b%e4%b9%8b%e9%97%b4%e7%9a%84%e5%be%aa%e7%8e%af%e5%bc%ba%e5%bc%95%e7%94%a8"></a></h2><p><code>Swift</code> 提供了两种办法用来解决你在使用类的属性时所遇到的循环强引用问题：弱引用（ <code>weak reference</code> ）和无主引用（ <code>unowned reference</code> )。</p>
+<h4 id="弱引用-weak">弱引用 weak<a class="anchorjs-link" href="#%e5%bc%b1%e5%bc%95%e7%94%a8-weak"></a></h4><p>弱引用不会对其引用的实例保持强引用，因而不会阻止<code>ARC</code> 释放被引用的实例。这个特性阻止了引用变为循环强引用。声明属性或者变量时，在前面加上<code>weak</code>关键字表明这是一个弱引用。</p>
+<p>由于弱引用不会强保持对实例的引用，所以说实例被释放了弱引用仍旧引用着这个实例也是有可能的。因此，<code>ARC</code> 会在被引用的实例被释放是自动地设置弱引用为 <code>nil</code> 。由于弱引用需要允许它们的值为 <code>nil</code> ，它们一定得是可选类型。</p>
+<blockquote>
+<p><strong>NOTE</strong>
+在<code>ARC</code>给弱引用设置<code>nil</code>时不会调用属性观察者。</p>
+</blockquote>
+<p>下面的例子跟上面 <code>Person</code> 和 <code>Apartment</code> 的例子一致，但是有一个重要的区别。这次，<code> Apartment</code> 的 <code>tenant</code> 属性被声明为弱引用：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">Person</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>    <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">name</span>: <span style="color:#8be9fd;font-style:italic">String</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>    <span style="color:#8be9fd;font-style:italic">init</span>(name: <span style="color:#8be9fd;font-style:italic">String</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>        <span style="color:#ff79c6">self</span>.name = name
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>        print(<span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\(</span>name<span style="color:#f1fa8c">)</span><span style="color:#f1fa8c"> is being initialized&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>    <span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">apartment</span>: Apartment?
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>    <span style="color:#8be9fd;font-style:italic">deinit</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>        print(<span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\(</span>name<span style="color:#f1fa8c">)</span><span style="color:#f1fa8c"> is being deinitialized&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span><span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">Apartment</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>    <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">unit</span>: <span style="color:#8be9fd;font-style:italic">String</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>    <span style="color:#8be9fd;font-style:italic">init</span>(unit: <span style="color:#8be9fd;font-style:italic">String</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span>        <span style="color:#ff79c6">self</span>.unit = unit
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span><span>    <span style="color:#ff79c6">weak</span> <span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">tenant</span>: Person?
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span><span>    <span style="color:#8be9fd;font-style:italic">deinit</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span><span>        print(<span style="color:#f1fa8c">&#34;Apartment </span><span style="color:#f1fa8c">\(</span>unit<span style="color:#f1fa8c">)</span><span style="color:#f1fa8c"> is being deinitialized&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22</span><span>}
+</span></span></code></pre></div><p>将两个变量关联起来</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">john</span>: Person?
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span><span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">unit4A</span>: Apartment?
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span> 
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>john = Person(name: <span style="color:#f1fa8c">&#34;John Appleseed&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>unit4A = Apartment(unit: <span style="color:#f1fa8c">&#34;4A&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6</span><span> 
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7</span><span>john!.apartment = unit4A
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8</span><span>unit4A!.tenant = john
+</span></span></code></pre></div><p><code>Person</code>实例保持对<code>Apartment</code>实例的强引用，但是<code>Apartment</code>实例现在对<code>Person</code>实例是弱引用。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>unit4A = <span style="color:#ff79c6">nil</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span><span style="color:#6272a4">// </span>
+</span></span></code></pre></div><p>此时，<code>Person</code>实例保持对<code>Apartment</code>实例的强引用，所以 <code>Apartment</code>实例 并没有被释放掉。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>john = <span style="color:#ff79c6">nil</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span><span style="color:#6272a4">//	John Appleseed is being deinitialized</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span><span style="color:#6272a4">//	Apartment 4A is being deinitialized</span>
+</span></span></code></pre></div><p><code>john</code>设置nil 后，没有对<code>Apartment</code>实例的引用，所以 <code>Apartment</code> 实例也被释放掉了。</p>
+<blockquote>
+<p><strong>NOTE</strong>
+在使用垃圾回收机制的系统中，由于没有强引用的对象会在内存有压力时触发垃圾回收而被释放，弱指针有时用来实现简单的缓存机制。总之，对于 ARC 来说，一旦最后的强引用被移除，值就会被释放，这样的话弱引用就不再适合这类用法了。</p>
+</blockquote>
+<h4 id="无主引用">无主引用<a class="anchorjs-link" href="#%e6%97%a0%e4%b8%bb%e5%bc%95%e7%94%a8"></a></h4><p>和<code>弱引用</code>类似，<code>无主引用</code>不会牢牢保持住引用的实例。但是不像<code>弱引用</code>，总之，<code>无主引用</code>假定是永远有值的。因此，<code>无主引用</code>总是被定义为<em>非可选类型</em>。你可以在声明属性或者变量时，在前面加上关键字 <code>unowned</code> 表示这是一个<code>无主引用</code>。</p>
+<p>由于无主引用是<code>非可选类型</code>，你不需要在使用它的时候将它展开。无主引用总是可以直接访问。不过 <code>ARC</code> 无法在实例被释放后将无主引用设为 <code>nil</code> ，因为非可选类型的变量不允许被赋值为 <code>nil</code> 。</p>
+<blockquote>
+<p><strong>NOTE</strong>
 如果你试图在实例的被释放后访问无主引用，那么你将触发运行时错误。只有在你确保引用会一直引用实例的时候才使用无主引用。
-还要注意的是，如果你试图访问引用的实例已经被释放了的无主引用，Swift 会确保程序直接崩溃。你不会因此而遭遇无法预期的行为。所以你应当避免这样的事情发生。</p></blockquote><p>下面看一个例子</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span><span style=color:#8be9fd;font-style:italic>class</span> <span style=color:#50fa7b>Customer</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span>    <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#8be9fd;font-style:italic>String</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span>    <span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>card</span>: CreditCard?
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span><span>    <span style=color:#8be9fd;font-style:italic>init</span>(name: <span style=color:#8be9fd;font-style:italic>String</span>) {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span><span>        <span style=color:#ff79c6>self</span>.name = name
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span><span>    }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span><span>    <span style=color:#8be9fd;font-style:italic>deinit</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span><span>        print(<span style=color:#f1fa8c>&#34;</span><span style=color:#f1fa8c>\(</span>name<span style=color:#f1fa8c>)</span><span style=color:#f1fa8c> is being deinitialized&#34;</span>)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span>    }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span><span>}
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12</span><span><span style=color:#8be9fd;font-style:italic>class</span> <span style=color:#50fa7b>CreditCard</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13</span><span>    <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>number</span>: <span style=color:#8be9fd;font-style:italic>UInt64</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14</span><span>    <span style=color:#ff79c6>unowned</span> <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>customer</span>: Customer
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15</span><span>    <span style=color:#8be9fd;font-style:italic>init</span>(number: <span style=color:#8be9fd;font-style:italic>UInt64</span>, customer: Customer) {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16</span><span>        <span style=color:#ff79c6>self</span>.number = number
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17</span><span>        <span style=color:#ff79c6>self</span>.customer = customer
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">18</span><span>    }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">19</span><span>    <span style=color:#8be9fd;font-style:italic>deinit</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">20</span><span>        print(<span style=color:#f1fa8c>&#34;Card # </span><span style=color:#f1fa8c>\(</span>number<span style=color:#f1fa8c>)</span><span style=color:#f1fa8c> is being deinitialized&#34;</span>)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">21</span><span>    }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">22</span><span>}
-</span></span></code></pre></div><p><code>Customer</code>和<code>CreditCard</code> 类，模拟了银行客户和客户的信用卡。这两个类中，每一个都将另外一个类的实例作为自身的属性。这种关系可能会造成循环强引用。</p><p><code>Customer</code> 和 <code>CreditCard</code> 之间的关系与前面弱引用例子中 <code>Apartment</code> 和 <code>Person</code> 的关系略微不同。在这个数据模型中，一个客户可能有或者没有信用卡，但是一张信用卡总是关联着一个客户。为了表示这种关系， <code>Customer</code> 类有一个可选类型的 <code>card</code> 属性，但是 <code>CreditCard</code> 类有一个非可选类型的 customer 属性。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span><span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>john</span>: Customer?    <span style=color:#6272a4>//nil</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>john = Customer(name: <span style=color:#f1fa8c>&#34;John Appleseed&#34;</span>)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span>john!.card = CreditCard(number: <span style=color:#bd93f9>1234_5678_9012_3456</span>， customer: john!)
-</span></span></code></pre></div><p>创建一个 <code>Customer</code> 实例，用它初始化和分配一个新的 <code>CreditCard </code>实例作为 <code>customer</code> 的 <code>card</code> 属性.</p><p>现在 <code>Customer</code> 实例对 <code>CreditCard</code> 实例有一个强引用，并且 <code>CreditCard</code> 实例对 <code>Customer</code> 实例有一个无主引用。</p><p>由于 <code>Customer</code> 的无主引用，当你断开 <code>john</code> 变量持有的强引用时，那么就再也没有指向 <code>Customer</code> 实例的强引用了。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>john = <span style=color:#ff79c6>nil</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span><span style=color:#6272a4>// prints &#34;John Appleseed is being deinitialized&#34;</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span><span style=color:#6272a4>// prints &#34;Card #1234567890123456 is being deinitialized&#34;</span>
-</span></span></code></pre></div><blockquote><p><strong>NOTE</strong>
+还要注意的是，如果你试图访问引用的实例已经被释放了的无主引用，Swift 会确保程序直接崩溃。你不会因此而遭遇无法预期的行为。所以你应当避免这样的事情发生。</p>
+</blockquote>
+<p>下面看一个例子</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">Customer</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>    <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">name</span>: <span style="color:#8be9fd;font-style:italic">String</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>    <span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">card</span>: CreditCard?
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>    <span style="color:#8be9fd;font-style:italic">init</span>(name: <span style="color:#8be9fd;font-style:italic">String</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>        <span style="color:#ff79c6">self</span>.name = name
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>    <span style="color:#8be9fd;font-style:italic">deinit</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>        print(<span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\(</span>name<span style="color:#f1fa8c">)</span><span style="color:#f1fa8c"> is being deinitialized&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span><span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">CreditCard</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>    <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">number</span>: <span style="color:#8be9fd;font-style:italic">UInt64</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>    <span style="color:#ff79c6">unowned</span> <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">customer</span>: Customer
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>    <span style="color:#8be9fd;font-style:italic">init</span>(number: <span style="color:#8be9fd;font-style:italic">UInt64</span>, customer: Customer) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span>        <span style="color:#ff79c6">self</span>.number = number
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span><span>        <span style="color:#ff79c6">self</span>.customer = customer
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span><span>    <span style="color:#8be9fd;font-style:italic">deinit</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span><span>        print(<span style="color:#f1fa8c">&#34;Card # </span><span style="color:#f1fa8c">\(</span>number<span style="color:#f1fa8c">)</span><span style="color:#f1fa8c"> is being deinitialized&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22</span><span>}
+</span></span></code></pre></div><p><code>Customer</code>和<code>CreditCard</code> 类，模拟了银行客户和客户的信用卡。这两个类中，每一个都将另外一个类的实例作为自身的属性。这种关系可能会造成循环强引用。</p>
+<p><code>Customer</code> 和 <code>CreditCard</code> 之间的关系与前面弱引用例子中 <code>Apartment</code> 和 <code>Person</code> 的关系略微不同。在这个数据模型中，一个客户可能有或者没有信用卡，但是一张信用卡总是关联着一个客户。为了表示这种关系， <code>Customer</code> 类有一个可选类型的 <code>card</code> 属性，但是 <code>CreditCard</code> 类有一个非可选类型的 customer 属性。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">john</span>: Customer?    <span style="color:#6272a4">//nil</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>john = Customer(name: <span style="color:#f1fa8c">&#34;John Appleseed&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>john!.card = CreditCard(number: <span style="color:#bd93f9">1234_5678_9012_3456</span>， customer: john!)
+</span></span></code></pre></div><p>创建一个 <code>Customer</code> 实例，用它初始化和分配一个新的 <code>CreditCard </code>实例作为 <code>customer</code> 的 <code>card</code> 属性.</p>
+<p>现在 <code>Customer</code> 实例对 <code>CreditCard</code> 实例有一个强引用，并且 <code>CreditCard</code> 实例对 <code>Customer</code> 实例有一个无主引用。</p>
+<p>由于 <code>Customer</code> 的无主引用，当你断开 <code>john</code> 变量持有的强引用时，那么就再也没有指向 <code>Customer</code> 实例的强引用了。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>john = <span style="color:#ff79c6">nil</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span><span style="color:#6272a4">// prints &#34;John Appleseed is being deinitialized&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span><span style="color:#6272a4">// prints &#34;Card #1234567890123456 is being deinitialized&#34;</span>
+</span></span></code></pre></div><blockquote>
+<p><strong>NOTE</strong>
 上边的例子展示了如何使用安全无主引用。Swift 还为你需要关闭运行时安全检查的情况提供了不安全无主引用——举例来说，性能优化的时候。对于所有的不安全操作，你要自己负责检查代码安全性。
-使用 <code>unowned(unsafe)</code> 来明确使用了一个不安全无主引用。如果你在实例的引用被释放后访问这个不安全无主引用，你的程序就会尝试访问这个实例曾今存在过的内存地址，这就是不安全操作。</p></blockquote><h2 id=无主引用和隐式展开的可选属性>无主引用和隐式展开的可选属性<a class=anchorjs-link href=#%e6%97%a0%e4%b8%bb%e5%bc%95%e7%94%a8%e5%92%8c%e9%9a%90%e5%bc%8f%e5%b1%95%e5%bc%80%e7%9a%84%e5%8f%af%e9%80%89%e5%b1%9e%e6%80%a7></a></h2><p><code>Person </code>和 <code>Apartment</code> 的例子展示了两个属性值都允许为<code>nil</code>，并会潜在产生循环强引用。这种场景最适合用弱引用来解决。</p><p><code>Customer</code>和 <code>CreditCard</code>的例子战士胃一个属性值允许为<code>nil</code>，另一个不允许为<code>nil</code>，这也有可能导致循环强引用。这种场景最好使用<code>无主引用</code>来解决。</p><p>还有第三中场景，两个属性都必须有值，并且初始化完成后永远不会为<code>nil</code>。在这种场景中，需要一个类使用<code>无主属性</code>，而另一个类使用隐式展开的<code>可选属性</code>。</p><p>下面的例子定义了两个类，<code>Country</code>和<code>City</code>，每个类将另外一个类的实例保存为属性。在这个数据模型中，每个国家必须有首都，每个城市必须属于一个国家。为了实现这种关系， <code>Country</code> 类拥有一个 <code>capitalCity</code> 属性，而 <code>City</code> 类有一个 <code>country</code> 属性：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span><span style=color:#8be9fd;font-style:italic>class</span> <span style=color:#50fa7b>Country</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span>    <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#8be9fd;font-style:italic>String</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span>    <span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>capitalCity</span>: City!
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span><span>    <span style=color:#8be9fd;font-style:italic>init</span>(name: <span style=color:#8be9fd;font-style:italic>String</span>, capitalName: <span style=color:#8be9fd;font-style:italic>String</span>) {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span><span>        <span style=color:#ff79c6>self</span>.name = name
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span><span>        <span style=color:#ff79c6>self</span>.capitalCity = City(name: capitalName, country: <span style=color:#ff79c6>self</span>)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span><span>    }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span><span>}
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11</span><span><span style=color:#8be9fd;font-style:italic>class</span> <span style=color:#50fa7b>City</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12</span><span>    <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#8be9fd;font-style:italic>String</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13</span><span>    <span style=color:#ff79c6>unowned</span> <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>country</span>: Country
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14</span><span>    <span style=color:#8be9fd;font-style:italic>init</span>(name: <span style=color:#8be9fd;font-style:italic>String</span>, country: Country) {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15</span><span>        <span style=color:#ff79c6>self</span>.name = name
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16</span><span>        <span style=color:#ff79c6>self</span>.country = country
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17</span><span>    }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">18</span><span>}
-</span></span></code></pre></div><p>为了建立两个类的依赖关系，<code>City</code>的初始化器 接收一个<code>Country</code>实例，并且将实例保存 到 <code>country</code>属性。</p><p><code>Country</code>的初始化器调用了<code>City </code>的初始化器。总之，如同在两段式初始化中描述的那样，只有<code>Country</code>的实例完全初始化完成后，<code>Country</code>的初始化器才能把<code>self</code>传给<code>City</code>的初始化器。</p><p>为了满足这种需求，通过在类型结尾处加上感叹号（<code> City!</code> ）的方式，以声明 <code>Country</code> 的 <code>capitalCity</code> 属性为一个隐式展开的可选属性。如同在隐式展开可选项中描述的那样，这意味着像其他可选项一样， <code>capitalCity</code> 属性有一个默认值 <code>nil</code> ，但是不需要展开它的值就能访问它。</p><p>由于 <code>capitalCity</code> 默认值为 <code>nil</code> ，一旦 <code>Country</code> 的实例在初始化器中给 <code>name</code> 属性赋值后，整个初始化过程就完成了。这意味着一旦 <code>name</code> 属性被赋值后， <code>Country</code> 的初始化器就能引用并传递隐式的 <code>self</code> 。 <code>Country</code> 的初始化器在赋值 <code>capitalCity</code> 时，就能将 <code>self</code> 作为参数传递给 <code>City</code> 的初始化器。</p><p>以上的意义在于你可以通过一条语句同时创建<code>Country</code>和<code>City</code>的实例，而不产生循环引用。并且 <code>capitalCity</code> 的属性能被直接访问，而不需要通过感叹号来展开它的可选值：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span><span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>country</span> = Country(name: <span style=color:#f1fa8c>&#34;Canada&#34;</span>, capitalName: <span style=color:#f1fa8c>&#34;Ottawa&#34;</span>)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>print(<span style=color:#f1fa8c>&#34;</span><span style=color:#f1fa8c>\(</span>country.name<span style=color:#f1fa8c>)</span><span style=color:#f1fa8c>&#39;s capital city is called </span><span style=color:#f1fa8c>\(</span>country.capitalCity.name<span style=color:#f1fa8c>)</span><span style=color:#f1fa8c>&#34;</span>)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span><span style=color:#6272a4>// prints &#34;Canada&#39;s capital city is called Ottawa&#34;</span>
-</span></span></code></pre></div><h2 id=闭包的循环强引用>闭包的循环强引用<a class=anchorjs-link href=#%e9%97%ad%e5%8c%85%e7%9a%84%e5%be%aa%e7%8e%af%e5%bc%ba%e5%bc%95%e7%94%a8></a></h2><p>循环强引用还会出现在你把一个闭包分配给类实例属性的时候，并且这个闭包中又捕获了这个实例。
-捕获可能发生于这个闭包函数体中访问了实例的某个属性，比如<code>self.someProperty</code>，或者这个闭包调用了一个实例的方法，例如<code>self.someMethod()</code>. 这两种情况都导致了闭包“捕获”了<code>self</code>，从而产生了循环强引用。</p><p><code>循环强引用</code>的产生，是因为闭包和类相似，都是<code>引用类型</code>。当你把闭包赋值给了一个属性，你实际上是把一个引用赋值给了这个闭包。实质上，这跟之前上面的问题是一样的——两个强引用让彼此一直有效。总之，和两个类实例不同，这次一个是类实例和一个闭包互相引用。</p><p><code>Swift</code> 提供了一种优雅的方法来解决这个问题，称之为闭包捕获列表（ <code>closuer capture list</code>）。不过，在学习如何用闭包捕获列表打破循环强引用之前，我们还是先来了解一下这个循环强引用是如何产生的，这对我们很有帮助。</p><p>下面的例子为你展示了当一个闭包引用了<code>self</code>后是如何产生一个循环强引用的。例子中定义了一个叫 <code>HTMLElement</code> 的类，用一种简单的模型表示 <code>HTML</code> 中的一个单独的元素：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span><span style=color:#8be9fd;font-style:italic>class</span> <span style=color:#50fa7b>HTMLElement</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span>    <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#8be9fd;font-style:italic>String</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span>    <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>text</span>: <span style=color:#8be9fd;font-style:italic>String</span>?
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span><span>    <span style=color:#ff79c6>lazy</span> <span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>asHTML</span>: (<span style=color:#8be9fd;font-style:italic>Void</span>) -&gt; <span style=color:#8be9fd;font-style:italic>String</span> = {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span><span>        <span style=color:#ff79c6>if</span> <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>text</span> = <span style=color:#ff79c6>self</span>.text {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span><span>            <span style=color:#ff79c6>return</span> <span style=color:#f1fa8c>&#34;&lt;</span><span style=color:#f1fa8c>\(</span><span style=color:#ff79c6>self</span>.name<span style=color:#f1fa8c>)</span><span style=color:#f1fa8c>&gt;</span><span style=color:#f1fa8c>\(</span>text<span style=color:#f1fa8c>)</span><span style=color:#f1fa8c>&lt;/</span><span style=color:#f1fa8c>\(</span><span style=color:#ff79c6>self</span>.name<span style=color:#f1fa8c>)</span><span style=color:#f1fa8c>&gt;&#34;</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span><span>        } <span style=color:#ff79c6>else</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span><span>            <span style=color:#ff79c6>return</span> <span style=color:#f1fa8c>&#34;&lt;</span><span style=color:#f1fa8c>\(</span><span style=color:#ff79c6>self</span>.name<span style=color:#f1fa8c>)</span><span style=color:#f1fa8c> /&gt;&#34;</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span>        }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span><span>    }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11</span><span>    <span style=color:#8be9fd;font-style:italic>init</span>(name: <span style=color:#8be9fd;font-style:italic>String</span>, text: <span style=color:#8be9fd;font-style:italic>String</span>? = <span style=color:#ff79c6>nil</span>) {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12</span><span>        <span style=color:#ff79c6>self</span>.name = name
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13</span><span>        <span style=color:#ff79c6>self</span>.text = text
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14</span><span>    }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15</span><span>    
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16</span><span>    <span style=color:#8be9fd;font-style:italic>deinit</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17</span><span>        print(<span style=color:#f1fa8c>&#34;</span><span style=color:#f1fa8c>\(</span>name<span style=color:#f1fa8c>)</span><span style=color:#f1fa8c> is being deinitialized&#34;</span>)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">18</span><span>    }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">19</span><span>}
-</span></span></code></pre></div><p>默认情况下，闭包赋值给了 <code>asHTML</code> 属性，这个闭包返回一个代表<code>HTML</code>标签的字符串。如果 <code>text</code> 值存在，该标签就包含可选值 <code>text</code> ；如果 <code>text</code> 不存在，该标签就不包含文本。对于段落元素，根据 <code>text</code> 是 &ldquo;some text&rdquo; 还是 <code>nil</code> ，闭包会返回 <code>&lt;p>some text&lt;/p></code> 或者 <code>&lt;p /></code> 。</p><p>可以像实例方法那样去命名、使用 <code>asHTML</code> 属性。总之，由于 <code>asHTML</code> 是闭包而不是实例方法，如果你想改变特定元素的 <code>HTML </code>处理的话，可以用自定义的闭包来取代默认值。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>let heading = HTMLElement(name: &#34;h1&#34;)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>let defaultText = &#34;some default text&#34;
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>heading.asHTML = {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span>    return &#34;&lt;\(heading.name)&gt;\(heading.text ?? defaultText)&lt;/\(heading.name)&gt;&#34;
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">5</span><span>}
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">6</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">7</span><span>print(heading.asHTML())
-</span></span></code></pre></div><blockquote><p><strong>NOTE</strong>
+使用 <code>unowned(unsafe)</code> 来明确使用了一个不安全无主引用。如果你在实例的引用被释放后访问这个不安全无主引用，你的程序就会尝试访问这个实例曾今存在过的内存地址，这就是不安全操作。</p>
+</blockquote>
+<h2 id="无主引用和隐式展开的可选属性">无主引用和隐式展开的可选属性<a class="anchorjs-link" href="#%e6%97%a0%e4%b8%bb%e5%bc%95%e7%94%a8%e5%92%8c%e9%9a%90%e5%bc%8f%e5%b1%95%e5%bc%80%e7%9a%84%e5%8f%af%e9%80%89%e5%b1%9e%e6%80%a7"></a></h2><p><code>Person </code>和 <code>Apartment</code> 的例子展示了两个属性值都允许为<code>nil</code>，并会潜在产生循环强引用。这种场景最适合用弱引用来解决。</p>
+<p><code>Customer</code>和 <code>CreditCard</code>的例子战士胃一个属性值允许为<code>nil</code>，另一个不允许为<code>nil</code>，这也有可能导致循环强引用。这种场景最好使用<code>无主引用</code>来解决。</p>
+<p>还有第三中场景，两个属性都必须有值，并且初始化完成后永远不会为<code>nil</code>。在这种场景中，需要一个类使用<code>无主属性</code>，而另一个类使用隐式展开的<code>可选属性</code>。</p>
+<p>下面的例子定义了两个类，<code>Country</code>和<code>City</code>，每个类将另外一个类的实例保存为属性。在这个数据模型中，每个国家必须有首都，每个城市必须属于一个国家。为了实现这种关系， <code>Country</code> 类拥有一个 <code>capitalCity</code> 属性，而 <code>City</code> 类有一个 <code>country</code> 属性：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">Country</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>    <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">name</span>: <span style="color:#8be9fd;font-style:italic">String</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>    <span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">capitalCity</span>: City!
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>    <span style="color:#8be9fd;font-style:italic">init</span>(name: <span style="color:#8be9fd;font-style:italic">String</span>, capitalName: <span style="color:#8be9fd;font-style:italic">String</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>        <span style="color:#ff79c6">self</span>.name = name
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>        <span style="color:#ff79c6">self</span>.capitalCity = City(name: capitalName, country: <span style="color:#ff79c6">self</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span><span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">City</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>    <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">name</span>: <span style="color:#8be9fd;font-style:italic">String</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>    <span style="color:#ff79c6">unowned</span> <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">country</span>: Country
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>    <span style="color:#8be9fd;font-style:italic">init</span>(name: <span style="color:#8be9fd;font-style:italic">String</span>, country: Country) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>        <span style="color:#ff79c6">self</span>.name = name
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span>        <span style="color:#ff79c6">self</span>.country = country
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span><span>}
+</span></span></code></pre></div><p>为了建立两个类的依赖关系，<code>City</code>的初始化器 接收一个<code>Country</code>实例，并且将实例保存 到 <code>country</code>属性。</p>
+<p><code>Country</code>的初始化器调用了<code>City </code>的初始化器。总之，如同在两段式初始化中描述的那样，只有<code>Country</code>的实例完全初始化完成后，<code>Country</code>的初始化器才能把<code>self</code>传给<code>City</code>的初始化器。</p>
+<p>为了满足这种需求，通过在类型结尾处加上感叹号（<code> City!</code> ）的方式，以声明 <code>Country</code> 的 <code>capitalCity</code> 属性为一个隐式展开的可选属性。如同在隐式展开可选项中描述的那样，这意味着像其他可选项一样， <code>capitalCity</code> 属性有一个默认值 <code>nil</code> ，但是不需要展开它的值就能访问它。</p>
+<p>由于 <code>capitalCity</code> 默认值为 <code>nil</code> ，一旦 <code>Country</code> 的实例在初始化器中给 <code>name</code> 属性赋值后，整个初始化过程就完成了。这意味着一旦 <code>name</code> 属性被赋值后， <code>Country</code> 的初始化器就能引用并传递隐式的 <code>self</code> 。 <code>Country</code> 的初始化器在赋值 <code>capitalCity</code> 时，就能将 <code>self</code> 作为参数传递给 <code>City</code> 的初始化器。</p>
+<p>以上的意义在于你可以通过一条语句同时创建<code>Country</code>和<code>City</code>的实例，而不产生循环引用。并且 <code>capitalCity</code> 的属性能被直接访问，而不需要通过感叹号来展开它的可选值：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">country</span> = Country(name: <span style="color:#f1fa8c">&#34;Canada&#34;</span>, capitalName: <span style="color:#f1fa8c">&#34;Ottawa&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>print(<span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\(</span>country.name<span style="color:#f1fa8c">)</span><span style="color:#f1fa8c">&#39;s capital city is called </span><span style="color:#f1fa8c">\(</span>country.capitalCity.name<span style="color:#f1fa8c">)</span><span style="color:#f1fa8c">&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span><span style="color:#6272a4">// prints &#34;Canada&#39;s capital city is called Ottawa&#34;</span>
+</span></span></code></pre></div><h2 id="闭包的循环强引用">闭包的循环强引用<a class="anchorjs-link" href="#%e9%97%ad%e5%8c%85%e7%9a%84%e5%be%aa%e7%8e%af%e5%bc%ba%e5%bc%95%e7%94%a8"></a></h2><p>循环强引用还会出现在你把一个闭包分配给类实例属性的时候，并且这个闭包中又捕获了这个实例。
+捕获可能发生于这个闭包函数体中访问了实例的某个属性，比如<code>self.someProperty</code>，或者这个闭包调用了一个实例的方法，例如<code>self.someMethod()</code>. 这两种情况都导致了闭包“捕获”了<code>self</code>，从而产生了循环强引用。</p>
+<p><code>循环强引用</code>的产生，是因为闭包和类相似，都是<code>引用类型</code>。当你把闭包赋值给了一个属性，你实际上是把一个引用赋值给了这个闭包。实质上，这跟之前上面的问题是一样的——两个强引用让彼此一直有效。总之，和两个类实例不同，这次一个是类实例和一个闭包互相引用。</p>
+<p><code>Swift</code> 提供了一种优雅的方法来解决这个问题，称之为闭包捕获列表（ <code>closuer capture list</code>）。不过，在学习如何用闭包捕获列表打破循环强引用之前，我们还是先来了解一下这个循环强引用是如何产生的，这对我们很有帮助。</p>
+<p>下面的例子为你展示了当一个闭包引用了<code>self</code>后是如何产生一个循环强引用的。例子中定义了一个叫 <code>HTMLElement</code> 的类，用一种简单的模型表示 <code>HTML</code> 中的一个单独的元素：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">HTMLElement</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>    <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">name</span>: <span style="color:#8be9fd;font-style:italic">String</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>    <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">text</span>: <span style="color:#8be9fd;font-style:italic">String</span>?
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>    <span style="color:#ff79c6">lazy</span> <span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">asHTML</span>: (<span style="color:#8be9fd;font-style:italic">Void</span>) -&gt; <span style="color:#8be9fd;font-style:italic">String</span> = {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>        <span style="color:#ff79c6">if</span> <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">text</span> = <span style="color:#ff79c6">self</span>.text {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>            <span style="color:#ff79c6">return</span> <span style="color:#f1fa8c">&#34;&lt;</span><span style="color:#f1fa8c">\(</span><span style="color:#ff79c6">self</span>.name<span style="color:#f1fa8c">)</span><span style="color:#f1fa8c">&gt;</span><span style="color:#f1fa8c">\(</span>text<span style="color:#f1fa8c">)</span><span style="color:#f1fa8c">&lt;/</span><span style="color:#f1fa8c">\(</span><span style="color:#ff79c6">self</span>.name<span style="color:#f1fa8c">)</span><span style="color:#f1fa8c">&gt;&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>        } <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>            <span style="color:#ff79c6">return</span> <span style="color:#f1fa8c">&#34;&lt;</span><span style="color:#f1fa8c">\(</span><span style="color:#ff79c6">self</span>.name<span style="color:#f1fa8c">)</span><span style="color:#f1fa8c"> /&gt;&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>        }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>    <span style="color:#8be9fd;font-style:italic">init</span>(name: <span style="color:#8be9fd;font-style:italic">String</span>, text: <span style="color:#8be9fd;font-style:italic">String</span>? = <span style="color:#ff79c6">nil</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>        <span style="color:#ff79c6">self</span>.name = name
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>        <span style="color:#ff79c6">self</span>.text = text
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>    
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span>    <span style="color:#8be9fd;font-style:italic">deinit</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span><span>        print(<span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\(</span>name<span style="color:#f1fa8c">)</span><span style="color:#f1fa8c"> is being deinitialized&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span><span>}
+</span></span></code></pre></div><p>默认情况下，闭包赋值给了 <code>asHTML</code> 属性，这个闭包返回一个代表<code>HTML</code>标签的字符串。如果 <code>text</code> 值存在，该标签就包含可选值 <code>text</code> ；如果 <code>text</code> 不存在，该标签就不包含文本。对于段落元素，根据 <code>text</code> 是 &ldquo;some text&rdquo; 还是 <code>nil</code> ，闭包会返回 <code>&lt;p&gt;some text&lt;/p&gt;</code> 或者 <code>&lt;p /&gt;</code> 。</p>
+<p>可以像实例方法那样去命名、使用 <code>asHTML</code> 属性。总之，由于 <code>asHTML</code> 是闭包而不是实例方法，如果你想改变特定元素的 <code>HTML </code>处理的话，可以用自定义的闭包来取代默认值。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>let heading = HTMLElement(name: &#34;h1&#34;)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>let defaultText = &#34;some default text&#34;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>heading.asHTML = {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>    return &#34;&lt;\(heading.name)&gt;\(heading.text ?? defaultText)&lt;/\(heading.name)&gt;&#34;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7</span><span>print(heading.asHTML())
+</span></span></code></pre></div><blockquote>
+<p><strong>NOTE</strong>
 <code>asHTML</code> 声明为<code>lazy</code>属性，因为只有当元素确实需要处理为<code>HTML</code>输出的字符串时，才需要使用 <code>asHTML </code>。
-实际上 asHTML 是延迟加载属性意味着你在默认的闭包中可以使用 <code>self</code> ，因为只有当初始化完成以及 self 确实存在后，才能访问延迟加载属性。</p></blockquote><p><code>HTMLElement</code> 类只提供一个初始化器，通过 name 和 text （如果有的话）参数来初始化一个元素。该类也定义了一个初始化器，当 <code>HTMLElement</code> 实例被释放时打印一条消息。</p><p>实例的 <code>asHTML</code> 属性持有闭包的强引用。但是，闭包在其闭包体内使用了 <code>self </code>（引用了 <code>self.name</code> 和 <code>self.text</code> ），因此闭包捕获了 <code>self</code> ，这意味着闭包又反过来持有了 <code>HTMLElement</code> 实例的强引用。这样两个对象就产生了循环强引用。（更多关于闭包捕获值的信息，请参考值捕获）。</p><blockquote><p><strong>NOTE</strong>
-尽管闭包多次引用<code>HTMLElement</code>,它只捕获<code>HTMLElement</code>实例的一个强引用。</p></blockquote><p>如果设置 paragraph 变量为 nil ，打破它持有的 HTMLElement 实例的强引用， HTMLElement 实例和它的闭包都不会被释放，也是因为循环强引用。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>paragraph = nil
-</span></span></code></pre></div><h2 id=解决闭包的循环强引用>解决闭包的循环强引用<a class=anchorjs-link href=#%e8%a7%a3%e5%86%b3%e9%97%ad%e5%8c%85%e7%9a%84%e5%be%aa%e7%8e%af%e5%bc%ba%e5%bc%95%e7%94%a8></a></h2><p>你可以通过定义捕获列表作为闭包的定义来解决在闭包和类实例之间的循环强引用。捕获列表定义了当在闭包体里捕获一个或多个引用类型的规则。正如在两个类实例之间的循环强引用，声明每个捕获的引用为引用或无主引用而不是强引用。应当根据代码关系来决定使用弱引用还是无主引用。</p><blockquote><p><strong>NOTE</strong>
-<code>Swift</code> 要求你在闭包中引用<code>self</code>成员时使用 <code>self.someProperty</code> 或者<code> self.someMethod</code> （而不只是 <code>someProperty</code> 或 <code>someMethod</code> ）。这有助于提醒你可能会一不小心就捕获了 <code>self</code> 。</p></blockquote><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span><span style=color:#ff79c6>lazy</span> <span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>someClosure</span>: (<span style=color:#8be9fd;font-style:italic>Int</span>, <span style=color:#8be9fd;font-style:italic>String</span>) -&gt; <span style=color:#8be9fd;font-style:italic>String</span> = {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>    [<span style=color:#ff79c6>unowned</span> <span style=color:#ff79c6>self</span>, <span style=color:#ff79c6>weak</span> delegate = <span style=color:#ff79c6>self</span>.delegate!] (index: <span style=color:#8be9fd;font-style:italic>Int</span>, stringToProcess: <span style=color:#8be9fd;font-style:italic>String</span>) -&gt; <span style=color:#8be9fd;font-style:italic>String</span> <span style=color:#ff79c6>in</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>    <span style=color:#6272a4>// closure body goes here</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span>}
-</span></span></code></pre></div><p>如果闭包没有指明形式参数列表或者返回类型，是因为它们会通过上下文推断，那么就把捕获列表放在关键字 in 前边，闭包最开始的地方：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span><span style=color:#ff79c6>lazy</span> <span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>someClosure</span>: <span style=color:#8be9fd;font-style:italic>Void</span> -&gt; <span style=color:#8be9fd;font-style:italic>String</span> = {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>    [<span style=color:#ff79c6>unowned</span> <span style=color:#ff79c6>self</span>, <span style=color:#ff79c6>weak</span> delegate = <span style=color:#ff79c6>self</span>.delegate!] <span style=color:#ff79c6>in</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>    <span style=color:#6272a4>// closure body goes here</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span>}
-</span></span></code></pre></div><h2 id=弱引用和无主引用>弱引用和无主引用<a class=anchorjs-link href=#%e5%bc%b1%e5%bc%95%e7%94%a8%e5%92%8c%e6%97%a0%e4%b8%bb%e5%bc%95%e7%94%a8></a></h2><p>在闭包和捕获的实例总是互相引用并且总是同时释放时，将闭包内的捕获定义为无主引用。</p><p>相反，在被捕获的引用可能会变为 nil 时，定义一个弱引用的捕获。弱引用总是可选项，当实例的引用释放时会自动变为 nil 。这使我们可以在闭包体内检查它们是否存在。</p><blockquote><p><strong>NOTE</strong>
-如果被捕获的引用永远不会变为<code>nil</code> ，应该用无主引用而不是弱引用。</p></blockquote><p>前面的 <code>HTMLElement </code>例子中，无主引用是正确的解决循环强引用的方法。这样编写 <code>HTMLElement</code> 类来避免循环强引用：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span><span style=color:#8be9fd;font-style:italic>class</span> <span style=color:#50fa7b>HTMLElement</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span>    
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span>    <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>name</span>: <span style=color:#8be9fd;font-style:italic>String</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span><span>    <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>text</span>: <span style=color:#8be9fd;font-style:italic>String</span>?
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span><span>    
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span><span>    <span style=color:#ff79c6>lazy</span> <span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>asHTML</span>: <span style=color:#8be9fd;font-style:italic>Void</span> -&gt; <span style=color:#8be9fd;font-style:italic>String</span> = {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span><span>        [<span style=color:#ff79c6>unowned</span> <span style=color:#ff79c6>self</span>] <span style=color:#ff79c6>in</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span><span>        <span style=color:#ff79c6>if</span> <span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>text</span> = <span style=color:#ff79c6>self</span>.text {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span>            <span style=color:#ff79c6>return</span> <span style=color:#f1fa8c>&#34;&lt;</span><span style=color:#f1fa8c>\(</span><span style=color:#ff79c6>self</span>.name<span style=color:#f1fa8c>)</span><span style=color:#f1fa8c>&gt;</span><span style=color:#f1fa8c>\(</span>text<span style=color:#f1fa8c>)</span><span style=color:#f1fa8c>&lt;/</span><span style=color:#f1fa8c>\(</span><span style=color:#ff79c6>self</span>.name<span style=color:#f1fa8c>)</span><span style=color:#f1fa8c>&gt;&#34;</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span><span>        } <span style=color:#ff79c6>else</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11</span><span>            <span style=color:#ff79c6>return</span> <span style=color:#f1fa8c>&#34;&lt;</span><span style=color:#f1fa8c>\(</span><span style=color:#ff79c6>self</span>.name<span style=color:#f1fa8c>)</span><span style=color:#f1fa8c> /&gt;&#34;</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12</span><span>        }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13</span><span>    }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14</span><span>    
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15</span><span>    <span style=color:#8be9fd;font-style:italic>init</span>(name: <span style=color:#8be9fd;font-style:italic>String</span>, text: <span style=color:#8be9fd;font-style:italic>String</span>? = <span style=color:#ff79c6>nil</span>) {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16</span><span>        <span style=color:#ff79c6>self</span>.name = name
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17</span><span>        <span style=color:#ff79c6>self</span>.text = text
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">18</span><span>    }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">19</span><span>    
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">20</span><span>    <span style=color:#8be9fd;font-style:italic>deinit</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">21</span><span>        print(<span style=color:#f1fa8c>&#34;</span><span style=color:#f1fa8c>\(</span>name<span style=color:#f1fa8c>)</span><span style=color:#f1fa8c> is being deinitialized&#34;</span>)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">22</span><span>    }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">23</span><span>}
-</span></span></code></pre></div><p>上面的 <code>HTMLElement</code> 实现和之前的实现一致，除了在<code> asHTML</code> 闭包中多了一个捕获列表。这里，捕获列表是 <code>[unowned self]</code> ，表示“用无主引用而不是强引用来捕获 <code>self</code> 。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span><span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>paragraph</span>: HTMLElement? = HTMLElement(name: <span style=color:#f1fa8c>&#34;p&#34;</span>, text: <span style=color:#f1fa8c>&#34;hello, world&#34;</span>)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>print(paragraph!.asHTML())
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span><span style=color:#6272a4>// prints &#34;&lt;p&gt;hello, world&lt;/p&gt;&#34;</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">5</span><span>paragraph = <span style=color:#ff79c6>nil</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">6</span><span><span style=color:#6272a4>// prints &#34;p is being deinitialized&#34;</span>
-</span></span></code></pre></div><p>end!!!</p><hr style=visibility:hidden><ul class=pager><li class=previous><a href=https://fninit.com/posts/2016/ios-remotenotification/ data-toggle=tooltip data-placement=top title=iOS:关于iOS的推送>Previous<br><span>iOS:关于iOS的推送</span></a></li><li class=next><a href=https://fninit.com/posts/2017/objc-gcd/ data-toggle=tooltip data-placement=top title=读:《Objective-C高级编程》之GCD>Next<br><span>读:《Objective-C高级编程》之GCD</span></a></li></ul><hr style=visibility:hidden></div><div class="col-lg-8 col-lg-offset-2
-col-md-10 col-md-offset-1
-sidebar-container"><section><hr class="hidden-sm hidden-xs"><h5>FEATURED TAGS</h5><div class=tags><a href=https://fninit.com/tags/css/>css</a>
-<a href=https://fninit.com/tags/debian/>debian</a>
-<a href=https://fninit.com/tags/fzf/>fzf</a>
-<a href=https://fninit.com/tags/gcd/>gcd</a>
-<a href=https://fninit.com/tags/gem/>gem</a>
-<a href=https://fninit.com/tags/git/>git</a>
-<a href=https://fninit.com/tags/go/>go</a>
-<a href=https://fninit.com/tags/golang/>golang</a>
-<a href=https://fninit.com/tags/hugo/>hugo</a>
-<a href=https://fninit.com/tags/ios/>iOS</a>
-<a href=https://fninit.com/tags/kindle/>Kindle</a>
-<a href=https://fninit.com/tags/kvocontroller/>KVOController</a>
-<a href=https://fninit.com/tags/linux/>linux</a>
-<a href=https://fninit.com/tags/macos/>MacOS</a>
-<a href=https://fninit.com/tags/neovim/>neovim</a>
-<a href=https://fninit.com/tags/runtime/>runtime</a>
-<a href=https://fninit.com/tags/rust/>rust</a>
-<a href=https://fninit.com/tags/ss/>ss</a>
-<a href=https://fninit.com/tags/ssh/>ssh</a>
-<a href=https://fninit.com/tags/swift/>Swift</a>
-<a href=https://fninit.com/tags/vim/>vim</a>
-<a href=https://fninit.com/tags/webhook/>webhook</a>
-<a href=https://fninit.com/tags/wubi/>wubi</a>
-<a href=https://fninit.com/tags/zabbix/>zabbix</a></div></section><hr><h5>FRIENDS</h5><ul class=list-inline><li><a href></a></li></ul></div></div></div></article><footer><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><ul class="list-inline text-center"><li><a href=/index.xml><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i>
-<i class="fa fa-rss fa-stack-1x fa-inverse"></i></span></a></li><li><a target=_blank href=https://github.com/roninro><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i>
-<i class="fa fa-github fa-stack-1x fa-inverse"></i></span></a></li></ul><p class="copyright text-muted">Copyright &copy; RoninRo's Blog 2022<br>Powered by <a href=https://gohugo.io>Hugo</a></p></div></div></div></footer><script src=/js/jquery.min.js></script>
-<script src=/js/bootstrap.min.js crossorigin=anonymous></script>
-<script src=https://fninit.com/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js></script>
-<script src=/js/simple-jekyll-search.min.js></script>
-<script src=https://fninit.com/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js></script>
-<script></script><script src=/zoomjs/zoom.min.js></script></body></html>
+实际上 asHTML 是延迟加载属性意味着你在默认的闭包中可以使用 <code>self</code> ，因为只有当初始化完成以及 self 确实存在后，才能访问延迟加载属性。</p>
+</blockquote>
+<p><code>HTMLElement</code> 类只提供一个初始化器，通过 name 和 text （如果有的话）参数来初始化一个元素。该类也定义了一个初始化器，当 <code>HTMLElement</code> 实例被释放时打印一条消息。</p>
+<p>实例的 <code>asHTML</code> 属性持有闭包的强引用。但是，闭包在其闭包体内使用了 <code>self </code>（引用了 <code>self.name</code> 和 <code>self.text</code> ），因此闭包捕获了 <code>self</code> ，这意味着闭包又反过来持有了 <code>HTMLElement</code> 实例的强引用。这样两个对象就产生了循环强引用。（更多关于闭包捕获值的信息，请参考值捕获）。</p>
+<blockquote>
+<p><strong>NOTE</strong>
+尽管闭包多次引用<code>HTMLElement</code>,它只捕获<code>HTMLElement</code>实例的一个强引用。</p>
+</blockquote>
+<p>如果设置 paragraph 变量为 nil ，打破它持有的 HTMLElement 实例的强引用， HTMLElement 实例和它的闭包都不会被释放，也是因为循环强引用。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>paragraph = nil
+</span></span></code></pre></div><h2 id="解决闭包的循环强引用">解决闭包的循环强引用<a class="anchorjs-link" href="#%e8%a7%a3%e5%86%b3%e9%97%ad%e5%8c%85%e7%9a%84%e5%be%aa%e7%8e%af%e5%bc%ba%e5%bc%95%e7%94%a8"></a></h2><p>你可以通过定义捕获列表作为闭包的定义来解决在闭包和类实例之间的循环强引用。捕获列表定义了当在闭包体里捕获一个或多个引用类型的规则。正如在两个类实例之间的循环强引用，声明每个捕获的引用为引用或无主引用而不是强引用。应当根据代码关系来决定使用弱引用还是无主引用。</p>
+<blockquote>
+<p><strong>NOTE</strong>
+<code>Swift</code> 要求你在闭包中引用<code>self</code>成员时使用 <code>self.someProperty</code> 或者<code> self.someMethod</code> （而不只是 <code>someProperty</code> 或 <code>someMethod</code> ）。这有助于提醒你可能会一不小心就捕获了 <code>self</code> 。</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#ff79c6">lazy</span> <span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">someClosure</span>: (<span style="color:#8be9fd;font-style:italic">Int</span>, <span style="color:#8be9fd;font-style:italic">String</span>) -&gt; <span style="color:#8be9fd;font-style:italic">String</span> = {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>    [<span style="color:#ff79c6">unowned</span> <span style="color:#ff79c6">self</span>, <span style="color:#ff79c6">weak</span> delegate = <span style="color:#ff79c6">self</span>.delegate!] (index: <span style="color:#8be9fd;font-style:italic">Int</span>, stringToProcess: <span style="color:#8be9fd;font-style:italic">String</span>) -&gt; <span style="color:#8be9fd;font-style:italic">String</span> <span style="color:#ff79c6">in</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>    <span style="color:#6272a4">// closure body goes here</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>}
+</span></span></code></pre></div><p>如果闭包没有指明形式参数列表或者返回类型，是因为它们会通过上下文推断，那么就把捕获列表放在关键字 in 前边，闭包最开始的地方：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#ff79c6">lazy</span> <span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">someClosure</span>: <span style="color:#8be9fd;font-style:italic">Void</span> -&gt; <span style="color:#8be9fd;font-style:italic">String</span> = {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>    [<span style="color:#ff79c6">unowned</span> <span style="color:#ff79c6">self</span>, <span style="color:#ff79c6">weak</span> delegate = <span style="color:#ff79c6">self</span>.delegate!] <span style="color:#ff79c6">in</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>    <span style="color:#6272a4">// closure body goes here</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>}
+</span></span></code></pre></div><h2 id="弱引用和无主引用">弱引用和无主引用<a class="anchorjs-link" href="#%e5%bc%b1%e5%bc%95%e7%94%a8%e5%92%8c%e6%97%a0%e4%b8%bb%e5%bc%95%e7%94%a8"></a></h2><p>在闭包和捕获的实例总是互相引用并且总是同时释放时，将闭包内的捕获定义为无主引用。</p>
+<p>相反，在被捕获的引用可能会变为 nil 时，定义一个弱引用的捕获。弱引用总是可选项，当实例的引用释放时会自动变为 nil 。这使我们可以在闭包体内检查它们是否存在。</p>
+<blockquote>
+<p><strong>NOTE</strong>
+如果被捕获的引用永远不会变为<code>nil</code> ，应该用无主引用而不是弱引用。</p>
+</blockquote>
+<p>前面的 <code>HTMLElement </code>例子中，无主引用是正确的解决循环强引用的方法。这样编写 <code>HTMLElement</code> 类来避免循环强引用：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">HTMLElement</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>    
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>    <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">name</span>: <span style="color:#8be9fd;font-style:italic">String</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>    <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">text</span>: <span style="color:#8be9fd;font-style:italic">String</span>?
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>    
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>    <span style="color:#ff79c6">lazy</span> <span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">asHTML</span>: <span style="color:#8be9fd;font-style:italic">Void</span> -&gt; <span style="color:#8be9fd;font-style:italic">String</span> = {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>        [<span style="color:#ff79c6">unowned</span> <span style="color:#ff79c6">self</span>] <span style="color:#ff79c6">in</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>        <span style="color:#ff79c6">if</span> <span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">text</span> = <span style="color:#ff79c6">self</span>.text {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>            <span style="color:#ff79c6">return</span> <span style="color:#f1fa8c">&#34;&lt;</span><span style="color:#f1fa8c">\(</span><span style="color:#ff79c6">self</span>.name<span style="color:#f1fa8c">)</span><span style="color:#f1fa8c">&gt;</span><span style="color:#f1fa8c">\(</span>text<span style="color:#f1fa8c">)</span><span style="color:#f1fa8c">&lt;/</span><span style="color:#f1fa8c">\(</span><span style="color:#ff79c6">self</span>.name<span style="color:#f1fa8c">)</span><span style="color:#f1fa8c">&gt;&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>        } <span style="color:#ff79c6">else</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>            <span style="color:#ff79c6">return</span> <span style="color:#f1fa8c">&#34;&lt;</span><span style="color:#f1fa8c">\(</span><span style="color:#ff79c6">self</span>.name<span style="color:#f1fa8c">)</span><span style="color:#f1fa8c"> /&gt;&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>        }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>    
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>    <span style="color:#8be9fd;font-style:italic">init</span>(name: <span style="color:#8be9fd;font-style:italic">String</span>, text: <span style="color:#8be9fd;font-style:italic">String</span>? = <span style="color:#ff79c6">nil</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span>        <span style="color:#ff79c6">self</span>.name = name
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span><span>        <span style="color:#ff79c6">self</span>.text = text
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span><span>    
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span><span>    <span style="color:#8be9fd;font-style:italic">deinit</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21</span><span>        print(<span style="color:#f1fa8c">&#34;</span><span style="color:#f1fa8c">\(</span>name<span style="color:#f1fa8c">)</span><span style="color:#f1fa8c"> is being deinitialized&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23</span><span>}
+</span></span></code></pre></div><p>上面的 <code>HTMLElement</code> 实现和之前的实现一致，除了在<code> asHTML</code> 闭包中多了一个捕获列表。这里，捕获列表是 <code>[unowned self]</code> ，表示“用无主引用而不是强引用来捕获 <code>self</code> 。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">paragraph</span>: HTMLElement? = HTMLElement(name: <span style="color:#f1fa8c">&#34;p&#34;</span>, text: <span style="color:#f1fa8c">&#34;hello, world&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>print(paragraph!.asHTML())
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span><span style="color:#6272a4">// prints &#34;&lt;p&gt;hello, world&lt;/p&gt;&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>paragraph = <span style="color:#ff79c6">nil</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6</span><span><span style="color:#6272a4">// prints &#34;p is being deinitialized&#34;</span>
+</span></span></code></pre></div><p>end!!!</p>
+
+
+        <hr style="visibility: hidden;" />
+        <ul class="pager">
+          
+          <li class="previous">
+            <a href="/posts/2016/ios-remotenotification/" data-toggle="tooltip" data-placement="top" title="iOS:关于iOS的推送">
+              Previous<br>
+              <span>iOS:关于iOS的推送</span>
+            </a>
+          </li>
+          
+          
+          <li class="next">
+            <a href="/posts/2017/objc-gcd/" data-toggle="tooltip" data-placement="top" title="读:《Objective-C高级编程》之GCD">
+              Next<br>
+              <span>读:《Objective-C高级编程》之GCD</span>
+            </a>
+          </li>
+          
+        </ul>
+        <hr style="visibility: hidden;" />
+
+        
+        
+
+
+
+
+
+      </div>
+
+      
+      
+      
+      
+      <div class="
+              col-lg-8 col-lg-offset-2
+              col-md-10 col-md-offset-1
+              sidebar-container">
+
+        
+        
+        <section>
+  
+  
+  <hr class="hidden-sm hidden-xs">
+  
+  <h5>FEATURED TAGS</h5>
+  <div class="tags">
+    
+    <a href="/tags/css/">css</a>
+    
+    <a href="/tags/debian/">debian</a>
+    
+    <a href="/tags/fzf/">fzf</a>
+    
+    <a href="/tags/gcd/">gcd</a>
+    
+    <a href="/tags/gem/">gem</a>
+    
+    <a href="/tags/git/">git</a>
+    
+    <a href="/tags/go/">go</a>
+    
+    <a href="/tags/golang/">golang</a>
+    
+    <a href="/tags/hugo/">hugo</a>
+    
+    <a href="/tags/ios/">iOS</a>
+    
+    <a href="/tags/kindle/">Kindle</a>
+    
+    <a href="/tags/kvocontroller/">KVOController</a>
+    
+    <a href="/tags/linux/">linux</a>
+    
+    <a href="/tags/macos/">MacOS</a>
+    
+    <a href="/tags/neovim/">neovim</a>
+    
+    <a href="/tags/runtime/">runtime</a>
+    
+    <a href="/tags/rust/">rust</a>
+    
+    <a href="/tags/ss/">ss</a>
+    
+    <a href="/tags/ssh/">ssh</a>
+    
+    <a href="/tags/swift/">Swift</a>
+    
+    <a href="/tags/vim/">vim</a>
+    
+    <a href="/tags/webhook/">webhook</a>
+    
+    <a href="/tags/wubi/">wubi</a>
+    
+    <a href="/tags/zabbix/">zabbix</a>
+    
+  </div>
+</section>
+
+        
+        
+
+<hr>
+<h5>FRIENDS</h5>
+<ul class="list-inline">
+  
+  <li><a href=""></a></li>
+  
+</ul>
+
+      </div>
+    </div>
+  </div>
+</article>
+
+
+
+  
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        
+        
+
+
+<ul class="list-inline text-center">
+
+  
+  <li>
+    <a href="/index.xml">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+  
+  
+  
+  
+  <li>
+    <a target="_blank" href="https://github.com/roninro">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+</ul>
+        <p class="copyright text-muted">
+          Copyright &copy; RoninRo&#39;s Blog 2022
+          <br>
+          Powered by <a href="https://gohugo.io">Hugo</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+
+
+<script src="/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js"></script>
+
+
+<script src="/js/simple-jekyll-search.min.js"></script>
+
+
+<script src="/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/zoomjs/zoom.min.js"></script>
+</body>
+
+</html>

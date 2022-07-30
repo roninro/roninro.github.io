@@ -1,58 +1,492 @@
-<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="ie=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><title>[PIN] Linux 下常用命令 | RoninRo's Blog</title><meta name=author content="RoninRo"><meta name=description content=" "><meta name=keywords content="blog,developer,personal,golang"><meta name=twitter:card content="summary"><meta name=twitter:title content="[PIN] Linux 下常用命令"><meta name=twitter:description content=" "><meta property="og:title" content="[PIN] Linux 下常用命令"><meta property="og:description" content=" "><meta property="og:type" content="article"><meta property="og:url" content="https://fninit.com/posts/2019/linux-cmd/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2019-12-05T15:27:30+08:00"><meta property="article:modified_time" content="2019-12-05T15:27:30+08:00"><link rel=stylesheet href=/css/bootstrap.min.css crossorigin=anonymous><link href=//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css rel=stylesheet type=text/css><link rel=stylesheet href=https://fninit.com/sass/main.css><link rel=stylesheet href=https://fninit.com/zoomjs/zoom.min.css></head><body><nav class="navbar navbar-default navbar-custom navbar-fixed-top invert"><div class=container-fluid><div class="navbar-header page-scroll"><button type=button class=navbar-toggle>
-<span class=sr-only>Toggle navigation</span>
-<span class=icon-bar></span>
-<span class=icon-bar></span>
-<span class=icon-bar></span></button>
-<a class=navbar-brand href=https://fninit.com>RoninRo's Blog</a></div><div id=huxblog_navbar><div class=navbar-collapse><ul class="nav navbar-nav navbar-right"><li><a href=/ title=Home>Home</a></li><li><a href=/archive/ title=Archive>Archive</a></li><li><a href=/categories/ title=Categories>Categories</a></li><li><a href=/about/ title=About>About</a></li><li class=search-icon><a href=javascript:void(0)><i class="fa fa-search"></i></a></li></ul></div></div></div></nav><script>var $body=document.body,$toggle=document.querySelector(".navbar-toggle"),$navbar=document.querySelector("#huxblog_navbar"),$collapse=document.querySelector(".navbar-collapse"),__HuxNav__={close:function(){$navbar.className=" ",setTimeout(function(){$navbar.className.indexOf("in")<0&&($collapse.style.height="0px")},400)},open:function(){$collapse.style.height="auto",$navbar.className+=" in"}};$toggle.addEventListener("click",function(){$navbar.className.indexOf("in")>0?__HuxNav__.close():__HuxNav__.open()}),document.addEventListener("click",function(e){if(e.target==$toggle)return;if(e.target.className=="icon-bar")return;__HuxNav__.close()})</script><div class=search-page><div class=search-icon-close-container><span class=search-icon-close><i class="fa fa-chevron-down"></i></span></div><div class="search-main container"><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><form></form><input type=text id=search-input placeholder="$ grep..."></form><div id=search-results class=mini-post-list></div></div></div></div></div><style type=text/css>header.intro-header{position:relative;background-image:url('')}</style><header class="intro-header style-text"><div class=header-mask></div><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><div class=post-heading><div class=tags><a class=tag href=https://fninit.com/tags/linux/ title=linux>linux</a></div><h1>[PIN] Linux 下常用命令</h1><h2 class=subheading></h2><p class=post-meta>Posted by RoninRo
-on Thu, Dec 5, 2019</p></div></div></div></div></header><article><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2
-col-md-10 col-md-offset-1
-post-container"><h2 id=tar>tar<a class=anchorjs-link href=#tar></a></h2><p>命令选项：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sh data-lang=sh><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>-z<span style=color:#ff79c6>(</span>gzip<span style=color:#ff79c6>)</span>      用 gzip 来压缩/解压缩文件
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>-j<span style=color:#ff79c6>(</span>bzip2<span style=color:#ff79c6>)</span>     用 bzip2 来压缩/解压缩文件
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>-v<span style=color:#ff79c6>(</span>verbose<span style=color:#ff79c6>)</span>   详细报告 tar 处理的文件信息
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span>-c<span style=color:#ff79c6>(</span>create<span style=color:#ff79c6>)</span>    创建新的档案文件
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">5</span><span>-x<span style=color:#ff79c6>(</span>extract<span style=color:#ff79c6>)</span>   解压缩文件或目录
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">6</span><span>-f<span style=color:#ff79c6>(</span>file<span style=color:#ff79c6>)</span>      使用档案文件或设备，这个选项通常是必选的。
-</span></span></code></pre></div><p>示例：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span><span style=color:#6272a4># 压缩</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>tar -zcvf abc.tar.gz abc
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>tar -jcvf abc.tar.gz2 abc
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">5</span><span><span style=color:#6272a4># 解压</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">6</span><span>tar -zxvf abc.tar.gz
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">7</span><span>tar -jxvf abc.tar.bz2
-</span></span></code></pre></div><hr style=visibility:hidden><ul class=pager><li class=previous><a href=https://fninit.com/posts/2019/vim-split/ data-toggle=tooltip data-placement=top title="Vim 分割窗口">Previous<br><span>Vim 分割窗口</span></a></li><li class=next><a href=https://fninit.com/posts/2019/rust-cross-compile/ data-toggle=tooltip data-placement=top title="Mac 为 Linux 交叉编译 Rust 程序">Next<br><span>Mac 为 Linux 交叉编译 Rust 程序</span></a></li></ul><hr style=visibility:hidden></div><div class="col-lg-2 col-lg-offset-0
-visible-lg-block
-sidebar-container
-catalog-container"><div class=side-catalog><hr class="hidden-sm hidden-xs"><h5><a class=catalog-toggle href=#>CATALOG</a></h5><ul class=catalog-body></ul></div></div><div class="col-lg-8 col-lg-offset-2
-col-md-10 col-md-offset-1
-sidebar-container"><section><hr class="hidden-sm hidden-xs"><h5>FEATURED TAGS</h5><div class=tags><a href=https://fninit.com/tags/css/>css</a>
-<a href=https://fninit.com/tags/debian/>debian</a>
-<a href=https://fninit.com/tags/fzf/>fzf</a>
-<a href=https://fninit.com/tags/gcd/>gcd</a>
-<a href=https://fninit.com/tags/gem/>gem</a>
-<a href=https://fninit.com/tags/git/>git</a>
-<a href=https://fninit.com/tags/go/>go</a>
-<a href=https://fninit.com/tags/golang/>golang</a>
-<a href=https://fninit.com/tags/hugo/>hugo</a>
-<a href=https://fninit.com/tags/ios/>iOS</a>
-<a href=https://fninit.com/tags/kindle/>Kindle</a>
-<a href=https://fninit.com/tags/kvocontroller/>KVOController</a>
-<a href=https://fninit.com/tags/linux/>linux</a>
-<a href=https://fninit.com/tags/macos/>MacOS</a>
-<a href=https://fninit.com/tags/neovim/>neovim</a>
-<a href=https://fninit.com/tags/runtime/>runtime</a>
-<a href=https://fninit.com/tags/rust/>rust</a>
-<a href=https://fninit.com/tags/ss/>ss</a>
-<a href=https://fninit.com/tags/ssh/>ssh</a>
-<a href=https://fninit.com/tags/swift/>Swift</a>
-<a href=https://fninit.com/tags/vim/>vim</a>
-<a href=https://fninit.com/tags/webhook/>webhook</a>
-<a href=https://fninit.com/tags/wubi/>wubi</a>
-<a href=https://fninit.com/tags/zabbix/>zabbix</a></div></section><hr><h5>FRIENDS</h5><ul class=list-inline><li><a href></a></li></ul></div></div></div></article><footer><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><ul class="list-inline text-center"><li><a href=/index.xml><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i>
-<i class="fa fa-rss fa-stack-1x fa-inverse"></i></span></a></li><li><a target=_blank href=https://github.com/roninro><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i>
-<i class="fa fa-github fa-stack-1x fa-inverse"></i></span></a></li></ul><p class="copyright text-muted">Copyright &copy; RoninRo's Blog 2022<br>Powered by <a href=https://gohugo.io>Hugo</a></p></div></div></div></footer><script src=/js/jquery.min.js></script>
-<script src=/js/bootstrap.min.js crossorigin=anonymous></script>
-<script src=https://fninit.com/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js></script>
-<script src=/js/simple-jekyll-search.min.js></script>
-<script src=https://fninit.com/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js></script>
-<script type=text/javascript>function generateCatalog(e){_containerSelector="div.post-container";var t,n,s,o,i,r=$(_containerSelector),a=r.find("h1,h2,h3,h4");return $(e).html(""),a.each(function(){n=$(this).prop("tagName").toLowerCase(),i="#"+$(this).prop("id"),s=$(this).text(),t=$('<a href="'+i+'" rel="nofollow">'+s+"</a>"),o=$('<li class="'+n+'_nav"></li>').append(t),$(e).append(o)}),!0}generateCatalog(".catalog-body"),$(".catalog-toggle").click(function(e){e.preventDefault(),$(".side-catalog").toggleClass("fold")})</script><script type=text/javascript src=https://fninit.com/js/jquery.nav.min.ade6bde8f9fcc6a4b40852cb892e9f5912340ab8fe1305149d917fdd16fffd8d.js></script>
-<script>$(document).ready(function(){$(".catalog-body").onePageNav({currentClass:"active",changeHash:!1,easing:"swing",filter:"",scrollSpeed:700,scrollOffset:0,scrollThreshold:.2,begin:null,end:null,scrollChange:null,padding:80})})</script><script></script><script src=/zoomjs/zoom.min.js></script></body></html>
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  
+  
+  
+  
+
+  <title>[PIN] Linux 下常用命令 | RoninRo&#39;s Blog</title>
+
+  
+  <meta name="author" content="RoninRo">
+  <meta name="description" content=" ">
+  <meta name="keywords" content="blog,developer,personal,golang">
+
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="[PIN] Linux 下常用命令"/>
+<meta name="twitter:description" content=" "/>
+
+  <meta property="og:title" content="[PIN] Linux 下常用命令" />
+<meta property="og:description" content=" " />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://roninro.github.io/posts/2019/linux-cmd/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2019-12-05T15:27:30+08:00" />
+<meta property="article:modified_time" content="2019-12-05T15:27:30+08:00" />
+
+
+
+  <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+  
+  <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"
+    type="text/css">
+
+  
+  
+  <link rel="stylesheet" href="/sass/main.css">
+
+  
+  <link rel="stylesheet" href="/zoomjs/zoom.min.css">
+
+
+  
+  
+  
+
+  </head>
+
+
+
+<body ontouchstart="">
+
+  
+  
+  
+
+  
+  
+  
+
+  
+  
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top invert">
+  <div class="container-fluid">
+    
+    <div class="navbar-header page-scroll">
+      <button type="button" class="navbar-toggle">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://roninro.github.io/">RoninRo&#39;s Blog</a>
+    </div>
+    
+    <div id="huxblog_navbar">
+      <div class="navbar-collapse">
+        <ul class="nav navbar-nav navbar-right">
+          
+          <li><a href="/" title="Home">Home</a></li>
+          
+          <li><a href="/archive/" title="Archive">Archive</a></li>
+          
+          <li><a href="/categories/" title="Categories">Categories</a></li>
+          
+          <li><a href="/about/" title="About">About</a></li>
+          
+
+          <li class="search-icon">
+            <a href="javascript:void(0)">
+              <i class="fa fa-search"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+  </div>
+  
+</nav>
+<script>
+  
+  
+  
+  var $body = document.body;
+  var $toggle = document.querySelector(".navbar-toggle");
+  var $navbar = document.querySelector("#huxblog_navbar");
+  var $collapse = document.querySelector(".navbar-collapse");
+
+  var __HuxNav__ = {
+    close: function () {
+      $navbar.className = " ";
+      
+      setTimeout(function () {
+        
+        if ($navbar.className.indexOf("in") < 0) {
+          $collapse.style.height = "0px";
+        }
+      }, 400);
+    },
+    open: function () {
+      $collapse.style.height = "auto";
+      $navbar.className += " in";
+    },
+  };
+
+  
+  $toggle.addEventListener("click", function (e) {
+    if ($navbar.className.indexOf("in") > 0) {
+      __HuxNav__.close();
+    } else {
+      __HuxNav__.open();
+    }
+  });
+
+  
+
+  document.addEventListener("click", function (e) {
+    if (e.target == $toggle) return;
+    if (e.target.className == "icon-bar") return;
+    __HuxNav__.close();
+  });
+</script>
+  
+<div class="search-page">
+  <div class="search-icon-close-container">
+    <span class="search-icon-close">
+      <i class="fa fa-chevron-down"></i>
+    </span>
+  </div>
+  <div class="search-main container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <form></form>
+        <input type="text" id="search-input" placeholder="$ grep...">
+        </form>
+        <div id="search-results" class="mini-post-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+  
+
+
+<style type="text/css">
+  header.intro-header {
+    position: relative;
+    background-image: url('');
+  }
+</style>
+
+<header class="intro-header style-text">
+
+  <div class="header-mask"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-heading">
+          <div class="tags">
+            
+            <a class="tag" href="/tags/linux/" title="linux">linux</a>
+            
+          </div>
+          <h1>[PIN] Linux 下常用命令</h1>
+          <h2 class="subheading"></h2>
+          <p class="post-meta">
+            Posted by  RoninRo 
+            on Thu, Dec 5, 2019
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+  
+
+
+<article>
+  <div class="container">
+    <div class="row">
+
+      
+      <div class="
+              col-lg-8 col-lg-offset-2
+              col-md-10 col-md-offset-1
+              post-container">
+        <h2 id="tar">tar<a class="anchorjs-link" href="#tar"></a></h2><p>命令选项：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>-z<span style="color:#ff79c6">(</span>gzip<span style="color:#ff79c6">)</span>      用 gzip 来压缩/解压缩文件
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>-j<span style="color:#ff79c6">(</span>bzip2<span style="color:#ff79c6">)</span>     用 bzip2 来压缩/解压缩文件
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>-v<span style="color:#ff79c6">(</span>verbose<span style="color:#ff79c6">)</span>   详细报告 tar 处理的文件信息
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>-c<span style="color:#ff79c6">(</span>create<span style="color:#ff79c6">)</span>    创建新的档案文件
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>-x<span style="color:#ff79c6">(</span>extract<span style="color:#ff79c6">)</span>   解压缩文件或目录
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6</span><span>-f<span style="color:#ff79c6">(</span>file<span style="color:#ff79c6">)</span>      使用档案文件或设备，这个选项通常是必选的。
+</span></span></code></pre></div><p>示例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#6272a4"># 压缩</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>tar -zcvf abc.tar.gz abc
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>tar -jcvf abc.tar.gz2 abc
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span><span style="color:#6272a4"># 解压</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6</span><span>tar -zxvf abc.tar.gz
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7</span><span>tar -jxvf abc.tar.bz2
+</span></span></code></pre></div>
+
+        <hr style="visibility: hidden;" />
+        <ul class="pager">
+          
+          <li class="previous">
+            <a href="/posts/2019/vim-split/" data-toggle="tooltip" data-placement="top" title="Vim 分割窗口">
+              Previous<br>
+              <span>Vim 分割窗口</span>
+            </a>
+          </li>
+          
+          
+          <li class="next">
+            <a href="/posts/2019/rust-cross-compile/" data-toggle="tooltip" data-placement="top" title="Mac 为 Linux 交叉编译 Rust 程序">
+              Next<br>
+              <span>Mac 为 Linux 交叉编译 Rust 程序</span>
+            </a>
+          </li>
+          
+        </ul>
+        <hr style="visibility: hidden;" />
+
+        
+        
+
+
+
+
+
+      </div>
+
+      
+      
+      
+      <div class="
+              col-lg-2 col-lg-offset-0
+              visible-lg-block
+              sidebar-container
+              catalog-container">
+        <div class="side-catalog">
+          <hr class="hidden-sm hidden-xs">
+          <h5>
+            <a class="catalog-toggle" href="#">CATALOG</a>
+          </h5>
+          <ul class="catalog-body"></ul>
+        </div>
+      </div>
+      
+      
+      <div class="
+              col-lg-8 col-lg-offset-2
+              col-md-10 col-md-offset-1
+              sidebar-container">
+
+        
+        
+        <section>
+  
+  
+  <hr class="hidden-sm hidden-xs">
+  
+  <h5>FEATURED TAGS</h5>
+  <div class="tags">
+    
+    <a href="/tags/css/">css</a>
+    
+    <a href="/tags/debian/">debian</a>
+    
+    <a href="/tags/fzf/">fzf</a>
+    
+    <a href="/tags/gcd/">gcd</a>
+    
+    <a href="/tags/gem/">gem</a>
+    
+    <a href="/tags/git/">git</a>
+    
+    <a href="/tags/go/">go</a>
+    
+    <a href="/tags/golang/">golang</a>
+    
+    <a href="/tags/hugo/">hugo</a>
+    
+    <a href="/tags/ios/">iOS</a>
+    
+    <a href="/tags/kindle/">Kindle</a>
+    
+    <a href="/tags/kvocontroller/">KVOController</a>
+    
+    <a href="/tags/linux/">linux</a>
+    
+    <a href="/tags/macos/">MacOS</a>
+    
+    <a href="/tags/neovim/">neovim</a>
+    
+    <a href="/tags/runtime/">runtime</a>
+    
+    <a href="/tags/rust/">rust</a>
+    
+    <a href="/tags/ss/">ss</a>
+    
+    <a href="/tags/ssh/">ssh</a>
+    
+    <a href="/tags/swift/">Swift</a>
+    
+    <a href="/tags/vim/">vim</a>
+    
+    <a href="/tags/webhook/">webhook</a>
+    
+    <a href="/tags/wubi/">wubi</a>
+    
+    <a href="/tags/zabbix/">zabbix</a>
+    
+  </div>
+</section>
+
+        
+        
+
+<hr>
+<h5>FRIENDS</h5>
+<ul class="list-inline">
+  
+  <li><a href=""></a></li>
+  
+</ul>
+
+      </div>
+    </div>
+  </div>
+</article>
+
+
+
+  
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        
+        
+
+
+<ul class="list-inline text-center">
+
+  
+  <li>
+    <a href="/index.xml">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+  
+  
+  
+  
+  <li>
+    <a target="_blank" href="https://github.com/roninro">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+</ul>
+        <p class="copyright text-muted">
+          Copyright &copy; RoninRo&#39;s Blog 2022
+          <br>
+          Powered by <a href="https://gohugo.io">Hugo</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+
+
+<script src="/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js"></script>
+
+
+<script src="/js/simple-jekyll-search.min.js"></script>
+
+
+<script src="/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js"></script>
+
+
+
+
+
+
+<script type="text/javascript">
+  function generateCatalog(selector) {
+    _containerSelector = 'div.post-container'
+    
+    var P = $(_containerSelector), a, n, t, l, i, c;
+    a = P.find('h1,h2,h3,h4');
+    
+    $(selector).html('')
+    
+    a.each(function () {
+      n = $(this).prop('tagName').toLowerCase();
+      i = "#" + $(this).prop('id');
+      t = $(this).text();
+      c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+      l = $('<li class="' + n + '_nav"></li>').append(c);
+      $(selector).append(l);
+    });
+    return true;
+  }
+
+  generateCatalog(".catalog-body");
+
+  
+  $(".catalog-toggle").click((function (e) {
+    e.preventDefault();
+    $('.side-catalog').toggleClass("fold")
+  }))
+</script>
+
+
+<script type="text/javascript" src='/js/jquery.nav.min.ade6bde8f9fcc6a4b40852cb892e9f5912340ab8fe1305149d917fdd16fffd8d.js'></script>
+<script>
+   $(document).ready( function () {
+    $('.catalog-body').onePageNav({
+      currentClass: "active",
+      changeHash: !1,
+      easing: "swing",
+      filter: "",
+      scrollSpeed: 700,
+      scrollOffset: 0,
+      scrollThreshold: .2,
+      begin: null,
+      end: null,
+      scrollChange: null,
+      padding: 80
+    });
+  });
+</script>
+
+
+
+
+
+
+
+
+
+<script src="/zoomjs/zoom.min.js"></script>
+</body>
+
+</html>

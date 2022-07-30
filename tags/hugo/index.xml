@@ -1,1 +1,20 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>hugo on RoninRo's Blog</title><link>https://fninit.com/tags/hugo/</link><description>Recent content in hugo on RoninRo's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Mon, 05 Jun 2017 14:12:20 +0800</lastBuildDate><atom:link href="https://fninit.com/tags/hugo/index.xml" rel="self" type="application/rss+xml"/><item><title>Hugo 主题 Gemini</title><link>https://fninit.com/posts/2017/gemini-theme/</link><pubDate>Mon, 05 Jun 2017 14:12:20 +0800</pubDate><guid>https://fninit.com/posts/2017/gemini-theme/</guid><description>最近在https://www.linpx.com/上看到了博主的博客主题，感觉很漂亮，不过是Typecho 主题的。于是便用了周末的时间将它转</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>hugo on RoninRo&#39;s Blog</title>
+    <link>https://roninro.github.io/tags/hugo/</link>
+    <description>Recent content in hugo on RoninRo&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Mon, 05 Jun 2017 14:12:20 +0800</lastBuildDate><atom:link href="https://roninro.github.io/tags/hugo/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Hugo 主题 Gemini</title>
+      <link>https://roninro.github.io/posts/2017/gemini-theme/</link>
+      <pubDate>Mon, 05 Jun 2017 14:12:20 +0800</pubDate>
+      
+      <guid>https://roninro.github.io/posts/2017/gemini-theme/</guid>
+      <description>最近在https://www.linpx.com/上看到了博主的博客主题，感觉很漂亮，不过是Typecho 主题的。于是便用了周末的时间将它转</description>
+    </item>
+    
+  </channel>
+</rss>

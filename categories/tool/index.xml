@@ -1,1 +1,56 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>工具 on RoninRo's Blog</title><link>https://fninit.com/categories/tool/</link><description>Recent content in 工具 on RoninRo's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Fri, 27 Aug 2021 15:54:29 +0800</lastBuildDate><atom:link href="https://fninit.com/categories/tool/index.xml" rel="self" type="application/rss+xml"/><item><title>Shadowsocks-Rust 简介</title><link>https://fninit.com/posts/2021/ss-rust/</link><pubDate>Fri, 27 Aug 2021 15:54:29 +0800</pubDate><guid>https://fninit.com/posts/2021/ss-rust/</guid><description/></item><item><title>[Vim] 快速对齐插件 vim-easy-align</title><link>https://fninit.com/posts/2021/vim-easy-align/</link><pubDate>Tue, 30 Mar 2021 10:59:51 +0800</pubDate><guid>https://fninit.com/posts/2021/vim-easy-align/</guid><description>vim-easy-align 是一款简单易用的 Vim 对齐插件。 安装并添加配置： 1&amp;#34; in .vimrc 2Plug &amp;#39;junegunn/vim-easy-align&amp;#39; 3 4&amp;#34; Start interactive EasyAlign in visual mode (e.g. vipga) 5xmap ga &amp;lt;Plug&amp;gt;(EasyAlign) 6 7&amp;#34; Start interactive EasyAlign for a motion/text object (e.g. gaip) 8nmap ga &amp;lt;Plug&amp;gt;(EasyAlign) 用法： vipga= vip 多行选中 ga 进入 EasyAlign 模式</description></item><item><title>[Vim] 使用 YouCompleteMe 对 Rust/Golang 代码补全</title><link>https://fninit.com/posts/2021/vimrc/</link><pubDate>Fri, 22 Jan 2021 18:07:01 +0800</pubDate><guid>https://fninit.com/posts/2021/vimrc/</guid><description>YouCompleteMe 是 Vim 下的自动补全插件。自从 Vim8 与 YouCompleteMe 支持异步 IO 后，在 Vim 下的使用体验也是直线上升。 使用 YouCompleteMe 有几个先决条件，不然可能会不能正常使用： Ycm 依赖于 Pyth</description></item><item><title>Vim 分割窗口</title><link>https://fninit.com/posts/2019/vim-split/</link><pubDate>Thu, 24 Oct 2019 14:02:30 +0800</pubDate><guid>https://fninit.com/posts/2019/vim-split/</guid><description>在操作 Vim 窗口之前，最好了解下面几个概念： 缓冲区（buffer）是加载到内存中进行编辑的文件，原始文件在将缓冲区写到文件中之前保持不变。 窗口（</description></item><item><title>使用 Automator 为文件夹添加一个快捷操作</title><link>https://fninit.com/posts/2018/sublime-mac-menu/</link><pubDate>Tue, 06 Mar 2018 16:48:30 +0800</pubDate><guid>https://fninit.com/posts/2018/sublime-mac-menu/</guid><description>在 Mac 下，文件夹的默认菜单选项是不支持在其它应用中打开，只能先打开应用，然后选择目标文件夹。 以 Sublime Text 为例，如何使用 Automator 快速为文件夹添加一个菜单选项</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>工具 on RoninRo&#39;s Blog</title>
+    <link>https://roninro.github.io/categories/tool/</link>
+    <description>Recent content in 工具 on RoninRo&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Fri, 27 Aug 2021 15:54:29 +0800</lastBuildDate><atom:link href="https://roninro.github.io/categories/tool/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Shadowsocks-Rust 简介</title>
+      <link>https://roninro.github.io/posts/2021/ss-rust/</link>
+      <pubDate>Fri, 27 Aug 2021 15:54:29 +0800</pubDate>
+      
+      <guid>https://roninro.github.io/posts/2021/ss-rust/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>[Vim] 快速对齐插件 vim-easy-align</title>
+      <link>https://roninro.github.io/posts/2021/vim-easy-align/</link>
+      <pubDate>Tue, 30 Mar 2021 10:59:51 +0800</pubDate>
+      
+      <guid>https://roninro.github.io/posts/2021/vim-easy-align/</guid>
+      <description>vim-easy-align 是一款简单易用的 Vim 对齐插件。 安装并添加配置： 1&amp;#34; in .vimrc 2Plug &amp;#39;junegunn/vim-easy-align&amp;#39; 3 4&amp;#34; Start interactive EasyAlign in visual mode (e.g. vipga) 5xmap ga &amp;lt;Plug&amp;gt;(EasyAlign) 6 7&amp;#34; Start interactive EasyAlign for a motion/text object (e.g. gaip) 8nmap ga &amp;lt;Plug&amp;gt;(EasyAlign) 用法： vipga= vip 多行选中 ga 进入 EasyAlign 模式</description>
+    </item>
+    
+    <item>
+      <title>[Vim] 使用 YouCompleteMe 对 Rust/Golang 代码补全</title>
+      <link>https://roninro.github.io/posts/2021/vimrc/</link>
+      <pubDate>Fri, 22 Jan 2021 18:07:01 +0800</pubDate>
+      
+      <guid>https://roninro.github.io/posts/2021/vimrc/</guid>
+      <description>YouCompleteMe 是 Vim 下的自动补全插件。自从 Vim8 与 YouCompleteMe 支持异步 IO 后，在 Vim 下的使用体验也是直线上升。 使用 YouCompleteMe 有几个先决条件，不然可能会不能正常使用： Ycm 依赖于 Pyth</description>
+    </item>
+    
+    <item>
+      <title>Vim 分割窗口</title>
+      <link>https://roninro.github.io/posts/2019/vim-split/</link>
+      <pubDate>Thu, 24 Oct 2019 14:02:30 +0800</pubDate>
+      
+      <guid>https://roninro.github.io/posts/2019/vim-split/</guid>
+      <description>在操作 Vim 窗口之前，最好了解下面几个概念： 缓冲区（buffer）是加载到内存中进行编辑的文件，原始文件在将缓冲区写到文件中之前保持不变。 窗口（</description>
+    </item>
+    
+    <item>
+      <title>使用 Automator 为文件夹添加一个快捷操作</title>
+      <link>https://roninro.github.io/posts/2018/sublime-mac-menu/</link>
+      <pubDate>Tue, 06 Mar 2018 16:48:30 +0800</pubDate>
+      
+      <guid>https://roninro.github.io/posts/2018/sublime-mac-menu/</guid>
+      <description>在 Mac 下，文件夹的默认菜单选项是不支持在其它应用中打开，只能先打开应用，然后选择目标文件夹。 以 Sublime Text 为例，如何使用 Automator 快速为文件夹添加一个菜单选项</description>
+    </item>
+    
+  </channel>
+</rss>

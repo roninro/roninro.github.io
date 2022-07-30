@@ -1,70 +1,455 @@
-<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="ie=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><title>访问 iCloud 云盘文件 | RoninRo's Blog</title><meta name=author content="RoninRo"><meta name=description content="UIDocumentPickerViewController 苹果提供的一个控制器，它为我们提供了访问应用沙盒之外的文件或者目标的能力。"><meta name=keywords content="blog,developer,personal,golang"><meta name=twitter:card content="summary"><meta name=twitter:title content="访问 iCloud 云盘文件"><meta name=twitter:description content="UIDocumentPickerViewController 苹果提供的一个控制器，它为我们提供了访问应用沙盒之外的文件或者目标的能力。"><meta property="og:title" content="访问 iCloud 云盘文件"><meta property="og:description" content="UIDocumentPickerViewController 苹果提供的一个控制器，它为我们提供了访问应用沙盒之外的文件或者目标的能力。"><meta property="og:type" content="article"><meta property="og:url" content="https://fninit.com/posts/2019/ios-document-picker/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2019-01-11T15:11:29+08:00"><meta property="article:modified_time" content="2019-01-11T15:11:29+08:00"><link rel=stylesheet href=/css/bootstrap.min.css crossorigin=anonymous><link href=//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css rel=stylesheet type=text/css><link rel=stylesheet href=https://fninit.com/sass/main.css><link rel=stylesheet href=https://fninit.com/zoomjs/zoom.min.css></head><body><nav class="navbar navbar-default navbar-custom navbar-fixed-top invert"><div class=container-fluid><div class="navbar-header page-scroll"><button type=button class=navbar-toggle>
-<span class=sr-only>Toggle navigation</span>
-<span class=icon-bar></span>
-<span class=icon-bar></span>
-<span class=icon-bar></span></button>
-<a class=navbar-brand href=https://fninit.com>RoninRo's Blog</a></div><div id=huxblog_navbar><div class=navbar-collapse><ul class="nav navbar-nav navbar-right"><li><a href=/ title=Home>Home</a></li><li><a href=/archive/ title=Archive>Archive</a></li><li><a href=/categories/ title=Categories>Categories</a></li><li><a href=/about/ title=About>About</a></li><li class=search-icon><a href=javascript:void(0)><i class="fa fa-search"></i></a></li></ul></div></div></div></nav><script>var $body=document.body,$toggle=document.querySelector(".navbar-toggle"),$navbar=document.querySelector("#huxblog_navbar"),$collapse=document.querySelector(".navbar-collapse"),__HuxNav__={close:function(){$navbar.className=" ",setTimeout(function(){$navbar.className.indexOf("in")<0&&($collapse.style.height="0px")},400)},open:function(){$collapse.style.height="auto",$navbar.className+=" in"}};$toggle.addEventListener("click",function(){$navbar.className.indexOf("in")>0?__HuxNav__.close():__HuxNav__.open()}),document.addEventListener("click",function(e){if(e.target==$toggle)return;if(e.target.className=="icon-bar")return;__HuxNav__.close()})</script><div class=search-page><div class=search-icon-close-container><span class=search-icon-close><i class="fa fa-chevron-down"></i></span></div><div class="search-main container"><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><form></form><input type=text id=search-input placeholder="$ grep..."></form><div id=search-results class=mini-post-list></div></div></div></div></div><style type=text/css>header.intro-header{position:relative;background-image:url('')}</style><header class="intro-header style-text"><div class=header-mask></div><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><div class=post-heading><div class=tags><a class=tag href=https://fninit.com/tags/ios/ title=iOS>iOS</a></div><h1>访问 iCloud 云盘文件</h1><h2 class=subheading></h2><p class=post-meta>Posted by RoninRo
-on Fri, Jan 11, 2019</p></div></div></div></div></header><article><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2
-col-md-10 col-md-offset-1
-post-container"><p>前段时间，客户提出了一个需求，希望可以像微信一个从云盘中选择文件发送。
-还好苹果提供了 <code>UIDocumentPickerViewController</code> 这个控制器，可以让我们很方便的达成这个目的。</p><h2 id=添加对-icloud-的支持>添加对 iCloud 的支持<a class=anchorjs-link href=#%e6%b7%bb%e5%8a%a0%e5%af%b9-icloud-%e7%9a%84%e6%94%af%e6%8c%81></a></h2><p>首先要打开 <code>Target</code> -> <code>Capabilities</code> -> <code>iCloud</code> ，选择 <code>iCloud Documents</code>。</p><p>然后我们到 <code>Apple Developer</code> 中创建一个 <code>iCloud Containers</code>。ID 按照 Xcode 提示命名就好。</p><h2 id=分析-uidocumentpickerviewcontroller>分析 UIDocumentPickerViewController<a class=anchorjs-link href=#%e5%88%86%e6%9e%90-uidocumentpickerviewcontroller></a></h2><p>创建一个 <code>UIDocumentPickerViewController</code></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-objc data-lang=objc><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>- (<span style=color:#8be9fd>instancetype</span>)<span style=color:#50fa7b>initWithDocumentTypes:</span>(NSArray <span style=color:#ff79c6>&lt;</span>NSString <span style=color:#ff79c6>*&gt;*</span>)<span style=color:#8be9fd;font-style:italic>allowedUTIs</span> <span style=color:#50fa7b>inMode:</span>(UIDocumentPickerMode)<span style=color:#8be9fd;font-style:italic>mode</span> NS_DESIGNATED_INITIALIZER;
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  
+  
+  
+  
+
+  <title>访问 iCloud 云盘文件 | RoninRo&#39;s Blog</title>
+
+  
+  <meta name="author" content="RoninRo">
+  <meta name="description" content="UIDocumentPickerViewController 苹果提供的一个控制器，它为我们提供了访问应用沙盒之外的文件或者目标的能力。">
+  <meta name="keywords" content="blog,developer,personal,golang">
+
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="访问 iCloud 云盘文件"/>
+<meta name="twitter:description" content="UIDocumentPickerViewController 苹果提供的一个控制器，它为我们提供了访问应用沙盒之外的文件或者目标的能力。"/>
+
+  <meta property="og:title" content="访问 iCloud 云盘文件" />
+<meta property="og:description" content="UIDocumentPickerViewController 苹果提供的一个控制器，它为我们提供了访问应用沙盒之外的文件或者目标的能力。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://roninro.github.io/posts/2019/ios-document-picker/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2019-01-11T15:11:29+08:00" />
+<meta property="article:modified_time" content="2019-01-11T15:11:29+08:00" />
+
+
+
+  <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+  
+  <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"
+    type="text/css">
+
+  
+  
+  <link rel="stylesheet" href="/sass/main.css">
+
+  
+  <link rel="stylesheet" href="/zoomjs/zoom.min.css">
+
+
+  
+  
+  
+
+  </head>
+
+
+
+<body ontouchstart="">
+
+  
+  
+  
+
+  
+
+  
+  
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top invert">
+  <div class="container-fluid">
+    
+    <div class="navbar-header page-scroll">
+      <button type="button" class="navbar-toggle">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://roninro.github.io/">RoninRo&#39;s Blog</a>
+    </div>
+    
+    <div id="huxblog_navbar">
+      <div class="navbar-collapse">
+        <ul class="nav navbar-nav navbar-right">
+          
+          <li><a href="/" title="Home">Home</a></li>
+          
+          <li><a href="/archive/" title="Archive">Archive</a></li>
+          
+          <li><a href="/categories/" title="Categories">Categories</a></li>
+          
+          <li><a href="/about/" title="About">About</a></li>
+          
+
+          <li class="search-icon">
+            <a href="javascript:void(0)">
+              <i class="fa fa-search"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+  </div>
+  
+</nav>
+<script>
+  
+  
+  
+  var $body = document.body;
+  var $toggle = document.querySelector(".navbar-toggle");
+  var $navbar = document.querySelector("#huxblog_navbar");
+  var $collapse = document.querySelector(".navbar-collapse");
+
+  var __HuxNav__ = {
+    close: function () {
+      $navbar.className = " ";
+      
+      setTimeout(function () {
+        
+        if ($navbar.className.indexOf("in") < 0) {
+          $collapse.style.height = "0px";
+        }
+      }, 400);
+    },
+    open: function () {
+      $collapse.style.height = "auto";
+      $navbar.className += " in";
+    },
+  };
+
+  
+  $toggle.addEventListener("click", function (e) {
+    if ($navbar.className.indexOf("in") > 0) {
+      __HuxNav__.close();
+    } else {
+      __HuxNav__.open();
+    }
+  });
+
+  
+
+  document.addEventListener("click", function (e) {
+    if (e.target == $toggle) return;
+    if (e.target.className == "icon-bar") return;
+    __HuxNav__.close();
+  });
+</script>
+  
+<div class="search-page">
+  <div class="search-icon-close-container">
+    <span class="search-icon-close">
+      <i class="fa fa-chevron-down"></i>
+    </span>
+  </div>
+  <div class="search-main container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <form></form>
+        <input type="text" id="search-input" placeholder="$ grep...">
+        </form>
+        <div id="search-results" class="mini-post-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+  
+
+
+<style type="text/css">
+  header.intro-header {
+    position: relative;
+    background-image: url('');
+  }
+</style>
+
+<header class="intro-header style-text">
+
+  <div class="header-mask"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-heading">
+          <div class="tags">
+            
+            <a class="tag" href="/tags/ios/" title="iOS">iOS</a>
+            
+          </div>
+          <h1>访问 iCloud 云盘文件</h1>
+          <h2 class="subheading"></h2>
+          <p class="post-meta">
+            Posted by  RoninRo 
+            on Fri, Jan 11, 2019
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+  
+
+
+<article>
+  <div class="container">
+    <div class="row">
+
+      
+      <div class="
+              col-lg-8 col-lg-offset-2
+              col-md-10 col-md-offset-1
+              post-container">
+        <p>前段时间，客户提出了一个需求，希望可以像微信一个从云盘中选择文件发送。
+还好苹果提供了 <code>UIDocumentPickerViewController</code> 这个控制器，可以让我们很方便的达成这个目的。</p>
+<h2 id="添加对-icloud-的支持">添加对 iCloud 的支持<a class="anchorjs-link" href="#%e6%b7%bb%e5%8a%a0%e5%af%b9-icloud-%e7%9a%84%e6%94%af%e6%8c%81"></a></h2><p>首先要打开 <code>Target</code> -&gt; <code>Capabilities</code> -&gt; <code>iCloud</code> ，选择 <code>iCloud Documents</code>。</p>
+<p>然后我们到 <code>Apple Developer</code> 中创建一个 <code>iCloud Containers</code>。ID 按照 Xcode 提示命名就好。</p>
+<h2 id="分析-uidocumentpickerviewcontroller">分析 UIDocumentPickerViewController<a class="anchorjs-link" href="#%e5%88%86%e6%9e%90-uidocumentpickerviewcontroller"></a></h2><p>创建一个 <code>UIDocumentPickerViewController</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-objc" data-lang="objc"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>- (<span style="color:#8be9fd">instancetype</span>)<span style="color:#50fa7b">initWithDocumentTypes:</span>(NSArray <span style="color:#ff79c6">&lt;</span>NSString <span style="color:#ff79c6">*&gt;*</span>)<span style="color:#8be9fd;font-style:italic">allowedUTIs</span> <span style="color:#50fa7b">inMode:</span>(UIDocumentPickerMode)<span style="color:#8be9fd;font-style:italic">mode</span> NS_DESIGNATED_INITIALIZER;
 </span></span></code></pre></div><p>第一个参数指定了允许显示的类型标识符集合。
 参考：
-<a href=https://developer.apple.com/library/archive/documentation/Miscellaneous/Reference/UTIRef/Articles/System-DeclaredUniformTypeIdentifiers.html>System-Declared Uniform Type Identifiers</a></p><p>要想显示所有文件则直接指定 <code>@[@"public.item"]</code></p><p>第二个参数 <code>mode</code> 有四种，但是 <code>UIDocumentPickerViewController</code> 只支持<code>UIDocumentPickerModeImport</code> 和 <code>UIDocumentPickerModeOpen</code>。</p><p>实现代理方法 <code>- (void)documentPicker:(UIDocumentPickerViewController *)controller didPickDocumentAtURL:(NSURL *)url</code> 处理外部文件。</p><p>对于处理外部文档是有一些限制的：</p><ul><li>对于要处理的 <code>URL</code> ，要使用 <code>startAccessingSecurityScopedResource</code> 和 <code>stopAccessingSecurityScopedResource</code> 方法使其进入 <em>安全范围</em> 操作。</li><li>使用 <strong>NSFileCoordinator</strong> 读写外部文档。</li><li>使用 <strong>NSFilePresenter</strong> 显示外部文档内容。</li></ul><h2 id=简单实现>简单实现<a class=anchorjs-link href=#%e7%ae%80%e5%8d%95%e5%ae%9e%e7%8e%b0></a></h2><p>从iCloud Drive 选择文件保存到本地</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-objc data-lang=objc><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span>- (<span style=color:#8be9fd>void</span>)<span style=color:#50fa7b>showFileFromICouldDrive</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span>    UIDocumentPickerViewController <span style=color:#ff79c6>*</span>picker <span style=color:#ff79c6>=</span> [[UIDocumentPickerViewController alloc] <span style=color:#8be9fd;font-style:italic>initWithDocumentTypes</span>:@[<span style=color:#f1fa8c>@&#34;public.item&#34;</span>] <span style=color:#8be9fd;font-style:italic>inMode</span>:UIDocumentPickerModeImport];
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span><span>    picker.delegate <span style=color:#ff79c6>=</span> <span style=color:#8be9fd;font-style:italic>self</span>;
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span><span>    picker.modalPresentationStyle <span style=color:#ff79c6>=</span> UIModalPresentationFormSheet;
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span><span>    [<span style=color:#8be9fd;font-style:italic>self</span> <span style=color:#8be9fd;font-style:italic>presentViewController</span>:picker <span style=color:#8be9fd;font-style:italic>animated</span>:<span style=color:#8be9fd;font-style:italic>YES</span> <span style=color:#8be9fd;font-style:italic>completion</span>:<span style=color:#ff79c6>^</span>{
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span><span>    }];
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span><span>}
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11</span><span>- (<span style=color:#8be9fd>void</span>)<span style=color:#50fa7b>documentPicker:</span>(UIDocumentPickerViewController <span style=color:#ff79c6>*</span>)<span style=color:#8be9fd;font-style:italic>controller</span> <span style=color:#50fa7b>didPickDocumentAtURL:</span>(NSURL <span style=color:#ff79c6>*</span>)<span style=color:#8be9fd;font-style:italic>url</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12</span><span>{
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13</span><span>    [url startAccessingSecurityScopedResource];
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14</span><span>    NSFileCoordinator <span style=color:#ff79c6>*</span>coordinator <span style=color:#ff79c6>=</span> [[NSFileCoordinator alloc] init];
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15</span><span>    <span style=color:#ff79c6>__block</span> NSError <span style=color:#ff79c6>*</span>error;
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16</span><span>    [coordinator <span style=color:#8be9fd;font-style:italic>coordinateReadingItemAtURL</span>:url <span style=color:#8be9fd;font-style:italic>options</span>:NSFileCoordinatorReadingResolvesSymbolicLink <span style=color:#8be9fd;font-style:italic>error</span>:<span style=color:#ff79c6>&amp;</span>error <span style=color:#8be9fd;font-style:italic>byAccessor</span>:<span style=color:#ff79c6>^</span>(NSURL <span style=color:#ff79c6>*</span> _Nonnull newURL) {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17</span><span>        NSLog(<span style=color:#f1fa8c>@&#34;newURL %@, error :%@&#34;</span>, newURL, error);
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">18</span><span>        NSError <span style=color:#ff79c6>*</span>ferror;
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">19</span><span>        [[NSFileManager defaultManager] <span style=color:#8be9fd;font-style:italic>copyItemAtURL</span>:newURL <span style=color:#8be9fd;font-style:italic>toURL</span>:[NSURL <span style=color:#8be9fd;font-style:italic>fileURLWithPath</span>:filePath] <span style=color:#8be9fd;font-style:italic>error</span>:<span style=color:#ff79c6>&amp;</span>ferror];
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">20</span><span>        <span style=color:#ff79c6>if</span> (ferror) {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">21</span><span>            NSLog(<span style=color:#f1fa8c>@&#34;copy iCloud file error : %@&#34;</span>, ferror);
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">22</span><span>        }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">23</span><span>    }];
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">24</span><span>    [url stopAccessingSecurityScopedResource];
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">25</span><span>}
-</span></span></code></pre></div><hr style=visibility:hidden><ul class=pager><li class=previous><a href=https://fninit.com/posts/2018/go-moudle/ data-toggle=tooltip data-placement=top title="Go 1.11 新特性：Go Modules">Previous<br><span>Go 1.11 新特性：Go Modules</span></a></li><li class=next><a href=https://fninit.com/posts/2019/kindle-oasis2/ data-toggle=tooltip data-placement=top title="入手了一部 Kindle">Next<br><span>入手了一部 Kindle</span></a></li></ul><hr style=visibility:hidden></div><div class="col-lg-8 col-lg-offset-2
-col-md-10 col-md-offset-1
-sidebar-container"><section><hr class="hidden-sm hidden-xs"><h5>FEATURED TAGS</h5><div class=tags><a href=https://fninit.com/tags/css/>css</a>
-<a href=https://fninit.com/tags/debian/>debian</a>
-<a href=https://fninit.com/tags/fzf/>fzf</a>
-<a href=https://fninit.com/tags/gcd/>gcd</a>
-<a href=https://fninit.com/tags/gem/>gem</a>
-<a href=https://fninit.com/tags/git/>git</a>
-<a href=https://fninit.com/tags/go/>go</a>
-<a href=https://fninit.com/tags/golang/>golang</a>
-<a href=https://fninit.com/tags/hugo/>hugo</a>
-<a href=https://fninit.com/tags/ios/>iOS</a>
-<a href=https://fninit.com/tags/kindle/>Kindle</a>
-<a href=https://fninit.com/tags/kvocontroller/>KVOController</a>
-<a href=https://fninit.com/tags/linux/>linux</a>
-<a href=https://fninit.com/tags/macos/>MacOS</a>
-<a href=https://fninit.com/tags/neovim/>neovim</a>
-<a href=https://fninit.com/tags/runtime/>runtime</a>
-<a href=https://fninit.com/tags/rust/>rust</a>
-<a href=https://fninit.com/tags/ss/>ss</a>
-<a href=https://fninit.com/tags/ssh/>ssh</a>
-<a href=https://fninit.com/tags/swift/>Swift</a>
-<a href=https://fninit.com/tags/vim/>vim</a>
-<a href=https://fninit.com/tags/webhook/>webhook</a>
-<a href=https://fninit.com/tags/wubi/>wubi</a>
-<a href=https://fninit.com/tags/zabbix/>zabbix</a></div></section><hr><h5>FRIENDS</h5><ul class=list-inline><li><a href></a></li></ul></div></div></div></article><footer><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><ul class="list-inline text-center"><li><a href=/index.xml><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i>
-<i class="fa fa-rss fa-stack-1x fa-inverse"></i></span></a></li><li><a target=_blank href=https://github.com/roninro><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i>
-<i class="fa fa-github fa-stack-1x fa-inverse"></i></span></a></li></ul><p class="copyright text-muted">Copyright &copy; RoninRo's Blog 2022<br>Powered by <a href=https://gohugo.io>Hugo</a></p></div></div></div></footer><script src=/js/jquery.min.js></script>
-<script src=/js/bootstrap.min.js crossorigin=anonymous></script>
-<script src=https://fninit.com/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js></script>
-<script src=/js/simple-jekyll-search.min.js></script>
-<script src=https://fninit.com/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js></script>
-<script></script><script src=/zoomjs/zoom.min.js></script></body></html>
+<a href="https://developer.apple.com/library/archive/documentation/Miscellaneous/Reference/UTIRef/Articles/System-DeclaredUniformTypeIdentifiers.html">System-Declared Uniform Type Identifiers</a></p>
+<p>要想显示所有文件则直接指定 <code>@[@&quot;public.item&quot;]</code></p>
+<p>第二个参数 <code>mode</code> 有四种，但是 <code>UIDocumentPickerViewController</code> 只支持<code>UIDocumentPickerModeImport</code> 和 <code>UIDocumentPickerModeOpen</code>。</p>
+<p>实现代理方法 <code>- (void)documentPicker:(UIDocumentPickerViewController *)controller didPickDocumentAtURL:(NSURL *)url</code> 处理外部文件。</p>
+<p>对于处理外部文档是有一些限制的：</p>
+<ul>
+<li>对于要处理的 <code>URL</code> ，要使用 <code>startAccessingSecurityScopedResource</code> 和 <code>stopAccessingSecurityScopedResource</code> 方法使其进入 <em>安全范围</em> 操作。</li>
+<li>使用 <strong>NSFileCoordinator</strong> 读写外部文档。</li>
+<li>使用 <strong>NSFilePresenter</strong> 显示外部文档内容。</li>
+</ul>
+<h2 id="简单实现">简单实现<a class="anchorjs-link" href="#%e7%ae%80%e5%8d%95%e5%ae%9e%e7%8e%b0"></a></h2><p>从iCloud Drive 选择文件保存到本地</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-objc" data-lang="objc"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>- (<span style="color:#8be9fd">void</span>)<span style="color:#50fa7b">showFileFromICouldDrive</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>    UIDocumentPickerViewController <span style="color:#ff79c6">*</span>picker <span style="color:#ff79c6">=</span> [[UIDocumentPickerViewController alloc] <span style="color:#8be9fd;font-style:italic">initWithDocumentTypes</span>:@[<span style="color:#f1fa8c">@&#34;public.item&#34;</span>] <span style="color:#8be9fd;font-style:italic">inMode</span>:UIDocumentPickerModeImport];
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>    picker.delegate <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">self</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>    picker.modalPresentationStyle <span style="color:#ff79c6">=</span> UIModalPresentationFormSheet;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>    [<span style="color:#8be9fd;font-style:italic">self</span> <span style="color:#8be9fd;font-style:italic">presentViewController</span>:picker <span style="color:#8be9fd;font-style:italic">animated</span>:<span style="color:#8be9fd;font-style:italic">YES</span> <span style="color:#8be9fd;font-style:italic">completion</span>:<span style="color:#ff79c6">^</span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>    }];
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>- (<span style="color:#8be9fd">void</span>)<span style="color:#50fa7b">documentPicker:</span>(UIDocumentPickerViewController <span style="color:#ff79c6">*</span>)<span style="color:#8be9fd;font-style:italic">controller</span> <span style="color:#50fa7b">didPickDocumentAtURL:</span>(NSURL <span style="color:#ff79c6">*</span>)<span style="color:#8be9fd;font-style:italic">url</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>    [url startAccessingSecurityScopedResource];
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>    NSFileCoordinator <span style="color:#ff79c6">*</span>coordinator <span style="color:#ff79c6">=</span> [[NSFileCoordinator alloc] init];
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>    <span style="color:#ff79c6">__block</span> NSError <span style="color:#ff79c6">*</span>error;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span>    [coordinator <span style="color:#8be9fd;font-style:italic">coordinateReadingItemAtURL</span>:url <span style="color:#8be9fd;font-style:italic">options</span>:NSFileCoordinatorReadingResolvesSymbolicLink <span style="color:#8be9fd;font-style:italic">error</span>:<span style="color:#ff79c6">&amp;</span>error <span style="color:#8be9fd;font-style:italic">byAccessor</span>:<span style="color:#ff79c6">^</span>(NSURL <span style="color:#ff79c6">*</span> _Nonnull newURL) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span><span>        NSLog(<span style="color:#f1fa8c">@&#34;newURL %@, error :%@&#34;</span>, newURL, error);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span><span>        NSError <span style="color:#ff79c6">*</span>ferror;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span><span>        [[NSFileManager defaultManager] <span style="color:#8be9fd;font-style:italic">copyItemAtURL</span>:newURL <span style="color:#8be9fd;font-style:italic">toURL</span>:[NSURL <span style="color:#8be9fd;font-style:italic">fileURLWithPath</span>:filePath] <span style="color:#8be9fd;font-style:italic">error</span>:<span style="color:#ff79c6">&amp;</span>ferror];
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span><span>        <span style="color:#ff79c6">if</span> (ferror) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21</span><span>            NSLog(<span style="color:#f1fa8c">@&#34;copy iCloud file error : %@&#34;</span>, ferror);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22</span><span>        }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23</span><span>    }];
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24</span><span>    [url stopAccessingSecurityScopedResource];
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25</span><span>}
+</span></span></code></pre></div>
+
+        <hr style="visibility: hidden;" />
+        <ul class="pager">
+          
+          <li class="previous">
+            <a href="/posts/2018/go-moudle/" data-toggle="tooltip" data-placement="top" title="Go 1.11 新特性：Go Modules">
+              Previous<br>
+              <span>Go 1.11 新特性：Go Modules</span>
+            </a>
+          </li>
+          
+          
+          <li class="next">
+            <a href="/posts/2019/kindle-oasis2/" data-toggle="tooltip" data-placement="top" title="入手了一部 Kindle">
+              Next<br>
+              <span>入手了一部 Kindle</span>
+            </a>
+          </li>
+          
+        </ul>
+        <hr style="visibility: hidden;" />
+
+        
+        
+
+
+
+
+
+      </div>
+
+      
+      
+      
+      
+      <div class="
+              col-lg-8 col-lg-offset-2
+              col-md-10 col-md-offset-1
+              sidebar-container">
+
+        
+        
+        <section>
+  
+  
+  <hr class="hidden-sm hidden-xs">
+  
+  <h5>FEATURED TAGS</h5>
+  <div class="tags">
+    
+    <a href="/tags/css/">css</a>
+    
+    <a href="/tags/debian/">debian</a>
+    
+    <a href="/tags/fzf/">fzf</a>
+    
+    <a href="/tags/gcd/">gcd</a>
+    
+    <a href="/tags/gem/">gem</a>
+    
+    <a href="/tags/git/">git</a>
+    
+    <a href="/tags/go/">go</a>
+    
+    <a href="/tags/golang/">golang</a>
+    
+    <a href="/tags/hugo/">hugo</a>
+    
+    <a href="/tags/ios/">iOS</a>
+    
+    <a href="/tags/kindle/">Kindle</a>
+    
+    <a href="/tags/kvocontroller/">KVOController</a>
+    
+    <a href="/tags/linux/">linux</a>
+    
+    <a href="/tags/macos/">MacOS</a>
+    
+    <a href="/tags/neovim/">neovim</a>
+    
+    <a href="/tags/runtime/">runtime</a>
+    
+    <a href="/tags/rust/">rust</a>
+    
+    <a href="/tags/ss/">ss</a>
+    
+    <a href="/tags/ssh/">ssh</a>
+    
+    <a href="/tags/swift/">Swift</a>
+    
+    <a href="/tags/vim/">vim</a>
+    
+    <a href="/tags/webhook/">webhook</a>
+    
+    <a href="/tags/wubi/">wubi</a>
+    
+    <a href="/tags/zabbix/">zabbix</a>
+    
+  </div>
+</section>
+
+        
+        
+
+<hr>
+<h5>FRIENDS</h5>
+<ul class="list-inline">
+  
+  <li><a href=""></a></li>
+  
+</ul>
+
+      </div>
+    </div>
+  </div>
+</article>
+
+
+
+  
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        
+        
+
+
+<ul class="list-inline text-center">
+
+  
+  <li>
+    <a href="/index.xml">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+  
+  
+  
+  
+  <li>
+    <a target="_blank" href="https://github.com/roninro">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+</ul>
+        <p class="copyright text-muted">
+          Copyright &copy; RoninRo&#39;s Blog 2022
+          <br>
+          Powered by <a href="https://gohugo.io">Hugo</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+
+
+<script src="/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js"></script>
+
+
+<script src="/js/simple-jekyll-search.min.js"></script>
+
+
+<script src="/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/zoomjs/zoom.min.js"></script>
+</body>
+
+</html>

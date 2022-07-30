@@ -1,12 +1,58 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Swift on RoninRo's Blog</title><link>https://fninit.com/tags/swift/</link><description>Recent content in Swift on RoninRo's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sat, 19 May 2018 10:39:55 +0800</lastBuildDate><atom:link href="https://fninit.com/tags/swift/index.xml" rel="self" type="application/rss+xml"/><item><title>Swift 中的GCD</title><link>https://fninit.com/posts/2018/gcd-swift/</link><pubDate>Sat, 19 May 2018 10:39:55 +0800</pubDate><guid>https://fninit.com/posts/2018/gcd-swift/</guid><description>&lt;blockquote>
-&lt;p>内容主要翻译自：&lt;/p>
-&lt;/blockquote>
-&lt;blockquote>
-&lt;ol>
-&lt;li>&lt;a href="https://www.raywenderlich.com/148513/grand-central-dispatch-tutorial-swift-3-part-1">Grand Central Dispatch Tutorial for Swift 3: Part 1&lt;/a>&lt;/li>
-&lt;/ol>
-&lt;ul>
-&lt;li>&lt;a href="https://www.raywenderlich.com/148515/grand-central-dispatch-tutorial-swift-3-part-2">Grand Central Dispatch Tutorial for Swft 3: Part 2&lt;/a>&lt;/li>
-&lt;/ul>
-&lt;/blockquote>
-&lt;p>Grand Central Dispatch(GCD) 是管理并发操作的低级API，GCD 可以通过将计算量大的任务推迟到后台从而提高应用的响应速度。与锁和线程相比，它是一个更简单的并发模型。&lt;/p></description></item><item><title>MVVM in Swift</title><link>https://fninit.com/posts/2018/mvvm-in-swift/</link><pubDate>Tue, 08 May 2018 11:16:59 +0800</pubDate><guid>https://fninit.com/posts/2018/mvvm-in-swift/</guid><description>原文：MVVM in Swift 编程归结起来就是让代码以一种聪明的方式与其他代码进行通信。 软件模式是约束程序员使编程更容易的方法。 MVVM , 大致上有以下几种限制</description></item><item><title>Swift 闭包</title><link>https://fninit.com/posts/2018/swift-closures/</link><pubDate>Thu, 15 Mar 2018 09:33:53 +0800</pubDate><guid>https://fninit.com/posts/2018/swift-closures/</guid><description>根据 The Swift Programming Language (Swift 4.1) - Closures 整理。 Swift 中闭包与 Objective-C 中的 Blocks 以及其他一些编程语言中的匿名函数比较相似，是自包含的函数代码块。 闭包可以捕获和存储其所在上下文中</description></item><item><title>Swift:Automatic Reference Counting in Swift</title><link>https://fninit.com/posts/2016/arc-in-swift/</link><pubDate>Fri, 30 Dec 2016 00:00:00 +0000</pubDate><guid>https://fninit.com/posts/2016/arc-in-swift/</guid><description>原文地址：Automatic Reference Counting 翻译： https://www.cnswift.org/ Swift 使用自动引用计数*(ARC)*机制来追踪和管理你的APP的内存使用。在大多数情况下，这意味着内存管</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Swift on RoninRo&#39;s Blog</title>
+    <link>https://roninro.github.io/tags/swift/</link>
+    <description>Recent content in Swift on RoninRo&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sat, 19 May 2018 10:39:55 +0800</lastBuildDate><atom:link href="https://roninro.github.io/tags/swift/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Swift 中的GCD </title>
+      <link>https://roninro.github.io/posts/2018/gcd-swift/</link>
+      <pubDate>Sat, 19 May 2018 10:39:55 +0800</pubDate>
+      
+      <guid>https://roninro.github.io/posts/2018/gcd-swift/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;内容主要翻译自：&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.raywenderlich.com/148513/grand-central-dispatch-tutorial-swift-3-part-1&#34;&gt;Grand Central Dispatch Tutorial for Swift 3: Part 1&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.raywenderlich.com/148515/grand-central-dispatch-tutorial-swift-3-part-2&#34;&gt;Grand Central Dispatch Tutorial for Swft 3: Part 2&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Grand Central Dispatch(GCD) 是管理并发操作的低级API，GCD 可以通过将计算量大的任务推迟到后台从而提高应用的响应速度。与锁和线程相比，它是一个更简单的并发模型。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>MVVM in Swift</title>
+      <link>https://roninro.github.io/posts/2018/mvvm-in-swift/</link>
+      <pubDate>Tue, 08 May 2018 11:16:59 +0800</pubDate>
+      
+      <guid>https://roninro.github.io/posts/2018/mvvm-in-swift/</guid>
+      <description>原文：MVVM in Swift 编程归结起来就是让代码以一种聪明的方式与其他代码进行通信。 软件模式是约束程序员使编程更容易的方法。 MVVM , 大致上有以下几种限制</description>
+    </item>
+    
+    <item>
+      <title>Swift 闭包</title>
+      <link>https://roninro.github.io/posts/2018/swift-closures/</link>
+      <pubDate>Thu, 15 Mar 2018 09:33:53 +0800</pubDate>
+      
+      <guid>https://roninro.github.io/posts/2018/swift-closures/</guid>
+      <description>根据 The Swift Programming Language (Swift 4.1) - Closures 整理。 Swift 中闭包与 Objective-C 中的 Blocks 以及其他一些编程语言中的匿名函数比较相似，是自包含的函数代码块。 闭包可以捕获和存储其所在上下文中</description>
+    </item>
+    
+    <item>
+      <title>Swift:Automatic Reference Counting in Swift</title>
+      <link>https://roninro.github.io/posts/2016/arc-in-swift/</link>
+      <pubDate>Fri, 30 Dec 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://roninro.github.io/posts/2016/arc-in-swift/</guid>
+      <description>原文地址：Automatic Reference Counting 翻译： https://www.cnswift.org/ Swift 使用自动引用计数*(ARC)*机制来追踪和管理你的APP的内存使用。在大多数情况下，这意味着内存管</description>
+    </item>
+    
+  </channel>
+</rss>

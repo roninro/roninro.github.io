@@ -1,1 +1,92 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>RoninRo's Blog</title><link>https://fninit.com/categories/</link><description>Recent content on RoninRo's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sat, 18 Sep 2021 11:34:04 +0800</lastBuildDate><atom:link href="https://fninit.com/categories/index.xml" rel="self" type="application/rss+xml"/><item><title>Tech</title><link>https://fninit.com/categories/technology/</link><pubDate>Sat, 18 Sep 2021 11:34:04 +0800</pubDate><guid>https://fninit.com/categories/technology/</guid><description/></item><item><title>工具</title><link>https://fninit.com/categories/tool/</link><pubDate>Fri, 27 Aug 2021 15:54:29 +0800</pubDate><guid>https://fninit.com/categories/tool/</guid><description/></item><item><title>随笔</title><link>https://fninit.com/categories/essay/</link><pubDate>Mon, 29 Mar 2021 10:23:25 +0800</pubDate><guid>https://fninit.com/categories/essay/</guid><description/></item><item><title>Rust</title><link>https://fninit.com/categories/rust/</link><pubDate>Fri, 27 Dec 2019 11:27:32 +0800</pubDate><guid>https://fninit.com/categories/rust/</guid><description/></item><item><title>Linux</title><link>https://fninit.com/categories/linux/</link><pubDate>Thu, 05 Dec 2019 15:27:30 +0800</pubDate><guid>https://fninit.com/categories/linux/</guid><description/></item><item><title>分享</title><link>https://fninit.com/categories/share/</link><pubDate>Tue, 16 Jul 2019 16:18:37 +0800</pubDate><guid>https://fninit.com/categories/share/</guid><description/></item><item><title>iOS</title><link>https://fninit.com/categories/ios/</link><pubDate>Thu, 16 May 2019 10:15:54 +0800</pubDate><guid>https://fninit.com/categories/ios/</guid><description/></item><item><title>Golang</title><link>https://fninit.com/categories/golang/</link><pubDate>Sun, 09 Sep 2018 19:49:47 +0800</pubDate><guid>https://fninit.com/categories/golang/</guid><description/></item><item><title>Swift</title><link>https://fninit.com/categories/swift/</link><pubDate>Sat, 19 May 2018 10:39:55 +0800</pubDate><guid>https://fninit.com/categories/swift/</guid><description/></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>RoninRo&#39;s Blog</title>
+    <link>https://roninro.github.io/categories/</link>
+    <description>Recent content on RoninRo&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sat, 18 Sep 2021 11:34:04 +0800</lastBuildDate><atom:link href="https://roninro.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Tech</title>
+      <link>https://roninro.github.io/categories/technology/</link>
+      <pubDate>Sat, 18 Sep 2021 11:34:04 +0800</pubDate>
+      
+      <guid>https://roninro.github.io/categories/technology/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>工具</title>
+      <link>https://roninro.github.io/categories/tool/</link>
+      <pubDate>Fri, 27 Aug 2021 15:54:29 +0800</pubDate>
+      
+      <guid>https://roninro.github.io/categories/tool/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>随笔</title>
+      <link>https://roninro.github.io/categories/essay/</link>
+      <pubDate>Mon, 29 Mar 2021 10:23:25 +0800</pubDate>
+      
+      <guid>https://roninro.github.io/categories/essay/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Rust</title>
+      <link>https://roninro.github.io/categories/rust/</link>
+      <pubDate>Fri, 27 Dec 2019 11:27:32 +0800</pubDate>
+      
+      <guid>https://roninro.github.io/categories/rust/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Linux</title>
+      <link>https://roninro.github.io/categories/linux/</link>
+      <pubDate>Thu, 05 Dec 2019 15:27:30 +0800</pubDate>
+      
+      <guid>https://roninro.github.io/categories/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>分享</title>
+      <link>https://roninro.github.io/categories/share/</link>
+      <pubDate>Tue, 16 Jul 2019 16:18:37 +0800</pubDate>
+      
+      <guid>https://roninro.github.io/categories/share/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>iOS</title>
+      <link>https://roninro.github.io/categories/ios/</link>
+      <pubDate>Thu, 16 May 2019 10:15:54 +0800</pubDate>
+      
+      <guid>https://roninro.github.io/categories/ios/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Golang</title>
+      <link>https://roninro.github.io/categories/golang/</link>
+      <pubDate>Sun, 09 Sep 2018 19:49:47 +0800</pubDate>
+      
+      <guid>https://roninro.github.io/categories/golang/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Swift</title>
+      <link>https://roninro.github.io/categories/swift/</link>
+      <pubDate>Sat, 19 May 2018 10:39:55 +0800</pubDate>
+      
+      <guid>https://roninro.github.io/categories/swift/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,46 +1,431 @@
-<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="ie=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><title>配置SSH登入远程Linux | RoninRo's Blog</title><meta name=author content="RoninRo"><meta name=description content="所谓公钥登录，就是用户将自己的公钥储存在远程主机上。登录的时候远程主机回向用户发送一段随机字符串，用户用自己的秘钥加密后再发送给远程主机。远"><meta name=keywords content="blog,developer,personal,golang"><meta name=twitter:card content="summary"><meta name=twitter:title content="配置SSH登入远程Linux"><meta name=twitter:description content="所谓公钥登录，就是用户将自己的公钥储存在远程主机上。登录的时候远程主机回向用户发送一段随机字符串，用户用自己的秘钥加密后再发送给远程主机。远"><meta property="og:title" content="配置SSH登入远程Linux"><meta property="og:description" content="所谓公钥登录，就是用户将自己的公钥储存在远程主机上。登录的时候远程主机回向用户发送一段随机字符串，用户用自己的秘钥加密后再发送给远程主机。远"><meta property="og:type" content="article"><meta property="og:url" content="https://fninit.com/posts/2017/linux-ssh/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2017-07-10T10:12:02+08:00"><meta property="article:modified_time" content="2017-07-10T10:12:02+08:00"><link rel=stylesheet href=/css/bootstrap.min.css crossorigin=anonymous><link href=//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css rel=stylesheet type=text/css><link rel=stylesheet href=https://fninit.com/sass/main.css><link rel=stylesheet href=https://fninit.com/zoomjs/zoom.min.css></head><body><nav class="navbar navbar-default navbar-custom navbar-fixed-top invert"><div class=container-fluid><div class="navbar-header page-scroll"><button type=button class=navbar-toggle>
-<span class=sr-only>Toggle navigation</span>
-<span class=icon-bar></span>
-<span class=icon-bar></span>
-<span class=icon-bar></span></button>
-<a class=navbar-brand href=https://fninit.com>RoninRo's Blog</a></div><div id=huxblog_navbar><div class=navbar-collapse><ul class="nav navbar-nav navbar-right"><li><a href=/ title=Home>Home</a></li><li><a href=/archive/ title=Archive>Archive</a></li><li><a href=/categories/ title=Categories>Categories</a></li><li><a href=/about/ title=About>About</a></li><li class=search-icon><a href=javascript:void(0)><i class="fa fa-search"></i></a></li></ul></div></div></div></nav><script>var $body=document.body,$toggle=document.querySelector(".navbar-toggle"),$navbar=document.querySelector("#huxblog_navbar"),$collapse=document.querySelector(".navbar-collapse"),__HuxNav__={close:function(){$navbar.className=" ",setTimeout(function(){$navbar.className.indexOf("in")<0&&($collapse.style.height="0px")},400)},open:function(){$collapse.style.height="auto",$navbar.className+=" in"}};$toggle.addEventListener("click",function(){$navbar.className.indexOf("in")>0?__HuxNav__.close():__HuxNav__.open()}),document.addEventListener("click",function(e){if(e.target==$toggle)return;if(e.target.className=="icon-bar")return;__HuxNav__.close()})</script><div class=search-page><div class=search-icon-close-container><span class=search-icon-close><i class="fa fa-chevron-down"></i></span></div><div class="search-main container"><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><form></form><input type=text id=search-input placeholder="$ grep..."></form><div id=search-results class=mini-post-list></div></div></div></div></div><style type=text/css>header.intro-header{position:relative;background-image:url('')}</style><header class="intro-header style-text"><div class=header-mask></div><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><div class=post-heading><div class=tags><a class=tag href=https://fninit.com/tags/linux/ title=linux>linux</a>
-<a class=tag href=https://fninit.com/tags/ssh/ title=ssh>ssh</a></div><h1>配置SSH登入远程Linux</h1><h2 class=subheading></h2><p class=post-meta>Posted by RoninRo
-on Mon, Jul 10, 2017</p></div></div></div></div></header><article><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2
-col-md-10 col-md-offset-1
-post-container"><p>所谓公钥登录，就是用户将自己的公钥储存在远程主机上。登录的时候远程主机回向用户发送一段随机字符串，用户用自己的秘钥加密后再发送给远程主机。远程主机用事先储存的公钥进行解密，如果成功，就证明用户是可信的，直接允许登录shell，不再要求密码。</p><h3 id=生成公钥和秘钥>生成公钥和秘钥<a class=anchorjs-link href=#%e7%94%9f%e6%88%90%e5%85%ac%e9%92%a5%e5%92%8c%e7%a7%98%e9%92%a5></a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span><span style=color:#8be9fd;font-style:italic>cd</span> ~/.ssh
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>ssh-keygen -t rsa
-</span></span></code></pre></div><ul><li>id_rsa 秘钥</li><li>id_rsa.pub 公钥</li></ul><h3 id=公钥发送给远程主机>公钥发送给远程主机<a class=anchorjs-link href=#%e5%85%ac%e9%92%a5%e5%8f%91%e9%80%81%e7%bb%99%e8%bf%9c%e7%a8%8b%e4%b8%bb%e6%9c%ba></a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>ssh-copy-id user@ip -p
-</span></span></code></pre></div><p>使用 ssh user@ip -p 检测是否设置成功。</p><h3 id=更安全地使用-ssh>更安全地使用 ssh<a class=anchorjs-link href=#%e6%9b%b4%e5%ae%89%e5%85%a8%e5%9c%b0%e4%bd%bf%e7%94%a8-ssh></a></h3><p>对 sshd_config 做一些设置，位置：/etc/ssh/sshd_config</p><h4 id=禁止-root-使用-ssh-登入>禁止 root 使用 ssh 登入。<a class=anchorjs-link href=#%e7%a6%81%e6%ad%a2-root-%e4%bd%bf%e7%94%a8-ssh-%e7%99%bb%e5%85%a5></a></h4><p>找到 #PermitRootLogin yes 修改 为 PermitRootLogin no</p><h4 id=使用非常规的-ssh-端口>使用非常规的 ssh 端口<a class=anchorjs-link href=#%e4%bd%bf%e7%94%a8%e9%9d%9e%e5%b8%b8%e8%a7%84%e7%9a%84-ssh-%e7%ab%af%e5%8f%a3></a></h4><p>找到 #Port 22， 去掉注释。修改为其它，建议五位。</p><h4 id=设置公钥密码双重验证方式>设置公钥+密码双重验证方式<a class=anchorjs-link href=#%e8%ae%be%e7%bd%ae%e5%85%ac%e9%92%a5%e5%af%86%e7%a0%81%e5%8f%8c%e9%87%8d%e9%aa%8c%e8%af%81%e6%96%b9%e5%bc%8f></a></h4><p>在 /etc/ssh/sshd_config末端加入这一行：</p><p>AuthenticationMethods publickey,password</p><p>它告诉用户必须拥有合法的公钥，和输入正确的密码才能成功登入。</p><p>之后，重启 sshd 服务。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>systemctl restart sshd.service
-</span></span></code></pre></div><p>-END-</p><hr style=visibility:hidden><ul class=pager><li class=previous><a href=https://fninit.com/posts/2017/linux-vimrc/ data-toggle=tooltip data-placement=top title=关于Vim不能正常显示中文的解决方法>Previous<br><span>关于Vim不能正常显示中文的解决方法</span></a></li><li class=next><a href=https://fninit.com/posts/2017/golang-in-vim/ data-toggle=tooltip data-placement=top title="Neovim 下配置 golang 开发环境">Next<br><span>Neovim 下配置 golang 开发环境</span></a></li></ul><hr style=visibility:hidden></div><div class="col-lg-8 col-lg-offset-2
-col-md-10 col-md-offset-1
-sidebar-container"><section><hr class="hidden-sm hidden-xs"><h5>FEATURED TAGS</h5><div class=tags><a href=https://fninit.com/tags/css/>css</a>
-<a href=https://fninit.com/tags/debian/>debian</a>
-<a href=https://fninit.com/tags/fzf/>fzf</a>
-<a href=https://fninit.com/tags/gcd/>gcd</a>
-<a href=https://fninit.com/tags/gem/>gem</a>
-<a href=https://fninit.com/tags/git/>git</a>
-<a href=https://fninit.com/tags/go/>go</a>
-<a href=https://fninit.com/tags/golang/>golang</a>
-<a href=https://fninit.com/tags/hugo/>hugo</a>
-<a href=https://fninit.com/tags/ios/>iOS</a>
-<a href=https://fninit.com/tags/kindle/>Kindle</a>
-<a href=https://fninit.com/tags/kvocontroller/>KVOController</a>
-<a href=https://fninit.com/tags/linux/>linux</a>
-<a href=https://fninit.com/tags/macos/>MacOS</a>
-<a href=https://fninit.com/tags/neovim/>neovim</a>
-<a href=https://fninit.com/tags/runtime/>runtime</a>
-<a href=https://fninit.com/tags/rust/>rust</a>
-<a href=https://fninit.com/tags/ss/>ss</a>
-<a href=https://fninit.com/tags/ssh/>ssh</a>
-<a href=https://fninit.com/tags/swift/>Swift</a>
-<a href=https://fninit.com/tags/vim/>vim</a>
-<a href=https://fninit.com/tags/webhook/>webhook</a>
-<a href=https://fninit.com/tags/wubi/>wubi</a>
-<a href=https://fninit.com/tags/zabbix/>zabbix</a></div></section><hr><h5>FRIENDS</h5><ul class=list-inline><li><a href></a></li></ul></div></div></div></article><footer><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><ul class="list-inline text-center"><li><a href=/index.xml><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i>
-<i class="fa fa-rss fa-stack-1x fa-inverse"></i></span></a></li><li><a target=_blank href=https://github.com/roninro><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i>
-<i class="fa fa-github fa-stack-1x fa-inverse"></i></span></a></li></ul><p class="copyright text-muted">Copyright &copy; RoninRo's Blog 2022<br>Powered by <a href=https://gohugo.io>Hugo</a></p></div></div></div></footer><script src=/js/jquery.min.js></script>
-<script src=/js/bootstrap.min.js crossorigin=anonymous></script>
-<script src=https://fninit.com/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js></script>
-<script src=/js/simple-jekyll-search.min.js></script>
-<script src=https://fninit.com/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js></script>
-<script></script><script src=/zoomjs/zoom.min.js></script></body></html>
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  
+  
+  
+  
+
+  <title>配置SSH登入远程Linux | RoninRo&#39;s Blog</title>
+
+  
+  <meta name="author" content="RoninRo">
+  <meta name="description" content="所谓公钥登录，就是用户将自己的公钥储存在远程主机上。登录的时候远程主机回向用户发送一段随机字符串，用户用自己的秘钥加密后再发送给远程主机。远">
+  <meta name="keywords" content="blog,developer,personal,golang">
+
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="配置SSH登入远程Linux"/>
+<meta name="twitter:description" content="所谓公钥登录，就是用户将自己的公钥储存在远程主机上。登录的时候远程主机回向用户发送一段随机字符串，用户用自己的秘钥加密后再发送给远程主机。远"/>
+
+  <meta property="og:title" content="配置SSH登入远程Linux" />
+<meta property="og:description" content="所谓公钥登录，就是用户将自己的公钥储存在远程主机上。登录的时候远程主机回向用户发送一段随机字符串，用户用自己的秘钥加密后再发送给远程主机。远" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://roninro.github.io/posts/2017/linux-ssh/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2017-07-10T10:12:02+08:00" />
+<meta property="article:modified_time" content="2017-07-10T10:12:02+08:00" />
+
+
+
+  <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+  
+  <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"
+    type="text/css">
+
+  
+  
+  <link rel="stylesheet" href="/sass/main.css">
+
+  
+  <link rel="stylesheet" href="/zoomjs/zoom.min.css">
+
+
+  
+  
+  
+
+  </head>
+
+
+
+<body ontouchstart="">
+
+  
+  
+  
+
+  
+
+  
+  
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top invert">
+  <div class="container-fluid">
+    
+    <div class="navbar-header page-scroll">
+      <button type="button" class="navbar-toggle">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://roninro.github.io/">RoninRo&#39;s Blog</a>
+    </div>
+    
+    <div id="huxblog_navbar">
+      <div class="navbar-collapse">
+        <ul class="nav navbar-nav navbar-right">
+          
+          <li><a href="/" title="Home">Home</a></li>
+          
+          <li><a href="/archive/" title="Archive">Archive</a></li>
+          
+          <li><a href="/categories/" title="Categories">Categories</a></li>
+          
+          <li><a href="/about/" title="About">About</a></li>
+          
+
+          <li class="search-icon">
+            <a href="javascript:void(0)">
+              <i class="fa fa-search"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+  </div>
+  
+</nav>
+<script>
+  
+  
+  
+  var $body = document.body;
+  var $toggle = document.querySelector(".navbar-toggle");
+  var $navbar = document.querySelector("#huxblog_navbar");
+  var $collapse = document.querySelector(".navbar-collapse");
+
+  var __HuxNav__ = {
+    close: function () {
+      $navbar.className = " ";
+      
+      setTimeout(function () {
+        
+        if ($navbar.className.indexOf("in") < 0) {
+          $collapse.style.height = "0px";
+        }
+      }, 400);
+    },
+    open: function () {
+      $collapse.style.height = "auto";
+      $navbar.className += " in";
+    },
+  };
+
+  
+  $toggle.addEventListener("click", function (e) {
+    if ($navbar.className.indexOf("in") > 0) {
+      __HuxNav__.close();
+    } else {
+      __HuxNav__.open();
+    }
+  });
+
+  
+
+  document.addEventListener("click", function (e) {
+    if (e.target == $toggle) return;
+    if (e.target.className == "icon-bar") return;
+    __HuxNav__.close();
+  });
+</script>
+  
+<div class="search-page">
+  <div class="search-icon-close-container">
+    <span class="search-icon-close">
+      <i class="fa fa-chevron-down"></i>
+    </span>
+  </div>
+  <div class="search-main container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <form></form>
+        <input type="text" id="search-input" placeholder="$ grep...">
+        </form>
+        <div id="search-results" class="mini-post-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+  
+
+
+<style type="text/css">
+  header.intro-header {
+    position: relative;
+    background-image: url('');
+  }
+</style>
+
+<header class="intro-header style-text">
+
+  <div class="header-mask"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-heading">
+          <div class="tags">
+            
+            <a class="tag" href="/tags/linux/" title="linux">linux</a>
+            
+            <a class="tag" href="/tags/ssh/" title="ssh">ssh</a>
+            
+          </div>
+          <h1>配置SSH登入远程Linux</h1>
+          <h2 class="subheading"></h2>
+          <p class="post-meta">
+            Posted by  RoninRo 
+            on Mon, Jul 10, 2017
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+  
+
+
+<article>
+  <div class="container">
+    <div class="row">
+
+      
+      <div class="
+              col-lg-8 col-lg-offset-2
+              col-md-10 col-md-offset-1
+              post-container">
+        <p>所谓公钥登录，就是用户将自己的公钥储存在远程主机上。登录的时候远程主机回向用户发送一段随机字符串，用户用自己的秘钥加密后再发送给远程主机。远程主机用事先储存的公钥进行解密，如果成功，就证明用户是可信的，直接允许登录shell，不再要求密码。</p>
+<h3 id="生成公钥和秘钥">生成公钥和秘钥<a class="anchorjs-link" href="#%e7%94%9f%e6%88%90%e5%85%ac%e9%92%a5%e5%92%8c%e7%a7%98%e9%92%a5"></a></h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#8be9fd;font-style:italic">cd</span> ~/.ssh
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>ssh-keygen -t rsa
+</span></span></code></pre></div><ul>
+<li>id_rsa       秘钥</li>
+<li>id_rsa.pub   公钥</li>
+</ul>
+<h3 id="公钥发送给远程主机">公钥发送给远程主机<a class="anchorjs-link" href="#%e5%85%ac%e9%92%a5%e5%8f%91%e9%80%81%e7%bb%99%e8%bf%9c%e7%a8%8b%e4%b8%bb%e6%9c%ba"></a></h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>ssh-copy-id user@ip -p
+</span></span></code></pre></div><p>使用 ssh user@ip -p 检测是否设置成功。</p>
+<h3 id="更安全地使用-ssh">更安全地使用 ssh<a class="anchorjs-link" href="#%e6%9b%b4%e5%ae%89%e5%85%a8%e5%9c%b0%e4%bd%bf%e7%94%a8-ssh"></a></h3><p>对 sshd_config 做一些设置，位置：/etc/ssh/sshd_config</p>
+<h4 id="禁止-root-使用-ssh-登入">禁止 root 使用 ssh 登入。<a class="anchorjs-link" href="#%e7%a6%81%e6%ad%a2-root-%e4%bd%bf%e7%94%a8-ssh-%e7%99%bb%e5%85%a5"></a></h4><p>找到 #PermitRootLogin yes 修改 为 PermitRootLogin no</p>
+<h4 id="使用非常规的-ssh-端口">使用非常规的 ssh 端口<a class="anchorjs-link" href="#%e4%bd%bf%e7%94%a8%e9%9d%9e%e5%b8%b8%e8%a7%84%e7%9a%84-ssh-%e7%ab%af%e5%8f%a3"></a></h4><p>找到 #Port 22， 去掉注释。修改为其它，建议五位。</p>
+<h4 id="设置公钥密码双重验证方式">设置公钥+密码双重验证方式<a class="anchorjs-link" href="#%e8%ae%be%e7%bd%ae%e5%85%ac%e9%92%a5%e5%af%86%e7%a0%81%e5%8f%8c%e9%87%8d%e9%aa%8c%e8%af%81%e6%96%b9%e5%bc%8f"></a></h4><p>在 /etc/ssh/sshd_config末端加入这一行：</p>
+<p>AuthenticationMethods publickey,password</p>
+<p>它告诉用户必须拥有合法的公钥，和输入正确的密码才能成功登入。</p>
+<p>之后，重启 sshd 服务。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>systemctl restart sshd.service
+</span></span></code></pre></div><p>-END-</p>
+
+
+        <hr style="visibility: hidden;" />
+        <ul class="pager">
+          
+          <li class="previous">
+            <a href="/posts/2017/linux-vimrc/" data-toggle="tooltip" data-placement="top" title="关于Vim不能正常显示中文的解决方法">
+              Previous<br>
+              <span>关于Vim不能正常显示中文的解决方法</span>
+            </a>
+          </li>
+          
+          
+          <li class="next">
+            <a href="/posts/2017/golang-in-vim/" data-toggle="tooltip" data-placement="top" title="Neovim 下配置 golang 开发环境">
+              Next<br>
+              <span>Neovim 下配置 golang 开发环境</span>
+            </a>
+          </li>
+          
+        </ul>
+        <hr style="visibility: hidden;" />
+
+        
+        
+
+
+
+
+
+      </div>
+
+      
+      
+      
+      
+      <div class="
+              col-lg-8 col-lg-offset-2
+              col-md-10 col-md-offset-1
+              sidebar-container">
+
+        
+        
+        <section>
+  
+  
+  <hr class="hidden-sm hidden-xs">
+  
+  <h5>FEATURED TAGS</h5>
+  <div class="tags">
+    
+    <a href="/tags/css/">css</a>
+    
+    <a href="/tags/debian/">debian</a>
+    
+    <a href="/tags/fzf/">fzf</a>
+    
+    <a href="/tags/gcd/">gcd</a>
+    
+    <a href="/tags/gem/">gem</a>
+    
+    <a href="/tags/git/">git</a>
+    
+    <a href="/tags/go/">go</a>
+    
+    <a href="/tags/golang/">golang</a>
+    
+    <a href="/tags/hugo/">hugo</a>
+    
+    <a href="/tags/ios/">iOS</a>
+    
+    <a href="/tags/kindle/">Kindle</a>
+    
+    <a href="/tags/kvocontroller/">KVOController</a>
+    
+    <a href="/tags/linux/">linux</a>
+    
+    <a href="/tags/macos/">MacOS</a>
+    
+    <a href="/tags/neovim/">neovim</a>
+    
+    <a href="/tags/runtime/">runtime</a>
+    
+    <a href="/tags/rust/">rust</a>
+    
+    <a href="/tags/ss/">ss</a>
+    
+    <a href="/tags/ssh/">ssh</a>
+    
+    <a href="/tags/swift/">Swift</a>
+    
+    <a href="/tags/vim/">vim</a>
+    
+    <a href="/tags/webhook/">webhook</a>
+    
+    <a href="/tags/wubi/">wubi</a>
+    
+    <a href="/tags/zabbix/">zabbix</a>
+    
+  </div>
+</section>
+
+        
+        
+
+<hr>
+<h5>FRIENDS</h5>
+<ul class="list-inline">
+  
+  <li><a href=""></a></li>
+  
+</ul>
+
+      </div>
+    </div>
+  </div>
+</article>
+
+
+
+  
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        
+        
+
+
+<ul class="list-inline text-center">
+
+  
+  <li>
+    <a href="/index.xml">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+  
+  
+  
+  
+  <li>
+    <a target="_blank" href="https://github.com/roninro">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+</ul>
+        <p class="copyright text-muted">
+          Copyright &copy; RoninRo&#39;s Blog 2022
+          <br>
+          Powered by <a href="https://gohugo.io">Hugo</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+
+
+<script src="/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js"></script>
+
+
+<script src="/js/simple-jekyll-search.min.js"></script>
+
+
+<script src="/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/zoomjs/zoom.min.js"></script>
+</body>
+
+</html>

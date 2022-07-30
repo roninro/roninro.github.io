@@ -1,1 +1,20 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>KVOController on RoninRo's Blog</title><link>https://fninit.com/tags/kvocontroller/</link><description>Recent content in KVOController on RoninRo's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Fri, 30 Jun 2017 11:08:26 +0800</lastBuildDate><atom:link href="https://fninit.com/tags/kvocontroller/index.xml" rel="self" type="application/rss+xml"/><item><title>KVO &amp; KVOController</title><link>https://fninit.com/posts/2017/ios-kvocontroller/</link><pubDate>Fri, 30 Jun 2017 11:08:26 +0800</pubDate><guid>https://fninit.com/posts/2017/ios-kvocontroller/</guid><description>KVO的实现机制KVO 是 Objective-C 对观察者模式的实现。从苹果的 文档 中对于它的实现描述可以知道： KVO 是通过 isa-swizzling 实现的。 当你观察一个对象时，该对象的isa指</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>KVOController on RoninRo&#39;s Blog</title>
+    <link>https://roninro.github.io/tags/kvocontroller/</link>
+    <description>Recent content in KVOController on RoninRo&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Fri, 30 Jun 2017 11:08:26 +0800</lastBuildDate><atom:link href="https://roninro.github.io/tags/kvocontroller/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>KVO &amp; KVOController</title>
+      <link>https://roninro.github.io/posts/2017/ios-kvocontroller/</link>
+      <pubDate>Fri, 30 Jun 2017 11:08:26 +0800</pubDate>
+      
+      <guid>https://roninro.github.io/posts/2017/ios-kvocontroller/</guid>
+      <description>KVO的实现机制KVO 是 Objective-C 对观察者模式的实现。从苹果的 文档 中对于它的实现描述可以知道： KVO 是通过 isa-swizzling 实现的。 当你观察一个对象时，该对象的isa指</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,41 +1,576 @@
-<!doctype html><html lang=zh-cn><head><meta name=generator content="Hugo 0.101.0"><meta charset=utf-8><meta http-equiv=x-ua-compatible content="ie=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><title>RoninRo's Blog | RoninRo's Blog</title><meta name=author content="RoninRo"><meta name=description content="大海无量，我是一粒沙"><meta name=keywords content="blog,developer,personal,golang"><meta name=twitter:card content="summary"><meta name=twitter:title content="RoninRo's Blog"><meta name=twitter:description content="大海无量，我是一粒沙"><meta property="og:title" content="RoninRo's Blog"><meta property="og:description" content="大海无量，我是一粒沙"><meta property="og:type" content="website"><meta property="og:url" content="https://fninit.com/"><link rel=stylesheet href=/css/bootstrap.min.css crossorigin=anonymous><link href=//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css rel=stylesheet type=text/css><link rel=stylesheet href=https://fninit.com/sass/main.css><link rel=stylesheet href=https://fninit.com/zoomjs/zoom.min.css><link rel=alternate type=application/json href=https://fninit.com/index.json title="RoninRo's Blog"><link rel=alternate type=application/rss+xml href=https://fninit.com/index.xml title="RoninRo's Blog"></head><body><nav class="navbar navbar-default navbar-custom navbar-fixed-top"><div class=container-fluid><div class="navbar-header page-scroll"><button type=button class=navbar-toggle>
-<span class=sr-only>Toggle navigation</span>
-<span class=icon-bar></span>
-<span class=icon-bar></span>
-<span class=icon-bar></span></button>
-<a class=navbar-brand href=https://fninit.com>RoninRo's Blog</a></div><div id=huxblog_navbar><div class=navbar-collapse><ul class="nav navbar-nav navbar-right"><li><a href=/ title=Home>Home</a></li><li><a href=/archive/ title=Archive>Archive</a></li><li><a href=/categories/ title=Categories>Categories</a></li><li><a href=/about/ title=About>About</a></li><li class=search-icon><a href=javascript:void(0)><i class="fa fa-search"></i></a></li></ul></div></div></div></nav><script>var $body=document.body,$toggle=document.querySelector(".navbar-toggle"),$navbar=document.querySelector("#huxblog_navbar"),$collapse=document.querySelector(".navbar-collapse"),__HuxNav__={close:function(){$navbar.className=" ",setTimeout(function(){$navbar.className.indexOf("in")<0&&($collapse.style.height="0px")},400)},open:function(){$collapse.style.height="auto",$navbar.className+=" in"}};$toggle.addEventListener("click",function(){$navbar.className.indexOf("in")>0?__HuxNav__.close():__HuxNav__.open()}),document.addEventListener("click",function(e){if(e.target==$toggle)return;if(e.target.className=="icon-bar")return;__HuxNav__.close()})</script><div class=search-page><div class=search-icon-close-container><span class=search-icon-close><i class="fa fa-chevron-down"></i></span></div><div class="search-main container"><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><form></form><input type=text id=search-input placeholder="$ grep..."></form><div id=search-results class=mini-post-list></div></div></div></div></div><header class=intro-header style=background-image:url(/img/home-bg.jpg)><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><div class=site-heading><h1>RoninRo's Blog</h1><span class=subheading>大海无量，我是一粒沙</span></div></div></div></div></header><div class=container><div class=row><div class="col-lg-8 col-lg-offset-1 col-md-8 col-md-offset-1 col-sm-12
-col-xs-12 postlist-container"><div class=post-preview><a href=https://fninit.com/posts/2021/github-webhook/><h2 class=post-title>[Go] 添加 Github Webhook</h2><div class=post-content-preview>Github 支持为指定的仓库添加 Webhook 。借助 go-github 库可以快速实现一个 Webhook Server 。 首先为仓库添加 Webhooks 配置： Setting - Webhooks - Add webhook : 在 Payload URL 下填写服务器接口地址，Content type 选择</div></a><p class=post-meta>Posted by RoninRo on Sat, Sep 18, 2021</p></div><hr><div class=post-preview><a href=https://fninit.com/posts/2021/ss-rust/><h2 class=post-title>Shadowsocks-Rust 简介</h2><h3 class=post-subtitle>shadowsocks-rust 是 shadowsocks 的 Rust 语言实现版本</h3><div class=post-content-preview></div></a><p class=post-meta>Posted by RoninRo on Fri, Aug 27, 2021</p></div><hr><div class=post-preview><a href=https://fninit.com/posts/2021/add-tailwind-css-to-svelte/><h2 class=post-title>Add Tailwind Css to Svelte</h2><div class=post-content-preview>SvelteKit 目前是 beta 版本，本文可能只适用于 SvelteKit v1.0.0-next.102 首先我们用 SvelteKit 新建一个项目1npm init svelte@next my-app 2cd my-app 3npm install 4npm run dev -- --open 为项目添加 @sveltejs/adapter-static 适配器以支持编译静态网页。1npm i</div></a><p class=post-meta>Posted by RoninRo on Sat, May 8, 2021</p></div><hr><div class=post-preview><a href=https://fninit.com/posts/2021/vim-easy-align/><h2 class=post-title>[Vim] 快速对齐插件 vim-easy-align</h2><div class=post-content-preview>vim-easy-align 是一款简单易用的 Vim 对齐插件。 安装并添加配置： 1&amp;#34; in .vimrc 2Plug &amp;#39;junegunn/vim-easy-align&amp;#39; 3 4&amp;#34; Start interactive EasyAlign in visual mode (e.g. vipga) 5xmap ga &amp;lt;Plug&amp;gt;(EasyAlign) 6 7&amp;#34; Start interactive EasyAlign for a motion/text object (e.g. gaip) 8nmap ga &amp;lt;Plug&amp;gt;(EasyAlign) 用法： vipga= vip 多行选中 ga 进入 EasyAlign 模式</div></a><p class=post-meta>Posted by RoninRo on Tue, Mar 30, 2021</p></div><hr><div class=post-preview><a href=https://fninit.com/posts/2021/wubu/><h2 class=post-title>[整理] 五笔基础</h2><div class=post-content-preview>概述“五笔” 原意是也指五种基本笔画：横、竖、撇、捺（点）、折，任何一个汉字，也都是由这五种基本笔画及其衍生字根组成，通过使用一定的映射规则，</div></a><p class=post-meta>Posted by RoninRo on Mon, Mar 29, 2021</p></div><hr><div class=post-preview><a href=https://fninit.com/posts/2021/vimrc/><h2 class=post-title>[Vim] 使用 YouCompleteMe 对 Rust/Golang 代码补全</h2><div class=post-content-preview>YouCompleteMe 是 Vim 下的自动补全插件。自从 Vim8 与 YouCompleteMe 支持异步 IO 后，在 Vim 下的使用体验也是直线上升。 使用 YouCompleteMe 有几个先决条件，不然可能会不能正常使用： Ycm 依赖于 Pyth</div></a><p class=post-meta>Posted by RoninRo on Fri, Jan 22, 2021</p></div><hr><div class=post-preview><a href=https://fninit.com/posts/2020/zabbix-agent/><h2 class=post-title>Zabbix 监控 Postgres 和 Redis</h2><div class=post-content-preview>非教程贴，布署完成后的回忆记录。 Zabbix Agent 布署机器： CentOS 7+ Zabbix Server 版本： 4.4.4 安装 Zabbix Agent 。Step1 添加 Zabbix 的存储库不同版本的 Zabbix 存储库地址可以在 https://www.zabbix.com/cn/download 。找到 1CentOS/RHEL 7: 2rpm -Uvh</div></a><p class=post-meta>Posted by RoninRo on Fri, Feb 28, 2020</p></div><hr><div class=post-preview><a href=https://fninit.com/posts/2019/rust-cross-compile/><h2 class=post-title>Mac 为 Linux 交叉编译 Rust 程序</h2><div class=post-content-preview>默认情况下，Rust 将静态链接所有 Rust 代码。但是，如果使用标准库，它将动态链接到系统的 libc 。
-如何想要 100% 静态二进制文件。可以使用 MUSL libc 提供的 Linux-based 支持。</div></a><p class=post-meta>Posted by RoninRo on Fri, Dec 27, 2019</p></div><hr><div class=post-preview><a href=https://fninit.com/posts/2019/linux-cmd/><h2 class=post-title>[PIN] Linux 下常用命令</h2><div class=post-content-preview>tar命令选项： 1-z(gzip) 用 gzip 来压缩/解压缩文件 2-j(bzip2) 用 bzip2 来压缩/解压缩文件 3-v(verbose) 详细报告 tar 处理的文件信息 4-c(create) 创建新的档案文件 5-x(extract) 解压缩文件或目录 6-f(file) 使用档案文件</div></a><p class=post-meta>Posted by RoninRo on Thu, Dec 5, 2019</p></div><hr><div class=post-preview><a href=https://fninit.com/posts/2019/vim-split/><h2 class=post-title>Vim 分割窗口</h2><div class=post-content-preview>在操作 Vim 窗口之前，最好了解下面几个概念： 缓冲区（buffer）是加载到内存中进行编辑的文件，原始文件在将缓冲区写到文件中之前保持不变。 窗口（</div></a><p class=post-meta>Posted by RoninRo on Thu, Oct 24, 2019</p></div><hr><ul class=pager><li class=next><a href=/page/2/>Older Posts &rarr;</a></li></ul></div><div class="col-lg-3 col-lg-offset-0 col-md-3 col-md-offset-0 col-sm-12
-col-xs-12 sidebar-container"><section><h5>FEATURED TAGS</h5><div class=tags><a href=https://fninit.com/tags/css/>css</a>
-<a href=https://fninit.com/tags/debian/>debian</a>
-<a href=https://fninit.com/tags/fzf/>fzf</a>
-<a href=https://fninit.com/tags/gcd/>gcd</a>
-<a href=https://fninit.com/tags/gem/>gem</a>
-<a href=https://fninit.com/tags/git/>git</a>
-<a href=https://fninit.com/tags/go/>go</a>
-<a href=https://fninit.com/tags/golang/>golang</a>
-<a href=https://fninit.com/tags/hugo/>hugo</a>
-<a href=https://fninit.com/tags/ios/>iOS</a>
-<a href=https://fninit.com/tags/kindle/>Kindle</a>
-<a href=https://fninit.com/tags/kvocontroller/>KVOController</a>
-<a href=https://fninit.com/tags/linux/>linux</a>
-<a href=https://fninit.com/tags/macos/>MacOS</a>
-<a href=https://fninit.com/tags/neovim/>neovim</a>
-<a href=https://fninit.com/tags/runtime/>runtime</a>
-<a href=https://fninit.com/tags/rust/>rust</a>
-<a href=https://fninit.com/tags/ss/>ss</a>
-<a href=https://fninit.com/tags/ssh/>ssh</a>
-<a href=https://fninit.com/tags/swift/>Swift</a>
-<a href=https://fninit.com/tags/vim/>vim</a>
-<a href=https://fninit.com/tags/webhook/>webhook</a>
-<a href=https://fninit.com/tags/wubi/>wubi</a>
-<a href=https://fninit.com/tags/zabbix/>zabbix</a></div></section><section class="visible-md visible-lg"><hr><h5><a href=/about/>ABOUT ME</a></h5><div class=short-about><img src=/img/avatar.jpg><p>Golang iOS Rust</p><ul class=list-inline><li><a href=/index.xml><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i>
-<i class="fa fa-rss fa-stack-1x fa-inverse"></i></span></a></li><li><a target=_blank href=https://github.com/roninro><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i>
-<i class="fa fa-github fa-stack-1x fa-inverse"></i></span></a></li></ul></div></section><hr><h5>FRIENDS</h5><ul class=list-inline><li><a href></a></li></ul></div></div></div><footer><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><ul class="list-inline text-center"><li><a href=/index.xml><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i>
-<i class="fa fa-rss fa-stack-1x fa-inverse"></i></span></a></li><li><a target=_blank href=https://github.com/roninro><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i>
-<i class="fa fa-github fa-stack-1x fa-inverse"></i></span></a></li></ul><p class="copyright text-muted">Copyright &copy; RoninRo's Blog 2022<br>Powered by <a href=https://gohugo.io>Hugo</a></p></div></div></div></footer><script src=/js/jquery.min.js></script>
-<script src=/js/bootstrap.min.js crossorigin=anonymous></script>
-<script src=https://fninit.com/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js></script>
-<script src=/js/simple-jekyll-search.min.js></script>
-<script src=https://fninit.com/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js></script>
-<script></script><script src=/zoomjs/zoom.min.js></script></body></html>
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+	<meta name="generator" content="Hugo 0.101.0" />
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  
+  
+  
+  
+
+  <title>RoninRo&#39;s Blog | RoninRo&#39;s Blog</title>
+
+  
+  <meta name="author" content="RoninRo">
+  <meta name="description" content="大海无量，我是一粒沙">
+  <meta name="keywords" content="blog,developer,personal,golang">
+
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="RoninRo&#39;s Blog"/>
+<meta name="twitter:description" content="大海无量，我是一粒沙"/>
+
+  <meta property="og:title" content="RoninRo&#39;s Blog" />
+<meta property="og:description" content="大海无量，我是一粒沙" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://roninro.github.io/" />
+
+
+
+  <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+  
+  <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"
+    type="text/css">
+
+  
+  
+  <link rel="stylesheet" href="/sass/main.css">
+
+  
+  <link rel="stylesheet" href="/zoomjs/zoom.min.css">
+
+
+  
+  
+  
+
+  <link rel="alternate" type="application/json" href="/index.json" title="RoninRo's Blog" />
+  <link rel="alternate" type="application/rss+xml" href="/index.xml" title="RoninRo's Blog" />
+  </head>
+
+
+
+<body ontouchstart="">
+
+  
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+  
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top ">
+  <div class="container-fluid">
+    
+    <div class="navbar-header page-scroll">
+      <button type="button" class="navbar-toggle">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://roninro.github.io/">RoninRo&#39;s Blog</a>
+    </div>
+    
+    <div id="huxblog_navbar">
+      <div class="navbar-collapse">
+        <ul class="nav navbar-nav navbar-right">
+          
+          <li><a href="/" title="Home">Home</a></li>
+          
+          <li><a href="/archive/" title="Archive">Archive</a></li>
+          
+          <li><a href="/categories/" title="Categories">Categories</a></li>
+          
+          <li><a href="/about/" title="About">About</a></li>
+          
+
+          <li class="search-icon">
+            <a href="javascript:void(0)">
+              <i class="fa fa-search"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+  </div>
+  
+</nav>
+<script>
+  
+  
+  
+  var $body = document.body;
+  var $toggle = document.querySelector(".navbar-toggle");
+  var $navbar = document.querySelector("#huxblog_navbar");
+  var $collapse = document.querySelector(".navbar-collapse");
+
+  var __HuxNav__ = {
+    close: function () {
+      $navbar.className = " ";
+      
+      setTimeout(function () {
+        
+        if ($navbar.className.indexOf("in") < 0) {
+          $collapse.style.height = "0px";
+        }
+      }, 400);
+    },
+    open: function () {
+      $collapse.style.height = "auto";
+      $navbar.className += " in";
+    },
+  };
+
+  
+  $toggle.addEventListener("click", function (e) {
+    if ($navbar.className.indexOf("in") > 0) {
+      __HuxNav__.close();
+    } else {
+      __HuxNav__.open();
+    }
+  });
+
+  
+
+  document.addEventListener("click", function (e) {
+    if (e.target == $toggle) return;
+    if (e.target.className == "icon-bar") return;
+    __HuxNav__.close();
+  });
+</script>
+  
+<div class="search-page">
+  <div class="search-icon-close-container">
+    <span class="search-icon-close">
+      <i class="fa fa-chevron-down"></i>
+    </span>
+  </div>
+  <div class="search-main container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <form></form>
+        <input type="text" id="search-input" placeholder="$ grep...">
+        </form>
+        <div id="search-results" class="mini-post-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+  
+
+
+
+<header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        
+          <div class="site-heading">
+            
+            <h1>RoninRo&#39;s Blog</h1>
+            
+            
+            
+            
+            <span class="subheading">大海无量，我是一粒沙</span>
+          </div>
+        </div>
+      </div>
+    </div>
+</header>
+
+
+  
+
+  
+  <div class="container">
+    <div class="row">
+      
+      
+      
+      <div class="col-lg-8 col-lg-offset-1 col-md-8 col-md-offset-1 col-sm-12
+      col-xs-12 postlist-container">
+        
+
+
+   <div class="post-preview">
+  <a href="/posts/2021/github-webhook/">
+      <h2 class="post-title">[Go] 添加 Github Webhook</h2>
+      
+      <div class="post-content-preview">
+        Github 支持为指定的仓库添加 Webhook 。借助 go-github 库可以快速实现一个 Webhook Server 。 首先为仓库添加 Webhooks 配置： Setting - Webhooks - Add webhook : 在 Payload URL 下填写服务器接口地址，Content type 选择
+      </div>
+  </a>
+  <p class="post-meta">
+      Posted by  RoninRo  on Sat, Sep 18, 2021
+  </p>
+</div>
+<hr>
+
+   <div class="post-preview">
+  <a href="/posts/2021/ss-rust/">
+      <h2 class="post-title">Shadowsocks-Rust 简介</h2>
+      
+      <h3 class="post-subtitle">shadowsocks-rust 是 shadowsocks 的 Rust 语言实现版本</h3>
+      
+      <div class="post-content-preview">
+        
+      </div>
+  </a>
+  <p class="post-meta">
+      Posted by  RoninRo  on Fri, Aug 27, 2021
+  </p>
+</div>
+<hr>
+
+   <div class="post-preview">
+  <a href="/posts/2021/add-tailwind-css-to-svelte/">
+      <h2 class="post-title">Add Tailwind Css to Svelte</h2>
+      
+      <div class="post-content-preview">
+        SvelteKit 目前是 beta 版本，本文可能只适用于 SvelteKit v1.0.0-next.102 首先我们用 SvelteKit 新建一个项目1npm init svelte@next my-app 2cd my-app 3npm install 4npm run dev -- --open 为项目添加 @sveltejs/adapter-static 适配器以支持编译静态网页。1npm i
+      </div>
+  </a>
+  <p class="post-meta">
+      Posted by  RoninRo  on Sat, May 8, 2021
+  </p>
+</div>
+<hr>
+
+   <div class="post-preview">
+  <a href="/posts/2021/vim-easy-align/">
+      <h2 class="post-title">[Vim] 快速对齐插件 vim-easy-align</h2>
+      
+      <div class="post-content-preview">
+        vim-easy-align 是一款简单易用的 Vim 对齐插件。 安装并添加配置： 1&amp;#34; in .vimrc 2Plug &amp;#39;junegunn/vim-easy-align&amp;#39; 3 4&amp;#34; Start interactive EasyAlign in visual mode (e.g. vipga) 5xmap ga &amp;lt;Plug&amp;gt;(EasyAlign) 6 7&amp;#34; Start interactive EasyAlign for a motion/text object (e.g. gaip) 8nmap ga &amp;lt;Plug&amp;gt;(EasyAlign) 用法： vipga= vip 多行选中 ga 进入 EasyAlign 模式
+      </div>
+  </a>
+  <p class="post-meta">
+      Posted by  RoninRo  on Tue, Mar 30, 2021
+  </p>
+</div>
+<hr>
+
+   <div class="post-preview">
+  <a href="/posts/2021/wubu/">
+      <h2 class="post-title">[整理] 五笔基础</h2>
+      
+      <div class="post-content-preview">
+        概述“五笔” 原意是也指五种基本笔画：横、竖、撇、捺（点）、折，任何一个汉字，也都是由这五种基本笔画及其衍生字根组成，通过使用一定的映射规则，
+      </div>
+  </a>
+  <p class="post-meta">
+      Posted by  RoninRo  on Mon, Mar 29, 2021
+  </p>
+</div>
+<hr>
+
+   <div class="post-preview">
+  <a href="/posts/2021/vimrc/">
+      <h2 class="post-title">[Vim] 使用 YouCompleteMe 对 Rust/Golang 代码补全</h2>
+      
+      <div class="post-content-preview">
+        YouCompleteMe 是 Vim 下的自动补全插件。自从 Vim8 与 YouCompleteMe 支持异步 IO 后，在 Vim 下的使用体验也是直线上升。 使用 YouCompleteMe 有几个先决条件，不然可能会不能正常使用： Ycm 依赖于 Pyth
+      </div>
+  </a>
+  <p class="post-meta">
+      Posted by  RoninRo  on Fri, Jan 22, 2021
+  </p>
+</div>
+<hr>
+
+   <div class="post-preview">
+  <a href="/posts/2020/zabbix-agent/">
+      <h2 class="post-title">Zabbix 监控 Postgres 和 Redis</h2>
+      
+      <div class="post-content-preview">
+        非教程贴，布署完成后的回忆记录。 Zabbix Agent 布署机器： CentOS 7&#43; Zabbix Server 版本： 4.4.4 安装 Zabbix Agent 。Step1 添加 Zabbix 的存储库不同版本的 Zabbix 存储库地址可以在 https://www.zabbix.com/cn/download 。找到 1CentOS/RHEL 7: 2rpm -Uvh
+      </div>
+  </a>
+  <p class="post-meta">
+      Posted by  RoninRo  on Fri, Feb 28, 2020
+  </p>
+</div>
+<hr>
+
+   <div class="post-preview">
+  <a href="/posts/2019/rust-cross-compile/">
+      <h2 class="post-title">Mac 为 Linux 交叉编译 Rust 程序</h2>
+      
+      <div class="post-content-preview">
+        默认情况下，Rust 将静态链接所有 Rust 代码。但是，如果使用标准库，它将动态链接到系统的 libc 。
+如何想要 100% 静态二进制文件。可以使用 MUSL libc 提供的 Linux-based 支持。
+
+      </div>
+  </a>
+  <p class="post-meta">
+      Posted by  RoninRo  on Fri, Dec 27, 2019
+  </p>
+</div>
+<hr>
+
+   <div class="post-preview">
+  <a href="/posts/2019/linux-cmd/">
+      <h2 class="post-title">[PIN] Linux 下常用命令</h2>
+      
+      <div class="post-content-preview">
+        tar命令选项： 1-z(gzip) 用 gzip 来压缩/解压缩文件 2-j(bzip2) 用 bzip2 来压缩/解压缩文件 3-v(verbose) 详细报告 tar 处理的文件信息 4-c(create) 创建新的档案文件 5-x(extract) 解压缩文件或目录 6-f(file) 使用档案文件
+      </div>
+  </a>
+  <p class="post-meta">
+      Posted by  RoninRo  on Thu, Dec 5, 2019
+  </p>
+</div>
+<hr>
+
+   <div class="post-preview">
+  <a href="/posts/2019/vim-split/">
+      <h2 class="post-title">Vim 分割窗口</h2>
+      
+      <div class="post-content-preview">
+        在操作 Vim 窗口之前，最好了解下面几个概念： 缓冲区（buffer）是加载到内存中进行编辑的文件，原始文件在将缓冲区写到文件中之前保持不变。 窗口（
+      </div>
+  </a>
+  <p class="post-meta">
+      Posted by  RoninRo  on Thu, Oct 24, 2019
+  </p>
+</div>
+<hr>
+
+
+
+<ul class="pager">
+  
+  
+  <li class="next">
+      <a href="/page/2/">Older Posts &rarr;</a>
+  </li>
+  
+</ul>
+
+
+      </div>
+      
+      <div class="col-lg-3 col-lg-offset-0 col-md-3 col-md-offset-0 col-sm-12
+      col-xs-12 sidebar-container">
+
+        
+        <section>
+  
+  
+  <h5>FEATURED TAGS</h5>
+  <div class="tags">
+    
+    <a href="/tags/css/">css</a>
+    
+    <a href="/tags/debian/">debian</a>
+    
+    <a href="/tags/fzf/">fzf</a>
+    
+    <a href="/tags/gcd/">gcd</a>
+    
+    <a href="/tags/gem/">gem</a>
+    
+    <a href="/tags/git/">git</a>
+    
+    <a href="/tags/go/">go</a>
+    
+    <a href="/tags/golang/">golang</a>
+    
+    <a href="/tags/hugo/">hugo</a>
+    
+    <a href="/tags/ios/">iOS</a>
+    
+    <a href="/tags/kindle/">Kindle</a>
+    
+    <a href="/tags/kvocontroller/">KVOController</a>
+    
+    <a href="/tags/linux/">linux</a>
+    
+    <a href="/tags/macos/">MacOS</a>
+    
+    <a href="/tags/neovim/">neovim</a>
+    
+    <a href="/tags/runtime/">runtime</a>
+    
+    <a href="/tags/rust/">rust</a>
+    
+    <a href="/tags/ss/">ss</a>
+    
+    <a href="/tags/ssh/">ssh</a>
+    
+    <a href="/tags/swift/">Swift</a>
+    
+    <a href="/tags/vim/">vim</a>
+    
+    <a href="/tags/webhook/">webhook</a>
+    
+    <a href="/tags/wubi/">wubi</a>
+    
+    <a href="/tags/zabbix/">zabbix</a>
+    
+  </div>
+</section>
+        
+<section class="visible-md visible-lg">
+  <hr>
+  
+  <h5><a href="/about/">ABOUT ME</a></h5>
+  
+
+  
+  <div class="short-about">
+    
+    <img src="/img/avatar.jpg" />
+    
+    
+    <p>Golang iOS Rust</p>
+    
+    
+    
+
+
+<ul class="list-inline">
+
+  
+  <li>
+    <a href="/index.xml">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+  
+  
+  
+  
+  <li>
+    <a target="_blank" href="https://github.com/roninro">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+</ul>
+  </div>
+</section>
+        
+        
+
+<hr>
+<h5>FRIENDS</h5>
+<ul class="list-inline">
+  
+  <li><a href=""></a></li>
+  
+</ul>
+
+
+      </div>
+      
+
+    </div>
+  </div>
+
+  
+
+  
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        
+        
+
+
+<ul class="list-inline text-center">
+
+  
+  <li>
+    <a href="/index.xml">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+  
+  
+  
+  
+  <li>
+    <a target="_blank" href="https://github.com/roninro">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+</ul>
+        <p class="copyright text-muted">
+          Copyright &copy; RoninRo&#39;s Blog 2022
+          <br>
+          Powered by <a href="https://gohugo.io">Hugo</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+
+
+<script src="/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js"></script>
+
+
+<script src="/js/simple-jekyll-search.min.js"></script>
+
+
+<script src="/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/zoomjs/zoom.min.js"></script>
+</body>
+
+</html>

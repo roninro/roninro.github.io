@@ -1,7 +1,26 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>gem on RoninRo's Blog</title><link>https://fninit.com/tags/gem/</link><description>Recent content in gem on RoninRo's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Tue, 15 May 2018 19:54:45 +0800</lastBuildDate><atom:link href="https://fninit.com/tags/gem/index.xml" rel="self" type="application/rss+xml"/><item><title>Gem: 使用 --user-install 时的问题</title><link>https://fninit.com/posts/2018/gem-install--user-install/</link><pubDate>Tue, 15 May 2018 19:54:45 +0800</pubDate><guid>https://fninit.com/posts/2018/gem-install--user-install/</guid><description>&lt;p>在较新的 MacOS 系统中， 使用 &lt;code>gem install&lt;/code> 安装模块时，会由于权限问题而失败。&lt;/p>
-&lt;p>当使用 &lt;code>--user-install&lt;/code> 选项时，RubyGems会将gem 安装用户的主目录中，如&lt;code>~/.gem/ruby/1.9.1&lt;/code> 。
-为了能够正常调用我们安装的命令，所以我们需要将 &lt;code>~/.gem/ruby/1.9.1/bin&lt;/code> 添加到PATH环境变量中。&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1&lt;/span>&lt;span>&lt;span style="color:#ff79c6">if&lt;/span> which ruby &amp;gt;/dev/null &lt;span style="color:#ff79c6">&amp;amp;&amp;amp;&lt;/span> which gem &amp;gt;/dev/null; &lt;span style="color:#ff79c6">then&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2&lt;/span>&lt;span> &lt;span style="color:#8be9fd;font-style:italic">PATH&lt;/span>&lt;span style="color:#ff79c6">=&lt;/span>&lt;span style="color:#f1fa8c">&amp;#34;&lt;/span>&lt;span style="color:#ff79c6">$(&lt;/span>ruby -r rubygems -e &lt;span style="color:#f1fa8c">&amp;#39;puts Gem.user_dir&amp;#39;&lt;/span>&lt;span style="color:#ff79c6">)&lt;/span>&lt;span style="color:#f1fa8c">/bin:&lt;/span>&lt;span style="color:#8be9fd;font-style:italic">$PATH&lt;/span>&lt;span style="color:#f1fa8c">&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3&lt;/span>&lt;span>&lt;span style="color:#ff79c6">fi&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>将上面的代码加入 &lt;code>~/.bashrc&lt;/code> (bash) 或者 &lt;code>~/.zprofile&lt;/code> (zsh) 中。&lt;/p></description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>gem on RoninRo&#39;s Blog</title>
+    <link>https://roninro.github.io/tags/gem/</link>
+    <description>Recent content in gem on RoninRo&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Tue, 15 May 2018 19:54:45 +0800</lastBuildDate><atom:link href="https://roninro.github.io/tags/gem/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Gem: 使用 --user-install 时的问题</title>
+      <link>https://roninro.github.io/posts/2018/gem-install--user-install/</link>
+      <pubDate>Tue, 15 May 2018 19:54:45 +0800</pubDate>
+      
+      <guid>https://roninro.github.io/posts/2018/gem-install--user-install/</guid>
+      <description>&lt;p&gt;在较新的 MacOS 系统中， 使用 &lt;code&gt;gem install&lt;/code&gt; 安装模块时，会由于权限问题而失败。&lt;/p&gt;
+&lt;p&gt;当使用 &lt;code&gt;--user-install&lt;/code&gt; 选项时，RubyGems会将gem 安装用户的主目录中，如&lt;code&gt;~/.gem/ruby/1.9.1&lt;/code&gt; 。
+为了能够正常调用我们安装的命令，所以我们需要将 &lt;code&gt;~/.gem/ruby/1.9.1/bin&lt;/code&gt; 添加到PATH环境变量中。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1&lt;/span&gt;&lt;span&gt;&lt;span style=&#34;color:#ff79c6&#34;&gt;if&lt;/span&gt; which ruby &amp;gt;/dev/null &lt;span style=&#34;color:#ff79c6&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; which gem &amp;gt;/dev/null; &lt;span style=&#34;color:#ff79c6&#34;&gt;then&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;2&lt;/span&gt;&lt;span&gt;    &lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;PATH&lt;/span&gt;&lt;span style=&#34;color:#ff79c6&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f1fa8c&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#ff79c6&#34;&gt;$(&lt;/span&gt;ruby -r rubygems -e &lt;span style=&#34;color:#f1fa8c&#34;&gt;&amp;#39;puts Gem.user_dir&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#ff79c6&#34;&gt;)&lt;/span&gt;&lt;span style=&#34;color:#f1fa8c&#34;&gt;/bin:&lt;/span&gt;&lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;$PATH&lt;/span&gt;&lt;span style=&#34;color:#f1fa8c&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;3&lt;/span&gt;&lt;span&gt;&lt;span style=&#34;color:#ff79c6&#34;&gt;fi&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;将上面的代码加入 &lt;code&gt;~/.bashrc&lt;/code&gt;  (bash) 或者 &lt;code&gt;~/.zprofile&lt;/code&gt;  (zsh) 中。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

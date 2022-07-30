@@ -1,168 +1,591 @@
-<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="ie=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><title>Swift 闭包 | RoninRo's Blog</title><meta name=author content="RoninRo"><meta name=description content="根据 The Swift Programming Language (Swift 4.1) - Closures 整理。 Swift 中闭包与 Objective-C 中的 Blocks 以及其他一些编程语言中的匿名函数比较相似，是自包含的函数代码块。 闭包可以捕获和存储其所在上下文中"><meta name=keywords content="blog,developer,personal,golang"><meta name=twitter:card content="summary"><meta name=twitter:title content="Swift 闭包"><meta name=twitter:description content="根据 The Swift Programming Language (Swift 4.1) - Closures 整理。 Swift 中闭包与 Objective-C 中的 Blocks 以及其他一些编程语言中的匿名函数比较相似，是自包含的函数代码块。 闭包可以捕获和存储其所在上下文中"><meta property="og:title" content="Swift 闭包"><meta property="og:description" content="根据 The Swift Programming Language (Swift 4.1) - Closures 整理。 Swift 中闭包与 Objective-C 中的 Blocks 以及其他一些编程语言中的匿名函数比较相似，是自包含的函数代码块。 闭包可以捕获和存储其所在上下文中"><meta property="og:type" content="article"><meta property="og:url" content="https://fninit.com/posts/2018/swift-closures/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2018-03-15T09:33:53+08:00"><meta property="article:modified_time" content="2018-03-15T09:33:53+08:00"><link rel=stylesheet href=/css/bootstrap.min.css crossorigin=anonymous><link href=//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css rel=stylesheet type=text/css><link rel=stylesheet href=https://fninit.com/sass/main.css><link rel=stylesheet href=https://fninit.com/zoomjs/zoom.min.css></head><body><nav class="navbar navbar-default navbar-custom navbar-fixed-top invert"><div class=container-fluid><div class="navbar-header page-scroll"><button type=button class=navbar-toggle>
-<span class=sr-only>Toggle navigation</span>
-<span class=icon-bar></span>
-<span class=icon-bar></span>
-<span class=icon-bar></span></button>
-<a class=navbar-brand href=https://fninit.com>RoninRo's Blog</a></div><div id=huxblog_navbar><div class=navbar-collapse><ul class="nav navbar-nav navbar-right"><li><a href=/ title=Home>Home</a></li><li><a href=/archive/ title=Archive>Archive</a></li><li><a href=/categories/ title=Categories>Categories</a></li><li><a href=/about/ title=About>About</a></li><li class=search-icon><a href=javascript:void(0)><i class="fa fa-search"></i></a></li></ul></div></div></div></nav><script>var $body=document.body,$toggle=document.querySelector(".navbar-toggle"),$navbar=document.querySelector("#huxblog_navbar"),$collapse=document.querySelector(".navbar-collapse"),__HuxNav__={close:function(){$navbar.className=" ",setTimeout(function(){$navbar.className.indexOf("in")<0&&($collapse.style.height="0px")},400)},open:function(){$collapse.style.height="auto",$navbar.className+=" in"}};$toggle.addEventListener("click",function(){$navbar.className.indexOf("in")>0?__HuxNav__.close():__HuxNav__.open()}),document.addEventListener("click",function(e){if(e.target==$toggle)return;if(e.target.className=="icon-bar")return;__HuxNav__.close()})</script><div class=search-page><div class=search-icon-close-container><span class=search-icon-close><i class="fa fa-chevron-down"></i></span></div><div class="search-main container"><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><form></form><input type=text id=search-input placeholder="$ grep..."></form><div id=search-results class=mini-post-list></div></div></div></div></div><style type=text/css>header.intro-header{position:relative;background-image:url('')}</style><header class="intro-header style-text"><div class=header-mask></div><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><div class=post-heading><div class=tags><a class=tag href=https://fninit.com/tags/swift/ title=Swift>Swift</a>
-<a class=tag href=https://fninit.com/tags/ios/ title=iOS>iOS</a></div><h1>Swift 闭包</h1><h2 class=subheading></h2><p class=post-meta>Posted by RoninRo
-on Thu, Mar 15, 2018</p></div></div></div></div></header><article><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2
-col-md-10 col-md-offset-1
-post-container"><blockquote><p>根据 <a href=https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/Closures.html#//apple_ref/doc/uid/TP40014097-CH11-ID94>The Swift Programming Language (Swift 4.1) - Closures</a> 整理。</p></blockquote><p>Swift 中闭包与 Objective-C 中的 Blocks 以及其他一些编程语言中的匿名函数比较相似，是自包含的函数代码块。</p><p>闭包可以捕获和存储其所在上下文中任意常量和变量的引用。被称为包裹常量和变量。</p><p>Swift 会为你管理在捕获过程中涉及到的所有内存操作。</p><p><strong>闭包有三种形式：</strong></p><ol><li>全局函数：一个有名字但不会捕获任何值的闭包</li></ol><ul><li>嵌套函数：有名字并且可以捕获其封闭函数内值的闭包</li><li>闭包表达式：利用轻量级语法所写的可以捕获其上下文中变量或常量值的匿名闭包</li></ul><p><strong>Swift 的闭包表达式拥有简洁的风格，并鼓励在常见场景中进行语法优化，主要优化如下</strong></p><ol><li>利用上下文推断参数和返回值类型</li></ol><ul><li>隐式返回单表达式闭包，即单表达式闭包可以省略 return 关键字</li><li>参数名称缩写</li><li>尾随闭包语法</li></ul><h2 id=闭包表达式语法>闭包表达式语法<a class=anchorjs-link href=#%e9%97%ad%e5%8c%85%e8%a1%a8%e8%be%be%e5%bc%8f%e8%af%ad%e6%b3%95></a></h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>{ (parameters) -&gt; <span style=color:#ff79c6>return</span> type <span style=color:#ff79c6>in</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>    statements
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>}
-</span></span></code></pre></div><p>示例：sorted 方法</p><p><strong>sorted(by:)</strong> 方法接受一个闭包，该闭包函数需要传入与数组元素类型相同的两个值，并返回一个布尔类型值来表明当排序结束后传入的第一个参数排在第二个参数前面还是后面。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span><span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>names</span> = [<span style=color:#f1fa8c>&#34;Chris&#34;</span>, <span style=color:#f1fa8c>&#34;Alex&#34;</span>, <span style=color:#f1fa8c>&#34;Ewa&#34;</span>, <span style=color:#f1fa8c>&#34;Barry&#34;</span>, <span style=color:#f1fa8c>&#34;Daniella&#34;</span>]
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span><span style=color:#8be9fd;font-style:italic>func</span> <span style=color:#50fa7b>backward</span>(<span style=color:#ff79c6>_</span> s1: <span style=color:#8be9fd;font-style:italic>String</span>, <span style=color:#ff79c6>_</span> s2: <span style=color:#8be9fd;font-style:italic>String</span>) -&gt; <span style=color:#8be9fd;font-style:italic>Bool</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span><span>    <span style=color:#ff79c6>return</span> s1 <span style=color:#ff79c6>&gt;</span> s2
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span><span>}
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span><span><span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>reversedNames</span> = names.sorted(by: backward)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span>reversedNames = names.sorted(by: { (s1: <span style=color:#8be9fd;font-style:italic>String</span>, s2: <span style=color:#8be9fd;font-style:italic>String</span>) -&gt; <span style=color:#8be9fd;font-style:italic>Bool</span> <span style=color:#ff79c6>in</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span><span>    <span style=color:#ff79c6>return</span> s1 <span style=color:#ff79c6>&gt;</span> s2
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11</span><span>})
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12</span><span><span style=color:#6272a4>// 写成一行</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13</span><span>reversedNames = names.sorted(by: { (s1: <span style=color:#8be9fd;font-style:italic>String</span>, s2: <span style=color:#8be9fd;font-style:italic>String</span>) -&gt; <span style=color:#8be9fd;font-style:italic>Bool</span> <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>return</span> s1 <span style=color:#ff79c6>&gt;</span> s2 })
-</span></span></code></pre></div><h3 id=根据上下文推断类型>根据上下文推断类型<a class=anchorjs-link href=#%e6%a0%b9%e6%8d%ae%e4%b8%8a%e4%b8%8b%e6%96%87%e6%8e%a8%e6%96%ad%e7%b1%bb%e5%9e%8b></a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>reversedNames = names.sorted(by: { s1, s2 <span style=color:#ff79c6>in</span> <span style=color:#ff79c6>return</span> s1 <span style=color:#ff79c6>&gt;</span> s2 })&lt;Paste&gt;
-</span></span></code></pre></div><h3 id=单表达式闭包隐式返回>单表达式闭包隐式返回<a class=anchorjs-link href=#%e5%8d%95%e8%a1%a8%e8%be%be%e5%bc%8f%e9%97%ad%e5%8c%85%e9%9a%90%e5%bc%8f%e8%bf%94%e5%9b%9e></a></h3><p>单行表达式闭包可以通过省略 return 关键字来隐式返回单行表达式的结果</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>reversedNames = names.sorted(by: { s1, s2 <span style=color:#ff79c6>in</span> s1 <span style=color:#ff79c6>&gt;</span> s2 })
-</span></span></code></pre></div><h3 id=参数名称缩写>参数名称缩写<a class=anchorjs-link href=#%e5%8f%82%e6%95%b0%e5%90%8d%e7%a7%b0%e7%bc%a9%e5%86%99></a></h3><p>Swift 自动为内联闭包提供了参数名称缩写功能，你可以直接通过 $0，$1，$2 来顺序调用闭包的参数，以此类推。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>reversedNames = names.sorted(by: { <span style=color:#8be9fd;font-style:italic>$0</span> <span style=color:#ff79c6>&gt;</span> <span style=color:#8be9fd;font-style:italic>$1</span> })
-</span></span></code></pre></div><h3 id=运算符方法>运算符方法<a class=anchorjs-link href=#%e8%bf%90%e7%ae%97%e7%ac%a6%e6%96%b9%e6%b3%95></a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>reversedNames = names.sorted(by: <span style=color:#ff79c6>&gt;</span>)
-</span></span></code></pre></div><h3 id=尾随闭包>尾随闭包<a class=anchorjs-link href=#%e5%b0%be%e9%9a%8f%e9%97%ad%e5%8c%85></a></h3><p>将一个很长的闭包表达式作为最后一个参数传递给函数，可以使用尾随闭包来增强函数的可读性。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span><span style=color:#8be9fd;font-style:italic>func</span> <span style=color:#50fa7b>someFunctionThatTakesAClosure</span>(closure: () -&gt; <span style=color:#8be9fd;font-style:italic>Void</span>) {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span>    <span style=color:#6272a4>// 函数体部分</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span>}
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span><span> 
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span><span><span style=color:#6272a4>// 不使用尾随闭包进行函数调用</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span><span>someFunctionThatTakesAClosure(closure: {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span><span>    <span style=color:#6272a4>// closure&#39;s body goes here</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span><span>})
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span> 
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span><span><span style=color:#6272a4>// 使用尾随闭包进行函数调用</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11</span><span>someFunctionThatTakesAClosure() {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12</span><span>    <span style=color:#6272a4>// trailing closure&#39;s body goes here</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13</span><span>}
-</span></span></code></pre></div><p>如果闭包表达式是函数或方法的唯一参数，则当你使用尾随闭包时，你甚至可以把 () 省略掉。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span>reversedNames = names.sorted(){ <span style=color:#8be9fd;font-style:italic>$0</span> <span style=color:#ff79c6>&gt;</span> <span style=color:#8be9fd;font-style:italic>$1</span> }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>reversedNames = names.sorted { <span style=color:#8be9fd;font-style:italic>$0</span> <span style=color:#ff79c6>&gt;</span> <span style=color:#8be9fd;font-style:italic>$1</span> }
-</span></span></code></pre></div><h2 id=值捕获>值捕获<a class=anchorjs-link href=#%e5%80%bc%e6%8d%95%e8%8e%b7></a></h2><p>闭包可以在其被定义的上下文中捕获常量或变量。即使定义这些常量和变量的原作用域已经不存在，闭包仍然可以在闭包函数体内引用和修改这些值。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span><span style=color:#8be9fd;font-style:italic>func</span> <span style=color:#50fa7b>makeIncrementer</span>(forIncrement amount: <span style=color:#8be9fd;font-style:italic>Int</span>) -&gt; () -&gt; <span style=color:#8be9fd;font-style:italic>Int</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span>    <span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>runingTotal</span> = <span style=color:#bd93f9>0</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span><span>    <span style=color:#8be9fd;font-style:italic>func</span> <span style=color:#50fa7b>increment</span>() -&gt; <span style=color:#8be9fd;font-style:italic>Int</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span><span>        runingTotal <span style=color:#ff79c6>+=</span> amount
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span><span>        <span style=color:#ff79c6>return</span> runingTotal
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span><span>    }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span><span>    <span style=color:#ff79c6>return</span> increment
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span>}
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12</span><span><span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>incrementByTen</span> = makeIncrementer(forIncrement: <span style=color:#bd93f9>10</span>)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14</span><span>incrementByTen() <span style=color:#6272a4>// 10</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15</span><span>incrementByTen() <span style=color:#6272a4>// 20</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16</span><span>incrementByTen() <span style=color:#6272a4>// 30</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">18</span><span><span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>incrementBySevem</span> = makeIncrementer(forIncrement: <span style=color:#bd93f9>7</span>)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">19</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">20</span><span>incrementBySevem() <span style=color:#6272a4>// 7</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">21</span><span>incrementByTen()   <span style=color:#6272a4>// 40</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">22</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">23</span><span><span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>alsoIncrementByTen</span> = incrementByTen
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">24</span><span>alsoIncrementByTen() <span style=color:#6272a4>// 50</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">25</span><span>incrementByTen()     <span style=color:#6272a4>// 60</span>
-</span></span></code></pre></div><p><strong>闭包是引用类型</strong></p><p>上面的例子中，incrementBySeven 和 incrementByTen 都是常量，但是这些常量指向的闭包仍然可以增加其捕获的变量的值。这是因为函数和闭包都是引用类型。</p><p>无论你将函数或闭包赋值给一个常量还是变量，你实际上都是将常量或变量的值设置为对应函数或闭包的引用。上面的例子中，指向闭包的引用 incrementByTen 是一个常量，而并非闭包内容本身。</p><h2 id=闭包引起的循环强引用>闭包引起的循环强引用<a class=anchorjs-link href=#%e9%97%ad%e5%8c%85%e5%bc%95%e8%b5%b7%e7%9a%84%e5%be%aa%e7%8e%af%e5%bc%ba%e5%bc%95%e7%94%a8></a></h2><p>循环强引用还会发生在当你将一个闭包赋值给类实例的某个属性，并且这个闭包体中又使用了这个类实例时。这个闭包体中可能访问了实例的某个属性，例如self.someProperty，或者闭包中调用了实例的某个方法，例如self.someMethod()。这两种情况都导致了闭包“捕获”self，从而产生了循环强引用。</p><h3 id=弱引用和无主引用>弱引用和无主引用<a class=anchorjs-link href=#%e5%bc%b1%e5%bc%95%e7%94%a8%e5%92%8c%e6%97%a0%e4%b8%bb%e5%bc%95%e7%94%a8></a></h3><ul><li><code>weak</code>: 弱引用</li><li><code>unowned</code>：无主引用</li></ul><p>在闭包和捕获的实例总是互相引用并且总是同时销毁时，将闭包内的捕获定义为无主引用。</p><p>相反的，在被捕获的引用可能会变为nil时，将闭包内的捕获定义为弱引用。
-弱引用总是可选类型，并且当引用的实例被销毁后，弱引用的值会自动置为nil。这使我们可以在闭包体内检查它们是否存在。</p><blockquote><p><em>如果被捕获的引用绝对不会变为nil，应该用无主引用，而不是弱引用。</em></p></blockquote><h3 id=定义捕获列表>定义捕获列表<a class=anchorjs-link href=#%e5%ae%9a%e4%b9%89%e6%8d%95%e8%8e%b7%e5%88%97%e8%a1%a8></a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span><span style=color:#ff79c6>lazy</span> <span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>someClosure</span>: (<span style=color:#8be9fd;font-style:italic>Int</span>, <span style=color:#8be9fd;font-style:italic>String</span>) -&gt; <span style=color:#8be9fd;font-style:italic>String</span> = {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>    [<span style=color:#ff79c6>unowned</span> <span style=color:#ff79c6>self</span>, <span style=color:#ff79c6>weak</span> delegate = <span style=color:#ff79c6>self</span>.delegate!] (index: <span style=color:#8be9fd;font-style:italic>Int</span>, stringToProcess: <span style=color:#8be9fd;font-style:italic>String</span>) -&gt; <span style=color:#8be9fd;font-style:italic>String</span> <span style=color:#ff79c6>in</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>    <span style=color:#6272a4>// 这里是闭包的函数体</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span>}
-</span></span></code></pre></div><p>如果闭包没有指明参数列表或者返回类型，即它们会通过上下文推断，那么可以把捕获列表和关键字in放在闭包最开始的地方:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">1</span><span><span style=color:#ff79c6>lazy</span> <span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>someClosure</span>: <span style=color:#8be9fd;font-style:italic>Void</span> -&gt; <span style=color:#8be9fd;font-style:italic>String</span> = {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">2</span><span>    [<span style=color:#ff79c6>unowned</span> <span style=color:#ff79c6>self</span>, <span style=color:#ff79c6>weak</span> delegate = <span style=color:#ff79c6>self</span>.delegate!] <span style=color:#ff79c6>in</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">3</span><span>    <span style=color:#6272a4>// 这里是闭包的函数体</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">4</span><span>}
-</span></span></code></pre></div><h2 id=逃逸闭包>逃逸闭包<a class=anchorjs-link href=#%e9%80%83%e9%80%b8%e9%97%ad%e5%8c%85></a></h2><p>当一个闭包作为参数传到一个函数中，但是这个闭包在函数返回之后才被执行，我们称该闭包从函数中逃逸。
-通过在参数名之前标注 <code>@escaping</code>, 用来指明这个闭包是允许“逃逸”出这个函数的。</p><blockquote><p>一种能使闭包“逃逸”出函数的方法是，将这个闭包保存在一个函数外部定义的变量中。举个例子，很多启动异步操作的函数接受一个闭包参数作为 completion handler。这类函数会在异步操作开始之后立刻返回，但是闭包直到异步操作结束后才会被调用。在这种情况下，闭包需要“逃逸”出函数，因为闭包需要在函数返回之后被调用。</p></blockquote><p>将一个闭包标记为 <code>@escaping</code> 意味着你必须在闭包中显式地引用 <code>self</code></p><p>非逃逸闭包，可以隐式引用 <code>self</code></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span><span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>completionHandles</span>: [() -&gt; <span style=color:#8be9fd;font-style:italic>Void</span>] = []
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span><span style=color:#8be9fd;font-style:italic>func</span> <span style=color:#50fa7b>someFunctionWithEscapingClosure</span>(completionHandler: @escaping () -&gt; <span style=color:#8be9fd;font-style:italic>Void</span>) {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span>    completionHandles.append(completionHandler)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span><span>}
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span><span><span style=color:#8be9fd;font-style:italic>func</span> <span style=color:#50fa7b>someFunctionWithNonescapingClosure</span>(closure: () -&gt; <span style=color:#8be9fd;font-style:italic>Void</span>) {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span><span>    closure()
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span><span>}
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span><span><span style=color:#8be9fd;font-style:italic>class</span> <span style=color:#50fa7b>SomeClass</span> {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11</span><span>    <span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>x</span> = <span style=color:#bd93f9>10</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12</span><span>    <span style=color:#8be9fd;font-style:italic>func</span> <span style=color:#50fa7b>doSomething</span>() {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13</span><span>        someFunctionWithEscapingClosure { <span style=color:#ff79c6>self</span>.x = <span style=color:#bd93f9>100</span> }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14</span><span>        someFunctionWithNonescapingClosure { x = <span style=color:#bd93f9>200</span> }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15</span><span>    }
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16</span><span>}
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">18</span><span><span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>instance</span> = SomeClass()
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">19</span><span>instance.doSomething()
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">20</span><span>print(instance.x)   <span style=color:#6272a4>// 200</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">21</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">22</span><span>completionHandles.first?()
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">23</span><span>print(instance.x)   <span style=color:#6272a4>// 100</span>
-</span></span></code></pre></div><h2 id=自动闭包>自动闭包<a class=anchorjs-link href=#%e8%87%aa%e5%8a%a8%e9%97%ad%e5%8c%85></a></h2><p>自动闭包是一种自动创建的闭包，用于包装传递给函数作为参数的表达式。不接受任何参数，当它调用时，会返回被包装在其中的表达式的值。
-这种便利语法让你能够__省略闭包的花括号__，用一个普通的表达式来代替显式的闭包。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span><span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>customersInLine</span> = [<span style=color:#f1fa8c>&#34;Chris&#34;</span>, <span style=color:#f1fa8c>&#34;Alex&#34;</span>, <span style=color:#f1fa8c>&#34;Ewa&#34;</span>, <span style=color:#f1fa8c>&#34;Barry&#34;</span>, <span style=color:#f1fa8c>&#34;Daniella&#34;</span>]
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span>print(customersInLine.count)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span><span style=color:#6272a4>// 5</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span><span><span style=color:#8be9fd;font-style:italic>let</span> <span style=color:#8be9fd;font-style:italic>customerProvider</span> = { customersInLine.remove(at: <span style=color:#bd93f9>0</span>)}
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span><span>print(customersInLine.count)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span><span><span style=color:#6272a4>// 5</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span><span>print(<span style=color:#f1fa8c>&#34;Now serving </span><span style=color:#f1fa8c>\(</span>customerProvider<span style=color:#f1fa8c>())</span><span style=color:#f1fa8c>!&#34;</span>)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span><span><span style=color:#6272a4>// Now serving Chris!</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span>print(customersInLine.count)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span><span><span style=color:#6272a4>// 4</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11</span><span><span style=color:#8be9fd;font-style:italic>func</span> <span style=color:#50fa7b>serve</span>(customer customerProvider: () -&gt; <span style=color:#8be9fd;font-style:italic>String</span>) {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12</span><span>    print(<span style=color:#f1fa8c>&#34;Now serving </span><span style=color:#f1fa8c>\(</span>customerProvider<span style=color:#f1fa8c>())</span><span style=color:#f1fa8c>!&#34;</span>)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13</span><span>}
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15</span><span>serve(customer: { customersInLine.remove(at: <span style=color:#bd93f9>0</span>) })
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16</span><span><span style=color:#6272a4>// Now serving Alex!</span>
-</span></span></code></pre></div><h3 id=自动闭包逃逸>自动闭包"逃逸"<a class=anchorjs-link href=#%e8%87%aa%e5%8a%a8%e9%97%ad%e5%8c%85%e9%80%83%e9%80%b8></a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span><span style=color:#8be9fd;font-style:italic>var</span> <span style=color:#8be9fd;font-style:italic>customerProviders</span>: [() -&gt; <span style=color:#8be9fd;font-style:italic>String</span>] = []
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span><span style=color:#8be9fd;font-style:italic>func</span> <span style=color:#50fa7b>collectCustomerProviders</span>(<span style=color:#ff79c6>_</span> customerProvider: <span style=color:#ff79c6>@autoclosure</span> @escaping () -&gt; <span style=color:#8be9fd;font-style:italic>String</span>) {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span>    customerProviders.append(customerProvider)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span><span>}
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span><span>collectCustomerProviders(customersInLine.remove(at: <span style=color:#bd93f9>0</span>))
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span><span>collectCustomerProviders(customersInLine.remove(at: <span style=color:#bd93f9>0</span>))
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span><span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span>print(<span style=color:#f1fa8c>&#34;Collected </span><span style=color:#f1fa8c>\(</span>customerProviders.count<span style=color:#f1fa8c>)</span><span style=color:#f1fa8c> closures.&#34;</span>)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span><span><span style=color:#6272a4>// Collected 2 closures.</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11</span><span><span style=color:#ff79c6>for</span> customerProvider <span style=color:#ff79c6>in</span> customerProviders {
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12</span><span>    print(<span style=color:#f1fa8c>&#34;Now serving </span><span style=color:#f1fa8c>\(</span>customerProvider<span style=color:#f1fa8c>())</span><span style=color:#f1fa8c>!&#34;</span>)
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13</span><span>}
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14</span><span><span style=color:#6272a4>// Now serving Ewa!</span>
-</span></span><span style=display:flex><span style="white-space:pre;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15</span><span><span style=color:#6272a4>// Now serving Barry!</span>
-</span></span></code></pre></div><p>Ending&mldr;</p><hr style=visibility:hidden><ul class=pager><li class=previous><a href=https://fninit.com/posts/2018/sublime-mac-menu/ data-toggle=tooltip data-placement=top title="使用 Automator 为文件夹添加一个快捷操作">Previous<br><span>使用 Automator 为文件夹添加一个快捷操作</span></a></li><li class=next><a href=https://fninit.com/posts/2018/git-submodule/ data-toggle=tooltip data-placement=top title="Git Submodule">Next<br><span>Git Submodule</span></a></li></ul><hr style=visibility:hidden></div><div class="col-lg-8 col-lg-offset-2
-col-md-10 col-md-offset-1
-sidebar-container"><section><hr class="hidden-sm hidden-xs"><h5>FEATURED TAGS</h5><div class=tags><a href=https://fninit.com/tags/css/>css</a>
-<a href=https://fninit.com/tags/debian/>debian</a>
-<a href=https://fninit.com/tags/fzf/>fzf</a>
-<a href=https://fninit.com/tags/gcd/>gcd</a>
-<a href=https://fninit.com/tags/gem/>gem</a>
-<a href=https://fninit.com/tags/git/>git</a>
-<a href=https://fninit.com/tags/go/>go</a>
-<a href=https://fninit.com/tags/golang/>golang</a>
-<a href=https://fninit.com/tags/hugo/>hugo</a>
-<a href=https://fninit.com/tags/ios/>iOS</a>
-<a href=https://fninit.com/tags/kindle/>Kindle</a>
-<a href=https://fninit.com/tags/kvocontroller/>KVOController</a>
-<a href=https://fninit.com/tags/linux/>linux</a>
-<a href=https://fninit.com/tags/macos/>MacOS</a>
-<a href=https://fninit.com/tags/neovim/>neovim</a>
-<a href=https://fninit.com/tags/runtime/>runtime</a>
-<a href=https://fninit.com/tags/rust/>rust</a>
-<a href=https://fninit.com/tags/ss/>ss</a>
-<a href=https://fninit.com/tags/ssh/>ssh</a>
-<a href=https://fninit.com/tags/swift/>Swift</a>
-<a href=https://fninit.com/tags/vim/>vim</a>
-<a href=https://fninit.com/tags/webhook/>webhook</a>
-<a href=https://fninit.com/tags/wubi/>wubi</a>
-<a href=https://fninit.com/tags/zabbix/>zabbix</a></div></section><hr><h5>FRIENDS</h5><ul class=list-inline><li><a href></a></li></ul></div></div></div></article><footer><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><ul class="list-inline text-center"><li><a href=/index.xml><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i>
-<i class="fa fa-rss fa-stack-1x fa-inverse"></i></span></a></li><li><a target=_blank href=https://github.com/roninro><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i>
-<i class="fa fa-github fa-stack-1x fa-inverse"></i></span></a></li></ul><p class="copyright text-muted">Copyright &copy; RoninRo's Blog 2022<br>Powered by <a href=https://gohugo.io>Hugo</a></p></div></div></div></footer><script src=/js/jquery.min.js></script>
-<script src=/js/bootstrap.min.js crossorigin=anonymous></script>
-<script src=https://fninit.com/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js></script>
-<script src=/js/simple-jekyll-search.min.js></script>
-<script src=https://fninit.com/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js></script>
-<script></script><script src=/zoomjs/zoom.min.js></script></body></html>
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  
+  
+  
+  
+
+  <title>Swift 闭包 | RoninRo&#39;s Blog</title>
+
+  
+  <meta name="author" content="RoninRo">
+  <meta name="description" content="根据 The Swift Programming Language (Swift 4.1) - Closures 整理。 Swift 中闭包与 Objective-C 中的 Blocks 以及其他一些编程语言中的匿名函数比较相似，是自包含的函数代码块。 闭包可以捕获和存储其所在上下文中">
+  <meta name="keywords" content="blog,developer,personal,golang">
+
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Swift 闭包"/>
+<meta name="twitter:description" content="根据 The Swift Programming Language (Swift 4.1) - Closures 整理。 Swift 中闭包与 Objective-C 中的 Blocks 以及其他一些编程语言中的匿名函数比较相似，是自包含的函数代码块。 闭包可以捕获和存储其所在上下文中"/>
+
+  <meta property="og:title" content="Swift 闭包" />
+<meta property="og:description" content="根据 The Swift Programming Language (Swift 4.1) - Closures 整理。 Swift 中闭包与 Objective-C 中的 Blocks 以及其他一些编程语言中的匿名函数比较相似，是自包含的函数代码块。 闭包可以捕获和存储其所在上下文中" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://roninro.github.io/posts/2018/swift-closures/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2018-03-15T09:33:53+08:00" />
+<meta property="article:modified_time" content="2018-03-15T09:33:53+08:00" />
+
+
+
+  <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+  
+  <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"
+    type="text/css">
+
+  
+  
+  <link rel="stylesheet" href="/sass/main.css">
+
+  
+  <link rel="stylesheet" href="/zoomjs/zoom.min.css">
+
+
+  
+  
+  
+
+  </head>
+
+
+
+<body ontouchstart="">
+
+  
+  
+  
+
+  
+
+  
+  
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top invert">
+  <div class="container-fluid">
+    
+    <div class="navbar-header page-scroll">
+      <button type="button" class="navbar-toggle">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://roninro.github.io/">RoninRo&#39;s Blog</a>
+    </div>
+    
+    <div id="huxblog_navbar">
+      <div class="navbar-collapse">
+        <ul class="nav navbar-nav navbar-right">
+          
+          <li><a href="/" title="Home">Home</a></li>
+          
+          <li><a href="/archive/" title="Archive">Archive</a></li>
+          
+          <li><a href="/categories/" title="Categories">Categories</a></li>
+          
+          <li><a href="/about/" title="About">About</a></li>
+          
+
+          <li class="search-icon">
+            <a href="javascript:void(0)">
+              <i class="fa fa-search"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+  </div>
+  
+</nav>
+<script>
+  
+  
+  
+  var $body = document.body;
+  var $toggle = document.querySelector(".navbar-toggle");
+  var $navbar = document.querySelector("#huxblog_navbar");
+  var $collapse = document.querySelector(".navbar-collapse");
+
+  var __HuxNav__ = {
+    close: function () {
+      $navbar.className = " ";
+      
+      setTimeout(function () {
+        
+        if ($navbar.className.indexOf("in") < 0) {
+          $collapse.style.height = "0px";
+        }
+      }, 400);
+    },
+    open: function () {
+      $collapse.style.height = "auto";
+      $navbar.className += " in";
+    },
+  };
+
+  
+  $toggle.addEventListener("click", function (e) {
+    if ($navbar.className.indexOf("in") > 0) {
+      __HuxNav__.close();
+    } else {
+      __HuxNav__.open();
+    }
+  });
+
+  
+
+  document.addEventListener("click", function (e) {
+    if (e.target == $toggle) return;
+    if (e.target.className == "icon-bar") return;
+    __HuxNav__.close();
+  });
+</script>
+  
+<div class="search-page">
+  <div class="search-icon-close-container">
+    <span class="search-icon-close">
+      <i class="fa fa-chevron-down"></i>
+    </span>
+  </div>
+  <div class="search-main container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <form></form>
+        <input type="text" id="search-input" placeholder="$ grep...">
+        </form>
+        <div id="search-results" class="mini-post-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+  
+
+
+<style type="text/css">
+  header.intro-header {
+    position: relative;
+    background-image: url('');
+  }
+</style>
+
+<header class="intro-header style-text">
+
+  <div class="header-mask"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-heading">
+          <div class="tags">
+            
+            <a class="tag" href="/tags/swift/" title="Swift">Swift</a>
+            
+            <a class="tag" href="/tags/ios/" title="iOS">iOS</a>
+            
+          </div>
+          <h1>Swift 闭包</h1>
+          <h2 class="subheading"></h2>
+          <p class="post-meta">
+            Posted by  RoninRo 
+            on Thu, Mar 15, 2018
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+  
+
+
+<article>
+  <div class="container">
+    <div class="row">
+
+      
+      <div class="
+              col-lg-8 col-lg-offset-2
+              col-md-10 col-md-offset-1
+              post-container">
+        <blockquote>
+<p>根据 <a href="https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/Closures.html#//apple_ref/doc/uid/TP40014097-CH11-ID94">The Swift Programming Language (Swift 4.1) - Closures</a> 整理。</p>
+</blockquote>
+<p>Swift 中闭包与 Objective-C 中的 Blocks 以及其他一些编程语言中的匿名函数比较相似，是自包含的函数代码块。</p>
+<p>闭包可以捕获和存储其所在上下文中任意常量和变量的引用。被称为包裹常量和变量。</p>
+<p>Swift 会为你管理在捕获过程中涉及到的所有内存操作。</p>
+<p><strong>闭包有三种形式：</strong></p>
+<ol>
+<li>全局函数：一个有名字但不会捕获任何值的闭包</li>
+</ol>
+<ul>
+<li>嵌套函数：有名字并且可以捕获其封闭函数内值的闭包</li>
+<li>闭包表达式：利用轻量级语法所写的可以捕获其上下文中变量或常量值的匿名闭包</li>
+</ul>
+<p><strong>Swift 的闭包表达式拥有简洁的风格，并鼓励在常见场景中进行语法优化，主要优化如下</strong></p>
+<ol>
+<li>利用上下文推断参数和返回值类型</li>
+</ol>
+<ul>
+<li>隐式返回单表达式闭包，即单表达式闭包可以省略 return 关键字</li>
+<li>参数名称缩写</li>
+<li>尾随闭包语法</li>
+</ul>
+<h2 id="闭包表达式语法">闭包表达式语法<a class="anchorjs-link" href="#%e9%97%ad%e5%8c%85%e8%a1%a8%e8%be%be%e5%bc%8f%e8%af%ad%e6%b3%95"></a></h2><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>{ (parameters) -&gt; <span style="color:#ff79c6">return</span> type <span style="color:#ff79c6">in</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>    statements
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>}
+</span></span></code></pre></div><p>示例：sorted 方法</p>
+<p><strong>sorted(by:)</strong> 方法接受一个闭包，该闭包函数需要传入与数组元素类型相同的两个值，并返回一个布尔类型值来表明当排序结束后传入的第一个参数排在第二个参数前面还是后面。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">names</span> = [<span style="color:#f1fa8c">&#34;Chris&#34;</span>, <span style="color:#f1fa8c">&#34;Alex&#34;</span>, <span style="color:#f1fa8c">&#34;Ewa&#34;</span>, <span style="color:#f1fa8c">&#34;Barry&#34;</span>, <span style="color:#f1fa8c">&#34;Daniella&#34;</span>]
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">backward</span>(<span style="color:#ff79c6">_</span> s1: <span style="color:#8be9fd;font-style:italic">String</span>, <span style="color:#ff79c6">_</span> s2: <span style="color:#8be9fd;font-style:italic">String</span>) -&gt; <span style="color:#8be9fd;font-style:italic">Bool</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>    <span style="color:#ff79c6">return</span> s1 <span style="color:#ff79c6">&gt;</span> s2
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span><span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">reversedNames</span> = names.sorted(by: backward)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>reversedNames = names.sorted(by: { (s1: <span style="color:#8be9fd;font-style:italic">String</span>, s2: <span style="color:#8be9fd;font-style:italic">String</span>) -&gt; <span style="color:#8be9fd;font-style:italic">Bool</span> <span style="color:#ff79c6">in</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>    <span style="color:#ff79c6">return</span> s1 <span style="color:#ff79c6">&gt;</span> s2
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>})
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span><span style="color:#6272a4">// 写成一行</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>reversedNames = names.sorted(by: { (s1: <span style="color:#8be9fd;font-style:italic">String</span>, s2: <span style="color:#8be9fd;font-style:italic">String</span>) -&gt; <span style="color:#8be9fd;font-style:italic">Bool</span> <span style="color:#ff79c6">in</span> <span style="color:#ff79c6">return</span> s1 <span style="color:#ff79c6">&gt;</span> s2 })
+</span></span></code></pre></div><h3 id="根据上下文推断类型">根据上下文推断类型<a class="anchorjs-link" href="#%e6%a0%b9%e6%8d%ae%e4%b8%8a%e4%b8%8b%e6%96%87%e6%8e%a8%e6%96%ad%e7%b1%bb%e5%9e%8b"></a></h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>reversedNames = names.sorted(by: { s1, s2 <span style="color:#ff79c6">in</span> <span style="color:#ff79c6">return</span> s1 <span style="color:#ff79c6">&gt;</span> s2 })&lt;Paste&gt;
+</span></span></code></pre></div><h3 id="单表达式闭包隐式返回">单表达式闭包隐式返回<a class="anchorjs-link" href="#%e5%8d%95%e8%a1%a8%e8%be%be%e5%bc%8f%e9%97%ad%e5%8c%85%e9%9a%90%e5%bc%8f%e8%bf%94%e5%9b%9e"></a></h3><p>单行表达式闭包可以通过省略 return 关键字来隐式返回单行表达式的结果</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>reversedNames = names.sorted(by: { s1, s2 <span style="color:#ff79c6">in</span> s1 <span style="color:#ff79c6">&gt;</span> s2 })
+</span></span></code></pre></div><h3 id="参数名称缩写">参数名称缩写<a class="anchorjs-link" href="#%e5%8f%82%e6%95%b0%e5%90%8d%e7%a7%b0%e7%bc%a9%e5%86%99"></a></h3><p>Swift 自动为内联闭包提供了参数名称缩写功能，你可以直接通过 $0，$1，$2 来顺序调用闭包的参数，以此类推。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>reversedNames = names.sorted(by: { <span style="color:#8be9fd;font-style:italic">$0</span> <span style="color:#ff79c6">&gt;</span> <span style="color:#8be9fd;font-style:italic">$1</span> })
+</span></span></code></pre></div><h3 id="运算符方法">运算符方法<a class="anchorjs-link" href="#%e8%bf%90%e7%ae%97%e7%ac%a6%e6%96%b9%e6%b3%95"></a></h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>reversedNames = names.sorted(by: <span style="color:#ff79c6">&gt;</span>)
+</span></span></code></pre></div><h3 id="尾随闭包">尾随闭包<a class="anchorjs-link" href="#%e5%b0%be%e9%9a%8f%e9%97%ad%e5%8c%85"></a></h3><p>将一个很长的闭包表达式作为最后一个参数传递给函数，可以使用尾随闭包来增强函数的可读性。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">someFunctionThatTakesAClosure</span>(closure: () -&gt; <span style="color:#8be9fd;font-style:italic">Void</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>    <span style="color:#6272a4">// 函数体部分</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span> 
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span><span style="color:#6272a4">// 不使用尾随闭包进行函数调用</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>someFunctionThatTakesAClosure(closure: {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>    <span style="color:#6272a4">// closure&#39;s body goes here</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>})
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span> 
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span><span style="color:#6272a4">// 使用尾随闭包进行函数调用</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>someFunctionThatTakesAClosure() {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>    <span style="color:#6272a4">// trailing closure&#39;s body goes here</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>}
+</span></span></code></pre></div><p>如果闭包表达式是函数或方法的唯一参数，则当你使用尾随闭包时，你甚至可以把 () 省略掉。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>reversedNames = names.sorted(){ <span style="color:#8be9fd;font-style:italic">$0</span> <span style="color:#ff79c6">&gt;</span> <span style="color:#8be9fd;font-style:italic">$1</span> }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>reversedNames = names.sorted { <span style="color:#8be9fd;font-style:italic">$0</span> <span style="color:#ff79c6">&gt;</span> <span style="color:#8be9fd;font-style:italic">$1</span> }
+</span></span></code></pre></div><h2 id="值捕获">值捕获<a class="anchorjs-link" href="#%e5%80%bc%e6%8d%95%e8%8e%b7"></a></h2><p>闭包可以在其被定义的上下文中捕获常量或变量。即使定义这些常量和变量的原作用域已经不存在，闭包仍然可以在闭包函数体内引用和修改这些值。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">makeIncrementer</span>(forIncrement amount: <span style="color:#8be9fd;font-style:italic">Int</span>) -&gt; () -&gt; <span style="color:#8be9fd;font-style:italic">Int</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>    <span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">runingTotal</span> = <span style="color:#bd93f9">0</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>    <span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">increment</span>() -&gt; <span style="color:#8be9fd;font-style:italic">Int</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>        runingTotal <span style="color:#ff79c6">+=</span> amount
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>        <span style="color:#ff79c6">return</span> runingTotal
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>    <span style="color:#ff79c6">return</span> increment
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span><span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">incrementByTen</span> = makeIncrementer(forIncrement: <span style="color:#bd93f9">10</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>incrementByTen() <span style="color:#6272a4">// 10</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>incrementByTen() <span style="color:#6272a4">// 20</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span>incrementByTen() <span style="color:#6272a4">// 30</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span><span><span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">incrementBySevem</span> = makeIncrementer(forIncrement: <span style="color:#bd93f9">7</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span><span>incrementBySevem() <span style="color:#6272a4">// 7</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21</span><span>incrementByTen()   <span style="color:#6272a4">// 40</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23</span><span><span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">alsoIncrementByTen</span> = incrementByTen
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24</span><span>alsoIncrementByTen() <span style="color:#6272a4">// 50</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25</span><span>incrementByTen()     <span style="color:#6272a4">// 60</span>
+</span></span></code></pre></div><p><strong>闭包是引用类型</strong></p>
+<p>上面的例子中，incrementBySeven 和 incrementByTen 都是常量，但是这些常量指向的闭包仍然可以增加其捕获的变量的值。这是因为函数和闭包都是引用类型。</p>
+<p>无论你将函数或闭包赋值给一个常量还是变量，你实际上都是将常量或变量的值设置为对应函数或闭包的引用。上面的例子中，指向闭包的引用 incrementByTen 是一个常量，而并非闭包内容本身。</p>
+<h2 id="闭包引起的循环强引用">闭包引起的循环强引用<a class="anchorjs-link" href="#%e9%97%ad%e5%8c%85%e5%bc%95%e8%b5%b7%e7%9a%84%e5%be%aa%e7%8e%af%e5%bc%ba%e5%bc%95%e7%94%a8"></a></h2><p>循环强引用还会发生在当你将一个闭包赋值给类实例的某个属性，并且这个闭包体中又使用了这个类实例时。这个闭包体中可能访问了实例的某个属性，例如self.someProperty，或者闭包中调用了实例的某个方法，例如self.someMethod()。这两种情况都导致了闭包“捕获”self，从而产生了循环强引用。</p>
+<h3 id="弱引用和无主引用">弱引用和无主引用<a class="anchorjs-link" href="#%e5%bc%b1%e5%bc%95%e7%94%a8%e5%92%8c%e6%97%a0%e4%b8%bb%e5%bc%95%e7%94%a8"></a></h3><ul>
+<li><code>weak</code>: 弱引用</li>
+<li><code>unowned</code>：无主引用</li>
+</ul>
+<p>在闭包和捕获的实例总是互相引用并且总是同时销毁时，将闭包内的捕获定义为无主引用。</p>
+<p>相反的，在被捕获的引用可能会变为nil时，将闭包内的捕获定义为弱引用。
+弱引用总是可选类型，并且当引用的实例被销毁后，弱引用的值会自动置为nil。这使我们可以在闭包体内检查它们是否存在。</p>
+<blockquote>
+<p><em>如果被捕获的引用绝对不会变为nil，应该用无主引用，而不是弱引用。</em></p>
+</blockquote>
+<h3 id="定义捕获列表">定义捕获列表<a class="anchorjs-link" href="#%e5%ae%9a%e4%b9%89%e6%8d%95%e8%8e%b7%e5%88%97%e8%a1%a8"></a></h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#ff79c6">lazy</span> <span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">someClosure</span>: (<span style="color:#8be9fd;font-style:italic">Int</span>, <span style="color:#8be9fd;font-style:italic">String</span>) -&gt; <span style="color:#8be9fd;font-style:italic">String</span> = {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>    [<span style="color:#ff79c6">unowned</span> <span style="color:#ff79c6">self</span>, <span style="color:#ff79c6">weak</span> delegate = <span style="color:#ff79c6">self</span>.delegate!] (index: <span style="color:#8be9fd;font-style:italic">Int</span>, stringToProcess: <span style="color:#8be9fd;font-style:italic">String</span>) -&gt; <span style="color:#8be9fd;font-style:italic">String</span> <span style="color:#ff79c6">in</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>    <span style="color:#6272a4">// 这里是闭包的函数体</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>}
+</span></span></code></pre></div><p>如果闭包没有指明参数列表或者返回类型，即它们会通过上下文推断，那么可以把捕获列表和关键字in放在闭包最开始的地方:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#ff79c6">lazy</span> <span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">someClosure</span>: <span style="color:#8be9fd;font-style:italic">Void</span> -&gt; <span style="color:#8be9fd;font-style:italic">String</span> = {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>    [<span style="color:#ff79c6">unowned</span> <span style="color:#ff79c6">self</span>, <span style="color:#ff79c6">weak</span> delegate = <span style="color:#ff79c6">self</span>.delegate!] <span style="color:#ff79c6">in</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>    <span style="color:#6272a4">// 这里是闭包的函数体</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>}
+</span></span></code></pre></div><h2 id="逃逸闭包">逃逸闭包<a class="anchorjs-link" href="#%e9%80%83%e9%80%b8%e9%97%ad%e5%8c%85"></a></h2><p>当一个闭包作为参数传到一个函数中，但是这个闭包在函数返回之后才被执行，我们称该闭包从函数中逃逸。
+通过在参数名之前标注 <code>@escaping</code>, 用来指明这个闭包是允许“逃逸”出这个函数的。</p>
+<blockquote>
+<p>一种能使闭包“逃逸”出函数的方法是，将这个闭包保存在一个函数外部定义的变量中。举个例子，很多启动异步操作的函数接受一个闭包参数作为 completion handler。这类函数会在异步操作开始之后立刻返回，但是闭包直到异步操作结束后才会被调用。在这种情况下，闭包需要“逃逸”出函数，因为闭包需要在函数返回之后被调用。</p>
+</blockquote>
+<p>将一个闭包标记为 <code>@escaping</code> 意味着你必须在闭包中显式地引用 <code>self</code></p>
+<p>非逃逸闭包，可以隐式引用 <code>self</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">completionHandles</span>: [() -&gt; <span style="color:#8be9fd;font-style:italic">Void</span>] = []
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">someFunctionWithEscapingClosure</span>(completionHandler: @escaping () -&gt; <span style="color:#8be9fd;font-style:italic">Void</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>    completionHandles.append(completionHandler)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">someFunctionWithNonescapingClosure</span>(closure: () -&gt; <span style="color:#8be9fd;font-style:italic">Void</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>    closure()
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span><span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">SomeClass</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>    <span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">x</span> = <span style="color:#bd93f9">10</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>    <span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">doSomething</span>() {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>        someFunctionWithEscapingClosure { <span style="color:#ff79c6">self</span>.x = <span style="color:#bd93f9">100</span> }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>        someFunctionWithNonescapingClosure { x = <span style="color:#bd93f9">200</span> }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span><span><span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">instance</span> = SomeClass()
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span><span>instance.doSomething()
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span><span>print(instance.x)   <span style="color:#6272a4">// 200</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22</span><span>completionHandles.first?()
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23</span><span>print(instance.x)   <span style="color:#6272a4">// 100</span>
+</span></span></code></pre></div><h2 id="自动闭包">自动闭包<a class="anchorjs-link" href="#%e8%87%aa%e5%8a%a8%e9%97%ad%e5%8c%85"></a></h2><p>自动闭包是一种自动创建的闭包，用于包装传递给函数作为参数的表达式。不接受任何参数，当它调用时，会返回被包装在其中的表达式的值。
+这种便利语法让你能够__省略闭包的花括号__，用一个普通的表达式来代替显式的闭包。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">customersInLine</span> = [<span style="color:#f1fa8c">&#34;Chris&#34;</span>, <span style="color:#f1fa8c">&#34;Alex&#34;</span>, <span style="color:#f1fa8c">&#34;Ewa&#34;</span>, <span style="color:#f1fa8c">&#34;Barry&#34;</span>, <span style="color:#f1fa8c">&#34;Daniella&#34;</span>]
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>print(customersInLine.count)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span><span style="color:#6272a4">// 5</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span><span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">customerProvider</span> = { customersInLine.remove(at: <span style="color:#bd93f9">0</span>)}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>print(customersInLine.count)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span><span style="color:#6272a4">// 5</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>print(<span style="color:#f1fa8c">&#34;Now serving </span><span style="color:#f1fa8c">\(</span>customerProvider<span style="color:#f1fa8c">())</span><span style="color:#f1fa8c">!&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span><span style="color:#6272a4">// Now serving Chris!</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>print(customersInLine.count)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span><span style="color:#6272a4">// 4</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">serve</span>(customer customerProvider: () -&gt; <span style="color:#8be9fd;font-style:italic">String</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>    print(<span style="color:#f1fa8c">&#34;Now serving </span><span style="color:#f1fa8c">\(</span>customerProvider<span style="color:#f1fa8c">())</span><span style="color:#f1fa8c">!&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>serve(customer: { customersInLine.remove(at: <span style="color:#bd93f9">0</span>) })
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span><span style="color:#6272a4">// Now serving Alex!</span>
+</span></span></code></pre></div><h3 id="自动闭包逃逸">自动闭包&quot;逃逸&quot;<a class="anchorjs-link" href="#%e8%87%aa%e5%8a%a8%e9%97%ad%e5%8c%85%e9%80%83%e9%80%b8"></a></h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">customerProviders</span>: [() -&gt; <span style="color:#8be9fd;font-style:italic">String</span>] = []
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">collectCustomerProviders</span>(<span style="color:#ff79c6">_</span> customerProvider: <span style="color:#ff79c6">@autoclosure</span> @escaping () -&gt; <span style="color:#8be9fd;font-style:italic">String</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>    customerProviders.append(customerProvider)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>collectCustomerProviders(customersInLine.remove(at: <span style="color:#bd93f9">0</span>))
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>collectCustomerProviders(customersInLine.remove(at: <span style="color:#bd93f9">0</span>))
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>print(<span style="color:#f1fa8c">&#34;Collected </span><span style="color:#f1fa8c">\(</span>customerProviders.count<span style="color:#f1fa8c">)</span><span style="color:#f1fa8c"> closures.&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span><span style="color:#6272a4">// Collected 2 closures.</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span><span style="color:#ff79c6">for</span> customerProvider <span style="color:#ff79c6">in</span> customerProviders {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>    print(<span style="color:#f1fa8c">&#34;Now serving </span><span style="color:#f1fa8c">\(</span>customerProvider<span style="color:#f1fa8c">())</span><span style="color:#f1fa8c">!&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span><span style="color:#6272a4">// Now serving Ewa!</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span><span style="color:#6272a4">// Now serving Barry!</span>
+</span></span></code></pre></div><p>Ending&hellip;</p>
+
+
+        <hr style="visibility: hidden;" />
+        <ul class="pager">
+          
+          <li class="previous">
+            <a href="/posts/2018/sublime-mac-menu/" data-toggle="tooltip" data-placement="top" title="使用 Automator 为文件夹添加一个快捷操作">
+              Previous<br>
+              <span>使用 Automator 为文件夹添加一个快捷操作</span>
+            </a>
+          </li>
+          
+          
+          <li class="next">
+            <a href="/posts/2018/git-submodule/" data-toggle="tooltip" data-placement="top" title="Git Submodule">
+              Next<br>
+              <span>Git Submodule</span>
+            </a>
+          </li>
+          
+        </ul>
+        <hr style="visibility: hidden;" />
+
+        
+        
+
+
+
+
+
+      </div>
+
+      
+      
+      
+      
+      <div class="
+              col-lg-8 col-lg-offset-2
+              col-md-10 col-md-offset-1
+              sidebar-container">
+
+        
+        
+        <section>
+  
+  
+  <hr class="hidden-sm hidden-xs">
+  
+  <h5>FEATURED TAGS</h5>
+  <div class="tags">
+    
+    <a href="/tags/css/">css</a>
+    
+    <a href="/tags/debian/">debian</a>
+    
+    <a href="/tags/fzf/">fzf</a>
+    
+    <a href="/tags/gcd/">gcd</a>
+    
+    <a href="/tags/gem/">gem</a>
+    
+    <a href="/tags/git/">git</a>
+    
+    <a href="/tags/go/">go</a>
+    
+    <a href="/tags/golang/">golang</a>
+    
+    <a href="/tags/hugo/">hugo</a>
+    
+    <a href="/tags/ios/">iOS</a>
+    
+    <a href="/tags/kindle/">Kindle</a>
+    
+    <a href="/tags/kvocontroller/">KVOController</a>
+    
+    <a href="/tags/linux/">linux</a>
+    
+    <a href="/tags/macos/">MacOS</a>
+    
+    <a href="/tags/neovim/">neovim</a>
+    
+    <a href="/tags/runtime/">runtime</a>
+    
+    <a href="/tags/rust/">rust</a>
+    
+    <a href="/tags/ss/">ss</a>
+    
+    <a href="/tags/ssh/">ssh</a>
+    
+    <a href="/tags/swift/">Swift</a>
+    
+    <a href="/tags/vim/">vim</a>
+    
+    <a href="/tags/webhook/">webhook</a>
+    
+    <a href="/tags/wubi/">wubi</a>
+    
+    <a href="/tags/zabbix/">zabbix</a>
+    
+  </div>
+</section>
+
+        
+        
+
+<hr>
+<h5>FRIENDS</h5>
+<ul class="list-inline">
+  
+  <li><a href=""></a></li>
+  
+</ul>
+
+      </div>
+    </div>
+  </div>
+</article>
+
+
+
+  
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        
+        
+
+
+<ul class="list-inline text-center">
+
+  
+  <li>
+    <a href="/index.xml">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+  
+  
+  
+  
+  <li>
+    <a target="_blank" href="https://github.com/roninro">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+</ul>
+        <p class="copyright text-muted">
+          Copyright &copy; RoninRo&#39;s Blog 2022
+          <br>
+          Powered by <a href="https://gohugo.io">Hugo</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+
+
+<script src="/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js"></script>
+
+
+<script src="/js/simple-jekyll-search.min.js"></script>
+
+
+<script src="/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/zoomjs/zoom.min.js"></script>
+</body>
+
+</html>

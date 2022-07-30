@@ -1,48 +1,509 @@
-<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="ie=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><title>[整理] 五笔基础 | RoninRo's Blog</title><meta name=author content="RoninRo"><meta name=description content="五笔字型是一种纯字型的编码方案，它由 130 个字根组字，重码少，便于盲打，输入速度快。"><meta name=keywords content="blog,developer,personal,golang"><meta name=twitter:card content="summary"><meta name=twitter:title content="[整理] 五笔基础"><meta name=twitter:description content="五笔字型是一种纯字型的编码方案，它由 130 个字根组字，重码少，便于盲打，输入速度快。"><meta property="og:title" content="[整理] 五笔基础"><meta property="og:description" content="五笔字型是一种纯字型的编码方案，它由 130 个字根组字，重码少，便于盲打，输入速度快。"><meta property="og:type" content="article"><meta property="og:url" content="https://fninit.com/posts/2021/wubu/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2021-03-29T10:23:25+08:00"><meta property="article:modified_time" content="2021-03-29T10:23:25+08:00"><link rel=stylesheet href=/css/bootstrap.min.css crossorigin=anonymous><link href=//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css rel=stylesheet type=text/css><link rel=stylesheet href=https://fninit.com/sass/main.css><link rel=stylesheet href=https://fninit.com/zoomjs/zoom.min.css></head><body><nav class="navbar navbar-default navbar-custom navbar-fixed-top invert"><div class=container-fluid><div class="navbar-header page-scroll"><button type=button class=navbar-toggle>
-<span class=sr-only>Toggle navigation</span>
-<span class=icon-bar></span>
-<span class=icon-bar></span>
-<span class=icon-bar></span></button>
-<a class=navbar-brand href=https://fninit.com>RoninRo's Blog</a></div><div id=huxblog_navbar><div class=navbar-collapse><ul class="nav navbar-nav navbar-right"><li><a href=/ title=Home>Home</a></li><li><a href=/archive/ title=Archive>Archive</a></li><li><a href=/categories/ title=Categories>Categories</a></li><li><a href=/about/ title=About>About</a></li><li class=search-icon><a href=javascript:void(0)><i class="fa fa-search"></i></a></li></ul></div></div></div></nav><script>var $body=document.body,$toggle=document.querySelector(".navbar-toggle"),$navbar=document.querySelector("#huxblog_navbar"),$collapse=document.querySelector(".navbar-collapse"),__HuxNav__={close:function(){$navbar.className=" ",setTimeout(function(){$navbar.className.indexOf("in")<0&&($collapse.style.height="0px")},400)},open:function(){$collapse.style.height="auto",$navbar.className+=" in"}};$toggle.addEventListener("click",function(){$navbar.className.indexOf("in")>0?__HuxNav__.close():__HuxNav__.open()}),document.addEventListener("click",function(e){if(e.target==$toggle)return;if(e.target.className=="icon-bar")return;__HuxNav__.close()})</script><div class=search-page><div class=search-icon-close-container><span class=search-icon-close><i class="fa fa-chevron-down"></i></span></div><div class="search-main container"><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><form></form><input type=text id=search-input placeholder="$ grep..."></form><div id=search-results class=mini-post-list></div></div></div></div></div><style type=text/css>header.intro-header{position:relative;background-image:url('')}</style><header class="intro-header style-text"><div class=header-mask></div><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><div class=post-heading><div class=tags><a class=tag href=https://fninit.com/tags/wubi/ title=wubi>wubi</a></div><h1>[整理] 五笔基础</h1><h2 class=subheading></h2><p class=post-meta>Posted by RoninRo
-on Mon, Mar 29, 2021</p></div></div></div></div></header><article><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2
-col-md-10 col-md-offset-1
-post-container"><h2 id=概述>概述<a class=anchorjs-link href=#%e6%a6%82%e8%bf%b0></a></h2><p>“五笔” 原意是也指五种基本笔画：横、竖、撇、捺（点）、折，任何一个汉字，也都是由这五种基本笔画及其衍生字根组成，通过使用一定的映射规则，至多只需要 4 个字母，即可完成一个汉字或词组的输入。</p><h2 id=字根>字根<a class=anchorjs-link href=#%e5%ad%97%e6%a0%b9></a></h2><p><figure><a class=paragraph-image><img src=/media/wubizigenbiao.gif data-action=zoom alt loading=lazy decoding=async></a></figure></p><p>在五笔字型输入编码方案中，把由基本笔画组成的相对不变的结构（偏旁、部首）称字根。五笔字型精选了 130 多个常用字根为基本字根，它们是组成汉字的基本单位，它们在键盘上分 5 个区，每个区按 “横，竖，撇，捺，折 “ 顺序以 1、2、3、4、5 作为区号，五区共占 25 个位，区号为首笔，位号为次笔 。</p><p>理解字根：字根大部分是新华字典上的偏傍部首，也有一些不同，五笔输入法的原理就是：每个汉字由字根组成，例如 “好” 字由字根 “女” 和字根 “子” 组成；“们” 由字根 “亻” 和字根 “门” 组成，所以我们如果能记住每个字根分布在哪个字母键上，那么打汉字便是很容易的事了！</p><p>字根的分布规律：按字根的第一笔划（一，丨，丿，丶，乙 因此叫五笔输入法），将字根分成五大区（用数字划分），分别是键盘上的（G-11、F-12、D-13、S-14、A-15），（H-21、J-22、K-23、L-24、M-25），（T-31、R-32、E3-3、W-34、Q-35）（Y-41、U-42、I-43、O-44、P-45），（N-51、B-52、V-53、C-54、X-55）。</p><p>理解口诀：口诀就是将每个键上的主要字根串联成一句话，只要你记熟这句口诀，那么这个键上的主要字根你便能够想起来。例如口诀 “日早两竖与虫依” 就是字根 “日”、“早”、“刂”、“虫” 等在 22 键，即 J 键上。其它类似（对照口诀和键盘图便可理解）。</p><h2 id=五笔单字编码规则>五笔单字编码规则<a class=anchorjs-link href=#%e4%ba%94%e7%ac%94%e5%8d%95%e5%ad%97%e7%bc%96%e7%a0%81%e8%a7%84%e5%88%99></a></h2><p>五笔字型最直观，依照笔顺把码编；
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  
+  
+  
+  
+
+  <title>[整理] 五笔基础 | RoninRo&#39;s Blog</title>
+
+  
+  <meta name="author" content="RoninRo">
+  <meta name="description" content="五笔字型是一种纯字型的编码方案，它由 130 个字根组字，重码少，便于盲打，输入速度快。">
+  <meta name="keywords" content="blog,developer,personal,golang">
+
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="[整理] 五笔基础"/>
+<meta name="twitter:description" content="五笔字型是一种纯字型的编码方案，它由 130 个字根组字，重码少，便于盲打，输入速度快。"/>
+
+  <meta property="og:title" content="[整理] 五笔基础" />
+<meta property="og:description" content="五笔字型是一种纯字型的编码方案，它由 130 个字根组字，重码少，便于盲打，输入速度快。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://roninro.github.io/posts/2021/wubu/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-03-29T10:23:25+08:00" />
+<meta property="article:modified_time" content="2021-03-29T10:23:25+08:00" />
+
+
+
+  <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+  
+  <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"
+    type="text/css">
+
+  
+  
+  <link rel="stylesheet" href="/sass/main.css">
+
+  
+  <link rel="stylesheet" href="/zoomjs/zoom.min.css">
+
+
+  
+  
+  
+
+  </head>
+
+
+
+<body ontouchstart="">
+
+  
+  
+  
+
+  
+
+  
+  
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top invert">
+  <div class="container-fluid">
+    
+    <div class="navbar-header page-scroll">
+      <button type="button" class="navbar-toggle">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://roninro.github.io/">RoninRo&#39;s Blog</a>
+    </div>
+    
+    <div id="huxblog_navbar">
+      <div class="navbar-collapse">
+        <ul class="nav navbar-nav navbar-right">
+          
+          <li><a href="/" title="Home">Home</a></li>
+          
+          <li><a href="/archive/" title="Archive">Archive</a></li>
+          
+          <li><a href="/categories/" title="Categories">Categories</a></li>
+          
+          <li><a href="/about/" title="About">About</a></li>
+          
+
+          <li class="search-icon">
+            <a href="javascript:void(0)">
+              <i class="fa fa-search"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+  </div>
+  
+</nav>
+<script>
+  
+  
+  
+  var $body = document.body;
+  var $toggle = document.querySelector(".navbar-toggle");
+  var $navbar = document.querySelector("#huxblog_navbar");
+  var $collapse = document.querySelector(".navbar-collapse");
+
+  var __HuxNav__ = {
+    close: function () {
+      $navbar.className = " ";
+      
+      setTimeout(function () {
+        
+        if ($navbar.className.indexOf("in") < 0) {
+          $collapse.style.height = "0px";
+        }
+      }, 400);
+    },
+    open: function () {
+      $collapse.style.height = "auto";
+      $navbar.className += " in";
+    },
+  };
+
+  
+  $toggle.addEventListener("click", function (e) {
+    if ($navbar.className.indexOf("in") > 0) {
+      __HuxNav__.close();
+    } else {
+      __HuxNav__.open();
+    }
+  });
+
+  
+
+  document.addEventListener("click", function (e) {
+    if (e.target == $toggle) return;
+    if (e.target.className == "icon-bar") return;
+    __HuxNav__.close();
+  });
+</script>
+  
+<div class="search-page">
+  <div class="search-icon-close-container">
+    <span class="search-icon-close">
+      <i class="fa fa-chevron-down"></i>
+    </span>
+  </div>
+  <div class="search-main container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <form></form>
+        <input type="text" id="search-input" placeholder="$ grep...">
+        </form>
+        <div id="search-results" class="mini-post-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+  
+
+
+<style type="text/css">
+  header.intro-header {
+    position: relative;
+    background-image: url('');
+  }
+</style>
+
+<header class="intro-header style-text">
+
+  <div class="header-mask"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-heading">
+          <div class="tags">
+            
+            <a class="tag" href="/tags/wubi/" title="wubi">wubi</a>
+            
+          </div>
+          <h1>[整理] 五笔基础</h1>
+          <h2 class="subheading"></h2>
+          <p class="post-meta">
+            Posted by  RoninRo 
+            on Mon, Mar 29, 2021
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+  
+
+
+<article>
+  <div class="container">
+    <div class="row">
+
+      
+      <div class="
+              col-lg-8 col-lg-offset-2
+              col-md-10 col-md-offset-1
+              post-container">
+        <h2 id="概述">概述<a class="anchorjs-link" href="#%e6%a6%82%e8%bf%b0"></a></h2><p>“五笔” 原意是也指五种基本笔画：横、竖、撇、捺（点）、折，任何一个汉字，也都是由这五种基本笔画及其衍生字根组成，通过使用一定的映射规则，至多只需要 4 个字母，即可完成一个汉字或词组的输入。</p>
+<h2 id="字根">字根<a class="anchorjs-link" href="#%e5%ad%97%e6%a0%b9"></a></h2><p><figure>
+  <a class="paragraph-image">
+    <img src="/media/wubizigenbiao.gif" data-action="zoom" alt=""  loading="lazy" decoding="async">
+  </a>
+  
+</figure></p>
+<p>在五笔字型输入编码方案中，把由基本笔画组成的相对不变的结构（偏旁、部首）称字根。五笔字型精选了 130 多个常用字根为基本字根，它们是组成汉字的基本单位，它们在键盘上分 5 个区，每个区按 “横，竖，撇，捺，折 “ 顺序以 1、2、3、4、5 作为区号，五区共占 25 个位，区号为首笔，位号为次笔 。</p>
+<p>理解字根：字根大部分是新华字典上的偏傍部首，也有一些不同，五笔输入法的原理就是：每个汉字由字根组成，例如 “好” 字由字根 “女” 和字根 “子” 组成；“们” 由字根 “亻” 和字根 “门” 组成，所以我们如果能记住每个字根分布在哪个字母键上，那么打汉字便是很容易的事了！</p>
+<p>字根的分布规律：按字根的第一笔划（一，丨，丿，丶，乙 因此叫五笔输入法），将字根分成五大区（用数字划分），分别是键盘上的（G-11、F-12、D-13、S-14、A-15），（H-21、J-22、K-23、L-24、M-25），（T-31、R-32、E3-3、W-34、Q-35）（Y-41、U-42、I-43、O-44、P-45），（N-51、B-52、V-53、C-54、X-55）。</p>
+<p>理解口诀：口诀就是将每个键上的主要字根串联成一句话，只要你记熟这句口诀，那么这个键上的主要字根你便能够想起来。例如口诀 “日早两竖与虫依” 就是字根 “日”、“早”、“刂”、“虫” 等在 22 键，即 J 键上。其它类似（对照口诀和键盘图便可理解）。</p>
+<h2 id="五笔单字编码规则">五笔单字编码规则<a class="anchorjs-link" href="#%e4%ba%94%e7%ac%94%e5%8d%95%e5%ad%97%e7%bc%96%e7%a0%81%e8%a7%84%e5%88%99"></a></h2><p>五笔字型最直观，依照笔顺把码编；
 键名汉字打四下，基本字根请照搬；
 一二三末取四码，顺序拆分大优先；
-不足四码要注意，交叉识别补后边。</p><p>从这歌诀就可以看出五笔字型编码规则的大致面貌，同时口诀也概括了五笔字型拆字取码的五项原则：</p><ol><li>从形取其顺序按书写规则，即从左到右、从上到下、从外到内；</li><li>以 130 多个字根为基本单位；</li><li>对于字根数超过四个的汉字，按一二三末字根的顺序，最多只取四码；</li><li>单体结构拆分取大优先；</li><li>末笔与字型交叉识别。</li></ol><h3 id=键名汉字>键名汉字<a class=anchorjs-link href=#%e9%94%ae%e5%90%8d%e6%b1%89%e5%ad%97></a></h3><p>五笔字型中规定的 <strong>键名汉字</strong> 共有 25 个，<strong>王土大木工目日口田山禾白月人金言立水火之已子女又纟</strong>
-25 个键名汉字与 25 个字母键相应，这些字的编码相当简单，它们的编码就是 4 个所在字母键字母，如：&ldquo;言&rdquo; 字的编码为 ”YYYY“，”纟“ 字的编码为 ”XXXX“，等等。输入键名汉字时，只要连续击四次该字所在的字母键即可。</p><h3 id=成字字根>成字字根<a class=anchorjs-link href=#%e6%88%90%e5%ad%97%e5%ad%97%e6%a0%b9></a></h3><p>在五笔字型字根键盘的每个字母键上，除了一个键名字根外，还有一些其它类型的字根。有些字根其本身就是一个汉字，这样的字根称为成字字根。成字字根的编码是按下面公式进行的：</p><p><code>键名码 + 首笔码 + 次笔码 + 末笔码</code></p><p>当成字字根仅为两笔时，编码只有三码，公式为：</p><p><code>键名码 + 首笔码 + 末笔码</code></p><p>例如：&ldquo;石&rdquo;，字根所在的键为 D，第一笔划为 &ldquo;横&rdquo; 的编码是 G，第二笔为 &ldquo;撇&rdquo; 的编码是 T 键，末笔 &ldquo;横&rdquo; 的编码也是 G 键，所以这个字的五笔编码就是 DGTG。再比如 &ldquo;虫&rdquo; 字，这个字根是在 J 键，第一笔是竖 H，第二笔是折 N，最末一笔是捺 (在五笔里 &ldquo;点&rdquo; 做为 &ldquo;捺&rdquo;)Y，所以 &ldquo;虫&rdquo; 的五笔编码就是 JHNY。</p><h3 id=键外字的编码规则>键外字的编码规则<a class=anchorjs-link href=#%e9%94%ae%e5%a4%96%e5%ad%97%e7%9a%84%e7%bc%96%e7%a0%81%e8%a7%84%e5%88%99></a></h3><p>国标 GB2312-80 中，上述的键名和成字字根这样的键面字总共才有一百多个，绝大部分汉字都不是成字字根，这些才是我们在使用当中用得最多的。</p><p>五笔字型汉字编码主要是键外字的编码，编码可以分为两类，纯字根码和识别码。如果一个汉字的字根是四个或超过四个，就用前三后一总共四个字根码组成编码。不足四个字根的汉字需补一个字型结构识别码，以增加区分汉字的信息量。</p><ol><li>字根码</li></ol><p>每个字根都分派在一个字母键上，其所在键上的英文就是该字根的 &ldquo;字根码&rdquo;。
-凡含四个或超过四个字根的汉字，取其第一、二、三、末四个字根码组成键外字的输入编码。</p><p>第一字根编码 + 第二字根编码 + 第三字根编码 + 最末一个字根编码</p><p>这里一、二、三、末应按正常书写顺序，先左后右，先上后下，先外后内。</p><ol start=2><li>交叉识别码</li></ol><p>一个字的字根不足四个时，依次击入字根码后，最后需要补一个识别码。为什么需要这个识别码呢，这里可以举例说明：如 &ldquo;沐&rdquo; 和 &ldquo;汀&rdquo; 字，这两个字都是由两个字根组成的，且这两个字的字根码都是 IS 。虽然也可以让输入者选择的方式来确定到底需要输入哪一个字，但这对汉字输入速度极为不利，重码率要越低越好，所以五笔编码中才引入了识别码这个概念来对这类汉字进行区分。
-识别码是用该汉字最后一个笔画和字型结构信息来确定的，具体规则如下表：</p><table><thead><tr><th></th><th style=text-align:center>左右结构 (第 1 位)</th><th style=text-align:center>上下结构 (第 2 位)</th><th style=text-align:center>杂合结构 (第 3 位)</th></tr></thead><tbody><tr><td>末笔是 &ldquo;横&rdquo;，在一区</td><td style=text-align:center>G</td><td style=text-align:center>F</td><td style=text-align:center>D</td></tr><tr><td>末笔是 &ldquo;竖&rdquo;，在二区</td><td style=text-align:center>H</td><td style=text-align:center>J</td><td style=text-align:center>K</td></tr><tr><td>末笔是 &ldquo;撇&rdquo;，在三区</td><td style=text-align:center>T</td><td style=text-align:center>R</td><td style=text-align:center>E</td></tr><tr><td>末笔是 &ldquo;捺&rdquo;，在四区</td><td style=text-align:center>Y</td><td style=text-align:center>U</td><td style=text-align:center>I</td></tr><tr><td>末笔是 &ldquo;折&rdquo;，在五区</td><td style=text-align:center>N</td><td style=text-align:center>B</td><td style=text-align:center>V</td></tr></tbody></table><p>从上表可以看出，识别码的确定分两个步骤，第一步根据最后一笔确定是在哪个区，第二步再以该汉字的字型结构来确定在哪一位，然后就能得到具体识码了。</p><p>例：&ldquo;旮&rdquo; 字，这个字同旭一样字根只有两个，字根码为 VJ，但字型不同，可以通过识别码来区分，&ldquo;旮&rdquo; 最末笔是横，在一区，是上下结构，所以是在第二位，即 F，所以 &ldquo;旮&rdquo; 的五笔编码就是 VJF。</p><p>再如 &ldquo;汀&rdquo; 字，最末一笔是左竖钩，在五笔里为竖，在第二区，这个字是左右型结构，所以在第一位，即 H，所以 &ldquo;汀&rdquo; 的五笔编码就是 ISH。</p><p>加识别码后仍不足四码时，击空格键结束。单笔与字根相连的字型为杂合型，见前面所述。
-关于末笔画还有如下规定，这些规定使取码更为简单，明确。</p><p>（1）、末字根为 &ldquo;力&rdquo;、&ldquo;刀&rdquo;、&ldquo;九&rdquo;、&ldquo;七&rdquo; 等时，一律认为末笔画为折。<br>（2）、&ldquo;进&rdquo;、&ldquo;逞&rdquo;、&ldquo;选&rdquo; 等字，不以 &ldquo;走之&rdquo; 的末笔为末笔（书写时确实是末笔，但这样末笔都一样，减少了识别信息量，约定以去掉 &ldquo;走之&rdquo; 部分后的末笔整个字的末笔来构造识别码。进、逞、远的识别码应分别为：23，K；13，D；53，V。当以 &ldquo;走之&rdquo; 末笔为末笔时，则识别码都相同，为 43，I。没有得到识别信息。<br>（3）、&ldquo;我&rdquo;、&ldquo;戋&rdquo;，成等字的末笔取 &ldquo;丿&rdquo;。</p><h2 id=输入法推荐>输入法推荐<a class=anchorjs-link href=#%e8%be%93%e5%85%a5%e6%b3%95%e6%8e%a8%e8%8d%90></a></h2><ul><li>Windows10 : 微软五笔（系统），极点五笔</li><li>MacOS ： Rime，百度五笔</li></ul><hr style=visibility:hidden><ul class=pager><li class=previous><a href=https://fninit.com/posts/2021/vimrc/ data-toggle=tooltip data-placement=top title="[Vim] 使用 YouCompleteMe 对 Rust/Golang 代码补全">Previous<br><span>[Vim] 使用 YouCompleteMe 对 Rust/Golang 代码补全</span></a></li><li class=next><a href=https://fninit.com/posts/2021/vim-easy-align/ data-toggle=tooltip data-placement=top title="[Vim] 快速对齐插件 vim-easy-align">Next<br><span>[Vim] 快速对齐插件 vim-easy-align</span></a></li></ul><hr style=visibility:hidden></div><div class="col-lg-8 col-lg-offset-2
-col-md-10 col-md-offset-1
-sidebar-container"><section><hr class="hidden-sm hidden-xs"><h5>FEATURED TAGS</h5><div class=tags><a href=https://fninit.com/tags/css/>css</a>
-<a href=https://fninit.com/tags/debian/>debian</a>
-<a href=https://fninit.com/tags/fzf/>fzf</a>
-<a href=https://fninit.com/tags/gcd/>gcd</a>
-<a href=https://fninit.com/tags/gem/>gem</a>
-<a href=https://fninit.com/tags/git/>git</a>
-<a href=https://fninit.com/tags/go/>go</a>
-<a href=https://fninit.com/tags/golang/>golang</a>
-<a href=https://fninit.com/tags/hugo/>hugo</a>
-<a href=https://fninit.com/tags/ios/>iOS</a>
-<a href=https://fninit.com/tags/kindle/>Kindle</a>
-<a href=https://fninit.com/tags/kvocontroller/>KVOController</a>
-<a href=https://fninit.com/tags/linux/>linux</a>
-<a href=https://fninit.com/tags/macos/>MacOS</a>
-<a href=https://fninit.com/tags/neovim/>neovim</a>
-<a href=https://fninit.com/tags/runtime/>runtime</a>
-<a href=https://fninit.com/tags/rust/>rust</a>
-<a href=https://fninit.com/tags/ss/>ss</a>
-<a href=https://fninit.com/tags/ssh/>ssh</a>
-<a href=https://fninit.com/tags/swift/>Swift</a>
-<a href=https://fninit.com/tags/vim/>vim</a>
-<a href=https://fninit.com/tags/webhook/>webhook</a>
-<a href=https://fninit.com/tags/wubi/>wubi</a>
-<a href=https://fninit.com/tags/zabbix/>zabbix</a></div></section><hr><h5>FRIENDS</h5><ul class=list-inline><li><a href></a></li></ul></div></div></div></article><footer><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><ul class="list-inline text-center"><li><a href=/index.xml><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i>
-<i class="fa fa-rss fa-stack-1x fa-inverse"></i></span></a></li><li><a target=_blank href=https://github.com/roninro><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i>
-<i class="fa fa-github fa-stack-1x fa-inverse"></i></span></a></li></ul><p class="copyright text-muted">Copyright &copy; RoninRo's Blog 2022<br>Powered by <a href=https://gohugo.io>Hugo</a></p></div></div></div></footer><script src=/js/jquery.min.js></script>
-<script src=/js/bootstrap.min.js crossorigin=anonymous></script>
-<script src=https://fninit.com/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js></script>
-<script src=/js/simple-jekyll-search.min.js></script>
-<script src=https://fninit.com/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js></script>
-<script></script><script src=/zoomjs/zoom.min.js></script></body></html>
+不足四码要注意，交叉识别补后边。</p>
+<p>从这歌诀就可以看出五笔字型编码规则的大致面貌，同时口诀也概括了五笔字型拆字取码的五项原则：</p>
+<ol>
+<li>从形取其顺序按书写规则，即从左到右、从上到下、从外到内；</li>
+<li>以 130 多个字根为基本单位；</li>
+<li>对于字根数超过四个的汉字，按一二三末字根的顺序，最多只取四码；</li>
+<li>单体结构拆分取大优先；</li>
+<li>末笔与字型交叉识别。</li>
+</ol>
+<h3 id="键名汉字">键名汉字<a class="anchorjs-link" href="#%e9%94%ae%e5%90%8d%e6%b1%89%e5%ad%97"></a></h3><p>五笔字型中规定的 <strong>键名汉字</strong> 共有 25 个，<strong>王土大木工目日口田山禾白月人金言立水火之已子女又纟</strong>
+25 个键名汉字与 25 个字母键相应，这些字的编码相当简单，它们的编码就是 4 个所在字母键字母，如：&ldquo;言&rdquo; 字的编码为 ”YYYY“，”纟“ 字的编码为 ”XXXX“，等等。输入键名汉字时，只要连续击四次该字所在的字母键即可。</p>
+<h3 id="成字字根">成字字根<a class="anchorjs-link" href="#%e6%88%90%e5%ad%97%e5%ad%97%e6%a0%b9"></a></h3><p>在五笔字型字根键盘的每个字母键上，除了一个键名字根外，还有一些其它类型的字根。有些字根其本身就是一个汉字，这样的字根称为成字字根。成字字根的编码是按下面公式进行的：</p>
+<p><code>键名码 + 首笔码 + 次笔码 + 末笔码</code></p>
+<p>当成字字根仅为两笔时，编码只有三码，公式为：</p>
+<p><code>键名码 + 首笔码 + 末笔码</code></p>
+<p>例如：&ldquo;石&rdquo;，字根所在的键为 D，第一笔划为 &ldquo;横&rdquo; 的编码是 G，第二笔为 &ldquo;撇&rdquo; 的编码是 T 键，末笔 &ldquo;横&rdquo; 的编码也是 G 键，所以这个字的五笔编码就是 DGTG。再比如 &ldquo;虫&rdquo; 字，这个字根是在 J 键，第一笔是竖 H，第二笔是折 N，最末一笔是捺 (在五笔里 &ldquo;点&rdquo; 做为 &ldquo;捺&rdquo;)Y，所以 &ldquo;虫&rdquo; 的五笔编码就是 JHNY。</p>
+<h3 id="键外字的编码规则">键外字的编码规则<a class="anchorjs-link" href="#%e9%94%ae%e5%a4%96%e5%ad%97%e7%9a%84%e7%bc%96%e7%a0%81%e8%a7%84%e5%88%99"></a></h3><p>国标 GB2312-80 中，上述的键名和成字字根这样的键面字总共才有一百多个，绝大部分汉字都不是成字字根，这些才是我们在使用当中用得最多的。</p>
+<p>五笔字型汉字编码主要是键外字的编码，编码可以分为两类，纯字根码和识别码。如果一个汉字的字根是四个或超过四个，就用前三后一总共四个字根码组成编码。不足四个字根的汉字需补一个字型结构识别码，以增加区分汉字的信息量。</p>
+<ol>
+<li>字根码</li>
+</ol>
+<p>每个字根都分派在一个字母键上，其所在键上的英文就是该字根的 &ldquo;字根码&rdquo;。
+凡含四个或超过四个字根的汉字，取其第一、二、三、末四个字根码组成键外字的输入编码。</p>
+<p>第一字根编码 + 第二字根编码 + 第三字根编码 + 最末一个字根编码</p>
+<p>这里一、二、三、末应按正常书写顺序，先左后右，先上后下，先外后内。</p>
+<ol start="2">
+<li>交叉识别码</li>
+</ol>
+<p>一个字的字根不足四个时，依次击入字根码后，最后需要补一个识别码。为什么需要这个识别码呢，这里可以举例说明：如 &ldquo;沐&rdquo; 和 &ldquo;汀&rdquo; 字，这两个字都是由两个字根组成的，且这两个字的字根码都是 IS 。虽然也可以让输入者选择的方式来确定到底需要输入哪一个字，但这对汉字输入速度极为不利，重码率要越低越好，所以五笔编码中才引入了识别码这个概念来对这类汉字进行区分。
+识别码是用该汉字最后一个笔画和字型结构信息来确定的，具体规则如下表：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th style="text-align:center">左右结构 (第 1 位)</th>
+<th style="text-align:center">上下结构 (第 2 位)</th>
+<th style="text-align:center">杂合结构 (第 3 位)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>末笔是 &ldquo;横&rdquo;，在一区</td>
+<td style="text-align:center">G</td>
+<td style="text-align:center">F</td>
+<td style="text-align:center">D</td>
+</tr>
+<tr>
+<td>末笔是 &ldquo;竖&rdquo;，在二区</td>
+<td style="text-align:center">H</td>
+<td style="text-align:center">J</td>
+<td style="text-align:center">K</td>
+</tr>
+<tr>
+<td>末笔是 &ldquo;撇&rdquo;，在三区</td>
+<td style="text-align:center">T</td>
+<td style="text-align:center">R</td>
+<td style="text-align:center">E</td>
+</tr>
+<tr>
+<td>末笔是 &ldquo;捺&rdquo;，在四区</td>
+<td style="text-align:center">Y</td>
+<td style="text-align:center">U</td>
+<td style="text-align:center">I</td>
+</tr>
+<tr>
+<td>末笔是 &ldquo;折&rdquo;，在五区</td>
+<td style="text-align:center">N</td>
+<td style="text-align:center">B</td>
+<td style="text-align:center">V</td>
+</tr>
+</tbody>
+</table>
+<p>从上表可以看出，识别码的确定分两个步骤，第一步根据最后一笔确定是在哪个区，第二步再以该汉字的字型结构来确定在哪一位，然后就能得到具体识码了。</p>
+<p>例：&ldquo;旮&rdquo; 字，这个字同旭一样字根只有两个，字根码为 VJ，但字型不同，可以通过识别码来区分，&ldquo;旮&rdquo; 最末笔是横，在一区，是上下结构，所以是在第二位，即 F，所以 &ldquo;旮&rdquo; 的五笔编码就是 VJF。</p>
+<p>再如 &ldquo;汀&rdquo; 字，最末一笔是左竖钩，在五笔里为竖，在第二区，这个字是左右型结构，所以在第一位，即 H，所以 &ldquo;汀&rdquo; 的五笔编码就是 ISH。</p>
+<p>加识别码后仍不足四码时，击空格键结束。单笔与字根相连的字型为杂合型，见前面所述。
+关于末笔画还有如下规定，这些规定使取码更为简单，明确。</p>
+<p>（1）、末字根为 &ldquo;力&rdquo;、&ldquo;刀&rdquo;、&ldquo;九&rdquo;、&ldquo;七&rdquo; 等时，一律认为末笔画为折。<br>
+（2）、&ldquo;进&rdquo;、&ldquo;逞&rdquo;、&ldquo;选&rdquo; 等字，不以 &ldquo;走之&rdquo; 的末笔为末笔（书写时确实是末笔，但这样末笔都一样，减少了识别信息量，约定以去掉 &ldquo;走之&rdquo; 部分后的末笔整个字的末笔来构造识别码。进、逞、远的识别码应分别为：23，K；13，D；53，V。当以 &ldquo;走之&rdquo; 末笔为末笔时，则识别码都相同，为 43，I。没有得到识别信息。<br>
+（3）、&ldquo;我&rdquo;、&ldquo;戋&rdquo;，成等字的末笔取 &ldquo;丿&rdquo;。</p>
+<h2 id="输入法推荐">输入法推荐<a class="anchorjs-link" href="#%e8%be%93%e5%85%a5%e6%b3%95%e6%8e%a8%e8%8d%90"></a></h2><ul>
+<li>Windows10 : 微软五笔（系统），极点五笔</li>
+<li>MacOS ： Rime，百度五笔</li>
+</ul>
+
+
+        <hr style="visibility: hidden;" />
+        <ul class="pager">
+          
+          <li class="previous">
+            <a href="/posts/2021/vimrc/" data-toggle="tooltip" data-placement="top" title="[Vim] 使用 YouCompleteMe 对 Rust/Golang 代码补全">
+              Previous<br>
+              <span>[Vim] 使用 YouCompleteMe 对 Rust/Golang 代码补全</span>
+            </a>
+          </li>
+          
+          
+          <li class="next">
+            <a href="/posts/2021/vim-easy-align/" data-toggle="tooltip" data-placement="top" title="[Vim] 快速对齐插件 vim-easy-align">
+              Next<br>
+              <span>[Vim] 快速对齐插件 vim-easy-align</span>
+            </a>
+          </li>
+          
+        </ul>
+        <hr style="visibility: hidden;" />
+
+        
+        
+
+
+
+
+
+      </div>
+
+      
+      
+      
+      
+      <div class="
+              col-lg-8 col-lg-offset-2
+              col-md-10 col-md-offset-1
+              sidebar-container">
+
+        
+        
+        <section>
+  
+  
+  <hr class="hidden-sm hidden-xs">
+  
+  <h5>FEATURED TAGS</h5>
+  <div class="tags">
+    
+    <a href="/tags/css/">css</a>
+    
+    <a href="/tags/debian/">debian</a>
+    
+    <a href="/tags/fzf/">fzf</a>
+    
+    <a href="/tags/gcd/">gcd</a>
+    
+    <a href="/tags/gem/">gem</a>
+    
+    <a href="/tags/git/">git</a>
+    
+    <a href="/tags/go/">go</a>
+    
+    <a href="/tags/golang/">golang</a>
+    
+    <a href="/tags/hugo/">hugo</a>
+    
+    <a href="/tags/ios/">iOS</a>
+    
+    <a href="/tags/kindle/">Kindle</a>
+    
+    <a href="/tags/kvocontroller/">KVOController</a>
+    
+    <a href="/tags/linux/">linux</a>
+    
+    <a href="/tags/macos/">MacOS</a>
+    
+    <a href="/tags/neovim/">neovim</a>
+    
+    <a href="/tags/runtime/">runtime</a>
+    
+    <a href="/tags/rust/">rust</a>
+    
+    <a href="/tags/ss/">ss</a>
+    
+    <a href="/tags/ssh/">ssh</a>
+    
+    <a href="/tags/swift/">Swift</a>
+    
+    <a href="/tags/vim/">vim</a>
+    
+    <a href="/tags/webhook/">webhook</a>
+    
+    <a href="/tags/wubi/">wubi</a>
+    
+    <a href="/tags/zabbix/">zabbix</a>
+    
+  </div>
+</section>
+
+        
+        
+
+<hr>
+<h5>FRIENDS</h5>
+<ul class="list-inline">
+  
+  <li><a href=""></a></li>
+  
+</ul>
+
+      </div>
+    </div>
+  </div>
+</article>
+
+
+
+  
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        
+        
+
+
+<ul class="list-inline text-center">
+
+  
+  <li>
+    <a href="/index.xml">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+  
+  
+  
+  
+  <li>
+    <a target="_blank" href="https://github.com/roninro">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+</ul>
+        <p class="copyright text-muted">
+          Copyright &copy; RoninRo&#39;s Blog 2022
+          <br>
+          Powered by <a href="https://gohugo.io">Hugo</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+
+
+<script src="/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js"></script>
+
+
+<script src="/js/simple-jekyll-search.min.js"></script>
+
+
+<script src="/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/zoomjs/zoom.min.js"></script>
+</body>
+
+</html>

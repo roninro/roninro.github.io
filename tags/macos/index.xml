@@ -1,1 +1,20 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>MacOS on RoninRo's Blog</title><link>https://fninit.com/tags/macos/</link><description>Recent content in MacOS on RoninRo's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Tue, 06 Mar 2018 16:48:30 +0800</lastBuildDate><atom:link href="https://fninit.com/tags/macos/index.xml" rel="self" type="application/rss+xml"/><item><title>使用 Automator 为文件夹添加一个快捷操作</title><link>https://fninit.com/posts/2018/sublime-mac-menu/</link><pubDate>Tue, 06 Mar 2018 16:48:30 +0800</pubDate><guid>https://fninit.com/posts/2018/sublime-mac-menu/</guid><description>在 Mac 下，文件夹的默认菜单选项是不支持在其它应用中打开，只能先打开应用，然后选择目标文件夹。 以 Sublime Text 为例，如何使用 Automator 快速为文件夹添加一个菜单选项</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>MacOS on RoninRo&#39;s Blog</title>
+    <link>https://roninro.github.io/tags/macos/</link>
+    <description>Recent content in MacOS on RoninRo&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Tue, 06 Mar 2018 16:48:30 +0800</lastBuildDate><atom:link href="https://roninro.github.io/tags/macos/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>使用 Automator 为文件夹添加一个快捷操作</title>
+      <link>https://roninro.github.io/posts/2018/sublime-mac-menu/</link>
+      <pubDate>Tue, 06 Mar 2018 16:48:30 +0800</pubDate>
+      
+      <guid>https://roninro.github.io/posts/2018/sublime-mac-menu/</guid>
+      <description>在 Mac 下，文件夹的默认菜单选项是不支持在其它应用中打开，只能先打开应用，然后选择目标文件夹。 以 Sublime Text 为例，如何使用 Automator 快速为文件夹添加一个菜单选项</description>
+    </item>
+    
+  </channel>
+</rss>

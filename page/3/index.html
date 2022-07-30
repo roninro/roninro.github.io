@@ -1,41 +1,579 @@
-<!doctype html><html lang=zh-cn><head><meta name=generator content="Hugo 0.101.0"><meta charset=utf-8><meta http-equiv=x-ua-compatible content="ie=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><title>RoninRo's Blog | RoninRo's Blog</title><meta name=author content="RoninRo"><meta name=description content="大海无量，我是一粒沙"><meta name=keywords content="blog,developer,personal,golang"><meta name=twitter:card content="summary"><meta name=twitter:title content="RoninRo's Blog"><meta name=twitter:description content="大海无量，我是一粒沙"><meta property="og:title" content="RoninRo's Blog"><meta property="og:description" content="大海无量，我是一粒沙"><meta property="og:type" content="website"><meta property="og:url" content="https://fninit.com/"><link rel=stylesheet href=/css/bootstrap.min.css crossorigin=anonymous><link href=//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css rel=stylesheet type=text/css><link rel=stylesheet href=https://fninit.com/sass/main.css><link rel=stylesheet href=https://fninit.com/zoomjs/zoom.min.css><link rel=alternate type=application/json href=https://fninit.com/index.json title="RoninRo's Blog"><link rel=alternate type=application/rss+xml href=https://fninit.com/index.xml title="RoninRo's Blog"></head><body><nav class="navbar navbar-default navbar-custom navbar-fixed-top"><div class=container-fluid><div class="navbar-header page-scroll"><button type=button class=navbar-toggle>
-<span class=sr-only>Toggle navigation</span>
-<span class=icon-bar></span>
-<span class=icon-bar></span>
-<span class=icon-bar></span></button>
-<a class=navbar-brand href=https://fninit.com>RoninRo's Blog</a></div><div id=huxblog_navbar><div class=navbar-collapse><ul class="nav navbar-nav navbar-right"><li><a href=/ title=Home>Home</a></li><li><a href=/archive/ title=Archive>Archive</a></li><li><a href=/categories/ title=Categories>Categories</a></li><li><a href=/about/ title=About>About</a></li><li class=search-icon><a href=javascript:void(0)><i class="fa fa-search"></i></a></li></ul></div></div></div></nav><script>var $body=document.body,$toggle=document.querySelector(".navbar-toggle"),$navbar=document.querySelector("#huxblog_navbar"),$collapse=document.querySelector(".navbar-collapse"),__HuxNav__={close:function(){$navbar.className=" ",setTimeout(function(){$navbar.className.indexOf("in")<0&&($collapse.style.height="0px")},400)},open:function(){$collapse.style.height="auto",$navbar.className+=" in"}};$toggle.addEventListener("click",function(){$navbar.className.indexOf("in")>0?__HuxNav__.close():__HuxNav__.open()}),document.addEventListener("click",function(e){if(e.target==$toggle)return;if(e.target.className=="icon-bar")return;__HuxNav__.close()})</script><div class=search-page><div class=search-icon-close-container><span class=search-icon-close><i class="fa fa-chevron-down"></i></span></div><div class="search-main container"><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><form></form><input type=text id=search-input placeholder="$ grep..."></form><div id=search-results class=mini-post-list></div></div></div></div></div><header class=intro-header style=background-image:url(/img/home-bg.jpg)><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><div class=site-heading><h1>RoninRo's Blog</h1><span class=subheading>大海无量，我是一粒沙</span></div></div></div></div></header><div class=container><div class=row><div class="col-lg-8 col-lg-offset-1 col-md-8 col-md-offset-1 col-sm-12
-col-xs-12 postlist-container"><div class=post-preview><a href=https://fninit.com/posts/2018/git-submodule/><h2 class=post-title>Git Submodule</h2><div class=post-content-preview>Submodule 允许你将一个 Git 仓库作为另一个 Git 仓库的子目录。它能让你将另一个仓库克隆到自己的项目中，同时还保持提交的独立。</div></a><p class=post-meta>Posted by RoninRo on Mon, Apr 30, 2018</p></div><hr><div class=post-preview><a href=https://fninit.com/posts/2018/swift-closures/><h2 class=post-title>Swift 闭包</h2><div class=post-content-preview>根据 The Swift Programming Language (Swift 4.1) - Closures 整理。 Swift 中闭包与 Objective-C 中的 Blocks 以及其他一些编程语言中的匿名函数比较相似，是自包含的函数代码块。 闭包可以捕获和存储其所在上下文中</div></a><p class=post-meta>Posted by RoninRo on Thu, Mar 15, 2018</p></div><hr><div class=post-preview><a href=https://fninit.com/posts/2018/sublime-mac-menu/><h2 class=post-title>使用 Automator 为文件夹添加一个快捷操作</h2><div class=post-content-preview>在 Mac 下，文件夹的默认菜单选项是不支持在其它应用中打开，只能先打开应用，然后选择目标文件夹。 以 Sublime Text 为例，如何使用 Automator 快速为文件夹添加一个菜单选项</div></a><p class=post-meta>Posted by RoninRo on Tue, Mar 6, 2018</p></div><hr><div class=post-preview><a href=https://fninit.com/posts/2017/fzf-in-vim/><h2 class=post-title>在Vim中使用fzf</h2><div class=post-content-preview>fzf 是一个基于Go实现的一个交互式的命令行搜索工具，可以搜索如：文件，历史命令，git提交等。功能非常强大。 基于FZF实现的vim插件，让我们</div></a><p class=post-meta>Posted by RoninRo on Sun, Dec 24, 2017</p></div><hr><div class=post-preview><a href=https://fninit.com/posts/2017/golang-in-vim/><h2 class=post-title>Neovim 下配置 golang 开发环境</h2><div class=post-content-preview>golang 开发者在Vim 上贡献了许多成熟的插件。站在巨人的肩膀上，我们可以非常轻松的在Vim 下配置出属于自己的golang的开发环境。 电脑环境： Mac 10.13</div></a><p class=post-meta>Posted by RoninRo on Tue, Dec 19, 2017</p></div><hr><div class=post-preview><a href=https://fninit.com/posts/2017/linux-ssh/><h2 class=post-title>配置SSH登入远程Linux</h2><div class=post-content-preview>所谓公钥登录，就是用户将自己的公钥储存在远程主机上。登录的时候远程主机回向用户发送一段随机字符串，用户用自己的秘钥加密后再发送给远程主机。远</div></a><p class=post-meta>Posted by RoninRo on Mon, Jul 10, 2017</p></div><hr><div class=post-preview><a href=https://fninit.com/posts/2017/linux-vimrc/><h2 class=post-title>关于Vim不能正常显示中文的解决方法</h2><div class=post-content-preview>这类问题一般都是由于编码问题导致的。在 ~/.vimrc 添加如下设置：
-1set fileencodings=utf-8,gb2312,gbk,gb18030 2set termencoding=utf-8 3set fileformats=unix 4set encoding=prc 保存退出。</div></a><p class=post-meta>Posted by RoninRo on Mon, Jul 10, 2017</p></div><hr><div class=post-preview><a href=https://fninit.com/posts/2017/ios-kvocontroller/><h2 class=post-title>KVO & KVOController</h2><div class=post-content-preview>KVO的实现机制KVO 是 Objective-C 对观察者模式的实现。从苹果的 文档 中对于它的实现描述可以知道： KVO 是通过 isa-swizzling 实现的。 当你观察一个对象时，该对象的isa指</div></a><p class=post-meta>Posted by RoninRo on Fri, Jun 30, 2017</p></div><hr><div class=post-preview><a href=https://fninit.com/posts/2017/ios-carthage/><h2 class=post-title>Carthage 的简单使用</h2><div class=post-content-preview>Carthage 是和 Cocoapods 类似的第三方库管理工具。和 Cocoapods 相比，Carthage 仅导入 framework 文件，做到更少的入侵性。但是Carthage 仅支持动态框架，只支持iOS 8</div></a><p class=post-meta>Posted by RoninRo on Mon, Jun 19, 2017</p></div><hr><div class=post-preview><a href=https://fninit.com/posts/2017/gemini-theme/><h2 class=post-title>Hugo 主题 Gemini</h2><div class=post-content-preview>最近在https://www.linpx.com/上看到了博主的博客主题，感觉很漂亮，不过是Typecho 主题的。于是便用了周末的时间将它转</div></a><p class=post-meta>Posted by RoninRo on Mon, Jun 5, 2017</p></div><hr><ul class=pager><li class=previous><a href=/page/2/>&larr; Newer Posts</a></li><li class=next><a href=/page/4/>Older Posts &rarr;</a></li></ul></div><div class="col-lg-3 col-lg-offset-0 col-md-3 col-md-offset-0 col-sm-12
-col-xs-12 sidebar-container"><section><h5>FEATURED TAGS</h5><div class=tags><a href=https://fninit.com/tags/css/>css</a>
-<a href=https://fninit.com/tags/debian/>debian</a>
-<a href=https://fninit.com/tags/fzf/>fzf</a>
-<a href=https://fninit.com/tags/gcd/>gcd</a>
-<a href=https://fninit.com/tags/gem/>gem</a>
-<a href=https://fninit.com/tags/git/>git</a>
-<a href=https://fninit.com/tags/go/>go</a>
-<a href=https://fninit.com/tags/golang/>golang</a>
-<a href=https://fninit.com/tags/hugo/>hugo</a>
-<a href=https://fninit.com/tags/ios/>iOS</a>
-<a href=https://fninit.com/tags/kindle/>Kindle</a>
-<a href=https://fninit.com/tags/kvocontroller/>KVOController</a>
-<a href=https://fninit.com/tags/linux/>linux</a>
-<a href=https://fninit.com/tags/macos/>MacOS</a>
-<a href=https://fninit.com/tags/neovim/>neovim</a>
-<a href=https://fninit.com/tags/runtime/>runtime</a>
-<a href=https://fninit.com/tags/rust/>rust</a>
-<a href=https://fninit.com/tags/ss/>ss</a>
-<a href=https://fninit.com/tags/ssh/>ssh</a>
-<a href=https://fninit.com/tags/swift/>Swift</a>
-<a href=https://fninit.com/tags/vim/>vim</a>
-<a href=https://fninit.com/tags/webhook/>webhook</a>
-<a href=https://fninit.com/tags/wubi/>wubi</a>
-<a href=https://fninit.com/tags/zabbix/>zabbix</a></div></section><section class="visible-md visible-lg"><hr><h5><a href=/about/>ABOUT ME</a></h5><div class=short-about><img src=/img/avatar.jpg><p>Golang iOS Rust</p><ul class=list-inline><li><a href=/index.xml><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i>
-<i class="fa fa-rss fa-stack-1x fa-inverse"></i></span></a></li><li><a target=_blank href=https://github.com/roninro><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i>
-<i class="fa fa-github fa-stack-1x fa-inverse"></i></span></a></li></ul></div></section><hr><h5>FRIENDS</h5><ul class=list-inline><li><a href></a></li></ul></div></div></div><footer><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><ul class="list-inline text-center"><li><a href=/index.xml><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i>
-<i class="fa fa-rss fa-stack-1x fa-inverse"></i></span></a></li><li><a target=_blank href=https://github.com/roninro><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i>
-<i class="fa fa-github fa-stack-1x fa-inverse"></i></span></a></li></ul><p class="copyright text-muted">Copyright &copy; RoninRo's Blog 2022<br>Powered by <a href=https://gohugo.io>Hugo</a></p></div></div></div></footer><script src=/js/jquery.min.js></script>
-<script src=/js/bootstrap.min.js crossorigin=anonymous></script>
-<script src=https://fninit.com/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js></script>
-<script src=/js/simple-jekyll-search.min.js></script>
-<script src=https://fninit.com/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js></script>
-<script></script><script src=/zoomjs/zoom.min.js></script></body></html>
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+	<meta name="generator" content="Hugo 0.101.0" />
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  
+  
+  
+  
+
+  <title>RoninRo&#39;s Blog | RoninRo&#39;s Blog</title>
+
+  
+  <meta name="author" content="RoninRo">
+  <meta name="description" content="大海无量，我是一粒沙">
+  <meta name="keywords" content="blog,developer,personal,golang">
+
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="RoninRo&#39;s Blog"/>
+<meta name="twitter:description" content="大海无量，我是一粒沙"/>
+
+  <meta property="og:title" content="RoninRo&#39;s Blog" />
+<meta property="og:description" content="大海无量，我是一粒沙" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://roninro.github.io/" />
+
+
+
+  <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+  
+  <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"
+    type="text/css">
+
+  
+  
+  <link rel="stylesheet" href="/sass/main.css">
+
+  
+  <link rel="stylesheet" href="/zoomjs/zoom.min.css">
+
+
+  
+  
+  
+
+  <link rel="alternate" type="application/json" href="/index.json" title="RoninRo's Blog" />
+  <link rel="alternate" type="application/rss+xml" href="/index.xml" title="RoninRo's Blog" />
+  </head>
+
+
+
+<body ontouchstart="">
+
+  
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+  
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top ">
+  <div class="container-fluid">
+    
+    <div class="navbar-header page-scroll">
+      <button type="button" class="navbar-toggle">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://roninro.github.io/">RoninRo&#39;s Blog</a>
+    </div>
+    
+    <div id="huxblog_navbar">
+      <div class="navbar-collapse">
+        <ul class="nav navbar-nav navbar-right">
+          
+          <li><a href="/" title="Home">Home</a></li>
+          
+          <li><a href="/archive/" title="Archive">Archive</a></li>
+          
+          <li><a href="/categories/" title="Categories">Categories</a></li>
+          
+          <li><a href="/about/" title="About">About</a></li>
+          
+
+          <li class="search-icon">
+            <a href="javascript:void(0)">
+              <i class="fa fa-search"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+  </div>
+  
+</nav>
+<script>
+  
+  
+  
+  var $body = document.body;
+  var $toggle = document.querySelector(".navbar-toggle");
+  var $navbar = document.querySelector("#huxblog_navbar");
+  var $collapse = document.querySelector(".navbar-collapse");
+
+  var __HuxNav__ = {
+    close: function () {
+      $navbar.className = " ";
+      
+      setTimeout(function () {
+        
+        if ($navbar.className.indexOf("in") < 0) {
+          $collapse.style.height = "0px";
+        }
+      }, 400);
+    },
+    open: function () {
+      $collapse.style.height = "auto";
+      $navbar.className += " in";
+    },
+  };
+
+  
+  $toggle.addEventListener("click", function (e) {
+    if ($navbar.className.indexOf("in") > 0) {
+      __HuxNav__.close();
+    } else {
+      __HuxNav__.open();
+    }
+  });
+
+  
+
+  document.addEventListener("click", function (e) {
+    if (e.target == $toggle) return;
+    if (e.target.className == "icon-bar") return;
+    __HuxNav__.close();
+  });
+</script>
+  
+<div class="search-page">
+  <div class="search-icon-close-container">
+    <span class="search-icon-close">
+      <i class="fa fa-chevron-down"></i>
+    </span>
+  </div>
+  <div class="search-main container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <form></form>
+        <input type="text" id="search-input" placeholder="$ grep...">
+        </form>
+        <div id="search-results" class="mini-post-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+  
+
+
+
+<header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        
+          <div class="site-heading">
+            
+            <h1>RoninRo&#39;s Blog</h1>
+            
+            
+            
+            
+            <span class="subheading">大海无量，我是一粒沙</span>
+          </div>
+        </div>
+      </div>
+    </div>
+</header>
+
+
+  
+
+  
+  <div class="container">
+    <div class="row">
+      
+      
+      
+      <div class="col-lg-8 col-lg-offset-1 col-md-8 col-md-offset-1 col-sm-12
+      col-xs-12 postlist-container">
+        
+
+
+   <div class="post-preview">
+  <a href="/posts/2018/git-submodule/">
+      <h2 class="post-title">Git Submodule</h2>
+      
+      <div class="post-content-preview">
+        Submodule 允许你将一个 Git 仓库作为另一个 Git 仓库的子目录。它能让你将另一个仓库克隆到自己的项目中，同时还保持提交的独立。
+
+      </div>
+  </a>
+  <p class="post-meta">
+      Posted by  RoninRo  on Mon, Apr 30, 2018
+  </p>
+</div>
+<hr>
+
+   <div class="post-preview">
+  <a href="/posts/2018/swift-closures/">
+      <h2 class="post-title">Swift 闭包</h2>
+      
+      <div class="post-content-preview">
+        根据 The Swift Programming Language (Swift 4.1) - Closures 整理。 Swift 中闭包与 Objective-C 中的 Blocks 以及其他一些编程语言中的匿名函数比较相似，是自包含的函数代码块。 闭包可以捕获和存储其所在上下文中
+      </div>
+  </a>
+  <p class="post-meta">
+      Posted by  RoninRo  on Thu, Mar 15, 2018
+  </p>
+</div>
+<hr>
+
+   <div class="post-preview">
+  <a href="/posts/2018/sublime-mac-menu/">
+      <h2 class="post-title">使用 Automator 为文件夹添加一个快捷操作</h2>
+      
+      <div class="post-content-preview">
+        在 Mac 下，文件夹的默认菜单选项是不支持在其它应用中打开，只能先打开应用，然后选择目标文件夹。 以 Sublime Text 为例，如何使用 Automator 快速为文件夹添加一个菜单选项
+      </div>
+  </a>
+  <p class="post-meta">
+      Posted by  RoninRo  on Tue, Mar 6, 2018
+  </p>
+</div>
+<hr>
+
+   <div class="post-preview">
+  <a href="/posts/2017/fzf-in-vim/">
+      <h2 class="post-title">在Vim中使用fzf</h2>
+      
+      <div class="post-content-preview">
+        fzf 是一个基于Go实现的一个交互式的命令行搜索工具，可以搜索如：文件，历史命令，git提交等。功能非常强大。 基于FZF实现的vim插件，让我们
+      </div>
+  </a>
+  <p class="post-meta">
+      Posted by  RoninRo  on Sun, Dec 24, 2017
+  </p>
+</div>
+<hr>
+
+   <div class="post-preview">
+  <a href="/posts/2017/golang-in-vim/">
+      <h2 class="post-title">Neovim 下配置 golang 开发环境</h2>
+      
+      <div class="post-content-preview">
+        golang 开发者在Vim 上贡献了许多成熟的插件。站在巨人的肩膀上，我们可以非常轻松的在Vim 下配置出属于自己的golang的开发环境。 电脑环境： Mac 10.13
+      </div>
+  </a>
+  <p class="post-meta">
+      Posted by  RoninRo  on Tue, Dec 19, 2017
+  </p>
+</div>
+<hr>
+
+   <div class="post-preview">
+  <a href="/posts/2017/linux-ssh/">
+      <h2 class="post-title">配置SSH登入远程Linux</h2>
+      
+      <div class="post-content-preview">
+        所谓公钥登录，就是用户将自己的公钥储存在远程主机上。登录的时候远程主机回向用户发送一段随机字符串，用户用自己的秘钥加密后再发送给远程主机。远
+      </div>
+  </a>
+  <p class="post-meta">
+      Posted by  RoninRo  on Mon, Jul 10, 2017
+  </p>
+</div>
+<hr>
+
+   <div class="post-preview">
+  <a href="/posts/2017/linux-vimrc/">
+      <h2 class="post-title">关于Vim不能正常显示中文的解决方法</h2>
+      
+      <div class="post-content-preview">
+        这类问题一般都是由于编码问题导致的。在 ~/.vimrc 添加如下设置：
+1set fileencodings=utf-8,gb2312,gbk,gb18030 2set termencoding=utf-8 3set fileformats=unix 4set encoding=prc 保存退出。
+
+      </div>
+  </a>
+  <p class="post-meta">
+      Posted by  RoninRo  on Mon, Jul 10, 2017
+  </p>
+</div>
+<hr>
+
+   <div class="post-preview">
+  <a href="/posts/2017/ios-kvocontroller/">
+      <h2 class="post-title">KVO &amp; KVOController</h2>
+      
+      <div class="post-content-preview">
+        KVO的实现机制KVO 是 Objective-C 对观察者模式的实现。从苹果的 文档 中对于它的实现描述可以知道： KVO 是通过 isa-swizzling 实现的。 当你观察一个对象时，该对象的isa指
+      </div>
+  </a>
+  <p class="post-meta">
+      Posted by  RoninRo  on Fri, Jun 30, 2017
+  </p>
+</div>
+<hr>
+
+   <div class="post-preview">
+  <a href="/posts/2017/ios-carthage/">
+      <h2 class="post-title">Carthage 的简单使用</h2>
+      
+      <div class="post-content-preview">
+        Carthage 是和 Cocoapods 类似的第三方库管理工具。和 Cocoapods 相比，Carthage 仅导入 framework 文件，做到更少的入侵性。但是Carthage 仅支持动态框架，只支持iOS 8
+      </div>
+  </a>
+  <p class="post-meta">
+      Posted by  RoninRo  on Mon, Jun 19, 2017
+  </p>
+</div>
+<hr>
+
+   <div class="post-preview">
+  <a href="/posts/2017/gemini-theme/">
+      <h2 class="post-title">Hugo 主题 Gemini</h2>
+      
+      <div class="post-content-preview">
+        最近在https://www.linpx.com/上看到了博主的博客主题，感觉很漂亮，不过是Typecho 主题的。于是便用了周末的时间将它转
+      </div>
+  </a>
+  <p class="post-meta">
+      Posted by  RoninRo  on Mon, Jun 5, 2017
+  </p>
+</div>
+<hr>
+
+
+
+<ul class="pager">
+  
+  <li class="previous">
+      <a href="/page/2/">&larr; Newer Posts</a>
+  </li>
+  
+  
+  <li class="next">
+      <a href="/page/4/">Older Posts &rarr;</a>
+  </li>
+  
+</ul>
+
+
+      </div>
+      
+      <div class="col-lg-3 col-lg-offset-0 col-md-3 col-md-offset-0 col-sm-12
+      col-xs-12 sidebar-container">
+
+        
+        <section>
+  
+  
+  <h5>FEATURED TAGS</h5>
+  <div class="tags">
+    
+    <a href="/tags/css/">css</a>
+    
+    <a href="/tags/debian/">debian</a>
+    
+    <a href="/tags/fzf/">fzf</a>
+    
+    <a href="/tags/gcd/">gcd</a>
+    
+    <a href="/tags/gem/">gem</a>
+    
+    <a href="/tags/git/">git</a>
+    
+    <a href="/tags/go/">go</a>
+    
+    <a href="/tags/golang/">golang</a>
+    
+    <a href="/tags/hugo/">hugo</a>
+    
+    <a href="/tags/ios/">iOS</a>
+    
+    <a href="/tags/kindle/">Kindle</a>
+    
+    <a href="/tags/kvocontroller/">KVOController</a>
+    
+    <a href="/tags/linux/">linux</a>
+    
+    <a href="/tags/macos/">MacOS</a>
+    
+    <a href="/tags/neovim/">neovim</a>
+    
+    <a href="/tags/runtime/">runtime</a>
+    
+    <a href="/tags/rust/">rust</a>
+    
+    <a href="/tags/ss/">ss</a>
+    
+    <a href="/tags/ssh/">ssh</a>
+    
+    <a href="/tags/swift/">Swift</a>
+    
+    <a href="/tags/vim/">vim</a>
+    
+    <a href="/tags/webhook/">webhook</a>
+    
+    <a href="/tags/wubi/">wubi</a>
+    
+    <a href="/tags/zabbix/">zabbix</a>
+    
+  </div>
+</section>
+        
+<section class="visible-md visible-lg">
+  <hr>
+  
+  <h5><a href="/about/">ABOUT ME</a></h5>
+  
+
+  
+  <div class="short-about">
+    
+    <img src="/img/avatar.jpg" />
+    
+    
+    <p>Golang iOS Rust</p>
+    
+    
+    
+
+
+<ul class="list-inline">
+
+  
+  <li>
+    <a href="/index.xml">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+  
+  
+  
+  
+  <li>
+    <a target="_blank" href="https://github.com/roninro">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+</ul>
+  </div>
+</section>
+        
+        
+
+<hr>
+<h5>FRIENDS</h5>
+<ul class="list-inline">
+  
+  <li><a href=""></a></li>
+  
+</ul>
+
+
+      </div>
+      
+
+    </div>
+  </div>
+
+  
+
+  
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        
+        
+
+
+<ul class="list-inline text-center">
+
+  
+  <li>
+    <a href="/index.xml">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+  
+  
+  
+  
+  <li>
+    <a target="_blank" href="https://github.com/roninro">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+</ul>
+        <p class="copyright text-muted">
+          Copyright &copy; RoninRo&#39;s Blog 2022
+          <br>
+          Powered by <a href="https://gohugo.io">Hugo</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+
+
+<script src="/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js"></script>
+
+
+<script src="/js/simple-jekyll-search.min.js"></script>
+
+
+<script src="/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/zoomjs/zoom.min.js"></script>
+</body>
+
+</html>

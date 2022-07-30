@@ -1,2 +1,21 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>rust on RoninRo's Blog</title><link>https://fninit.com/tags/rust/</link><description>Recent content in rust on RoninRo's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Fri, 27 Dec 2019 11:27:32 +0800</lastBuildDate><atom:link href="https://fninit.com/tags/rust/index.xml" rel="self" type="application/rss+xml"/><item><title>Mac 为 Linux 交叉编译 Rust 程序</title><link>https://fninit.com/posts/2019/rust-cross-compile/</link><pubDate>Fri, 27 Dec 2019 11:27:32 +0800</pubDate><guid>https://fninit.com/posts/2019/rust-cross-compile/</guid><description>&lt;p>默认情况下，Rust 将静态链接所有 Rust 代码。但是，如果使用标准库，它将动态链接到系统的 &lt;code>libc&lt;/code> 。&lt;/p>
-&lt;p>如何想要 100% 静态二进制文件。可以使用 &lt;code>MUSL libc&lt;/code> 提供的 Linux-based 支持。&lt;/p></description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>rust on RoninRo&#39;s Blog</title>
+    <link>https://roninro.github.io/tags/rust/</link>
+    <description>Recent content in rust on RoninRo&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Fri, 27 Dec 2019 11:27:32 +0800</lastBuildDate><atom:link href="https://roninro.github.io/tags/rust/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Mac 为 Linux 交叉编译 Rust 程序</title>
+      <link>https://roninro.github.io/posts/2019/rust-cross-compile/</link>
+      <pubDate>Fri, 27 Dec 2019 11:27:32 +0800</pubDate>
+      
+      <guid>https://roninro.github.io/posts/2019/rust-cross-compile/</guid>
+      <description>&lt;p&gt;默认情况下，Rust 将静态链接所有 Rust 代码。但是，如果使用标准库，它将动态链接到系统的 &lt;code&gt;libc&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;如何想要 100% 静态二进制文件。可以使用 &lt;code&gt;MUSL libc&lt;/code&gt; 提供的 Linux-based 支持。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

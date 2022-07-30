@@ -1,6 +1,61 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Linux on RoninRo's Blog</title><link>https://fninit.com/categories/linux/</link><description>Recent content in Linux on RoninRo's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Thu, 05 Dec 2019 15:27:30 +0800</lastBuildDate><atom:link href="https://fninit.com/categories/linux/index.xml" rel="self" type="application/rss+xml"/><item><title>[PIN] Linux 下常用命令</title><link>https://fninit.com/posts/2019/linux-cmd/</link><pubDate>Thu, 05 Dec 2019 15:27:30 +0800</pubDate><guid>https://fninit.com/posts/2019/linux-cmd/</guid><description>tar命令选项： 1-z(gzip) 用 gzip 来压缩/解压缩文件 2-j(bzip2) 用 bzip2 来压缩/解压缩文件 3-v(verbose) 详细报告 tar 处理的文件信息 4-c(create) 创建新的档案文件 5-x(extract) 解压缩文件或目录 6-f(file) 使用档案文件</description></item><item><title>Notes About Debian</title><link>https://fninit.com/posts/2019/debian/</link><pubDate>Wed, 29 May 2019 13:33:48 +0800</pubDate><guid>https://fninit.com/posts/2019/debian/</guid><description>&lt;h2 id="debian-镜像更换">Debian 镜像更换&lt;a class="anchorjs-link" href="#debian-%e9%95%9c%e5%83%8f%e6%9b%b4%e6%8d%a2">&lt;/a>&lt;/h2>&lt;p>Debian 的软件源配置文件是 &lt;code>/etc/apt/sources.list&lt;/code> 。将系统的镜像做个备份，然后将该文件替换为下面内容，即可使用 TUNA 的软件源镜像。&lt;/p></description></item><item><title>Neovim 下配置 golang 开发环境</title><link>https://fninit.com/posts/2017/golang-in-vim/</link><pubDate>Tue, 19 Dec 2017 11:07:07 +0800</pubDate><guid>https://fninit.com/posts/2017/golang-in-vim/</guid><description>golang 开发者在Vim 上贡献了许多成熟的插件。站在巨人的肩膀上，我们可以非常轻松的在Vim 下配置出属于自己的golang的开发环境。 电脑环境： Mac 10.13</description></item><item><title>配置SSH登入远程Linux</title><link>https://fninit.com/posts/2017/linux-ssh/</link><pubDate>Mon, 10 Jul 2017 10:12:02 +0800</pubDate><guid>https://fninit.com/posts/2017/linux-ssh/</guid><description>所谓公钥登录，就是用户将自己的公钥储存在远程主机上。登录的时候远程主机回向用户发送一段随机字符串，用户用自己的秘钥加密后再发送给远程主机。远</description></item><item><title>关于Vim不能正常显示中文的解决方法</title><link>https://fninit.com/posts/2017/linux-vimrc/</link><pubDate>Mon, 10 Jul 2017 10:04:03 +0800</pubDate><guid>https://fninit.com/posts/2017/linux-vimrc/</guid><description>&lt;p>这类问题一般都是由于编码问题导致的。在 ~/.vimrc 添加如下设置：&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1&lt;/span>&lt;span>&lt;span style="color:#8be9fd;font-style:italic">set&lt;/span> &lt;span style="color:#8be9fd;font-style:italic">fileencodings&lt;/span>&lt;span style="color:#ff79c6">=&lt;/span>utf-8,gb2312,gbk,gb18030
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2&lt;/span>&lt;span>&lt;span style="color:#8be9fd;font-style:italic">set&lt;/span> &lt;span style="color:#8be9fd;font-style:italic">termencoding&lt;/span>&lt;span style="color:#ff79c6">=&lt;/span>utf-8
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3&lt;/span>&lt;span>&lt;span style="color:#8be9fd;font-style:italic">set&lt;/span> &lt;span style="color:#8be9fd;font-style:italic">fileformats&lt;/span>&lt;span style="color:#ff79c6">=&lt;/span>unix
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4&lt;/span>&lt;span>&lt;span style="color:#8be9fd;font-style:italic">set&lt;/span> &lt;span style="color:#8be9fd;font-style:italic">encoding&lt;/span>&lt;span style="color:#ff79c6">=&lt;/span>prc
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>保存退出。&lt;/p></description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Linux on RoninRo&#39;s Blog</title>
+    <link>https://roninro.github.io/categories/linux/</link>
+    <description>Recent content in Linux on RoninRo&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Thu, 05 Dec 2019 15:27:30 +0800</lastBuildDate><atom:link href="https://roninro.github.io/categories/linux/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>[PIN] Linux 下常用命令</title>
+      <link>https://roninro.github.io/posts/2019/linux-cmd/</link>
+      <pubDate>Thu, 05 Dec 2019 15:27:30 +0800</pubDate>
+      
+      <guid>https://roninro.github.io/posts/2019/linux-cmd/</guid>
+      <description>tar命令选项： 1-z(gzip) 用 gzip 来压缩/解压缩文件 2-j(bzip2) 用 bzip2 来压缩/解压缩文件 3-v(verbose) 详细报告 tar 处理的文件信息 4-c(create) 创建新的档案文件 5-x(extract) 解压缩文件或目录 6-f(file) 使用档案文件</description>
+    </item>
+    
+    <item>
+      <title>Notes About Debian</title>
+      <link>https://roninro.github.io/posts/2019/debian/</link>
+      <pubDate>Wed, 29 May 2019 13:33:48 +0800</pubDate>
+      
+      <guid>https://roninro.github.io/posts/2019/debian/</guid>
+      <description>&lt;h2 id=&#34;debian-镜像更换&#34;&gt;Debian 镜像更换&lt;a class=&#34;anchorjs-link&#34; href=&#34;#debian-%e9%95%9c%e5%83%8f%e6%9b%b4%e6%8d%a2&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Debian 的软件源配置文件是 &lt;code&gt;/etc/apt/sources.list&lt;/code&gt; 。将系统的镜像做个备份，然后将该文件替换为下面内容，即可使用 TUNA 的软件源镜像。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Neovim 下配置 golang 开发环境</title>
+      <link>https://roninro.github.io/posts/2017/golang-in-vim/</link>
+      <pubDate>Tue, 19 Dec 2017 11:07:07 +0800</pubDate>
+      
+      <guid>https://roninro.github.io/posts/2017/golang-in-vim/</guid>
+      <description>golang 开发者在Vim 上贡献了许多成熟的插件。站在巨人的肩膀上，我们可以非常轻松的在Vim 下配置出属于自己的golang的开发环境。 电脑环境： Mac 10.13</description>
+    </item>
+    
+    <item>
+      <title>配置SSH登入远程Linux</title>
+      <link>https://roninro.github.io/posts/2017/linux-ssh/</link>
+      <pubDate>Mon, 10 Jul 2017 10:12:02 +0800</pubDate>
+      
+      <guid>https://roninro.github.io/posts/2017/linux-ssh/</guid>
+      <description>所谓公钥登录，就是用户将自己的公钥储存在远程主机上。登录的时候远程主机回向用户发送一段随机字符串，用户用自己的秘钥加密后再发送给远程主机。远</description>
+    </item>
+    
+    <item>
+      <title>关于Vim不能正常显示中文的解决方法</title>
+      <link>https://roninro.github.io/posts/2017/linux-vimrc/</link>
+      <pubDate>Mon, 10 Jul 2017 10:04:03 +0800</pubDate>
+      
+      <guid>https://roninro.github.io/posts/2017/linux-vimrc/</guid>
+      <description>&lt;p&gt;这类问题一般都是由于编码问题导致的。在 ~/.vimrc 添加如下设置：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1&lt;/span&gt;&lt;span&gt;&lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;set&lt;/span&gt; &lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;fileencodings&lt;/span&gt;&lt;span style=&#34;color:#ff79c6&#34;&gt;=&lt;/span&gt;utf-8,gb2312,gbk,gb18030  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;2&lt;/span&gt;&lt;span&gt;&lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;set&lt;/span&gt; &lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;termencoding&lt;/span&gt;&lt;span style=&#34;color:#ff79c6&#34;&gt;=&lt;/span&gt;utf-8  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;3&lt;/span&gt;&lt;span&gt;&lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;set&lt;/span&gt; &lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;fileformats&lt;/span&gt;&lt;span style=&#34;color:#ff79c6&#34;&gt;=&lt;/span&gt;unix  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;4&lt;/span&gt;&lt;span&gt;&lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;set&lt;/span&gt; &lt;span style=&#34;color:#8be9fd;font-style:italic&#34;&gt;encoding&lt;/span&gt;&lt;span style=&#34;color:#ff79c6&#34;&gt;=&lt;/span&gt;prc
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;保存退出。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
