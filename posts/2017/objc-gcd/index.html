@@ -15,6 +15,7 @@
 
   
   <meta name="author" content="RoninRo">
+  
   <meta name="description" content="什么是GCD Grand Central Dispatch(GCD)是异步执任务的技术之一。一般将应用程序中记述的线程管理用的代码在系统级中实现。开发只需要定义想执行">
   <meta name="keywords" content="blog,developer,personal,golang">
 
@@ -43,8 +44,10 @@
   
   <link rel="stylesheet" href="/zoomjs/zoom.min.css">
 
-
   
+
+  <script src="/js/lazysizes.min.js"></script>
+
   
   
 
@@ -359,7 +362,7 @@ Global Dispatch Queue 是所有应用程序能够使用的 Concurrent Dispatch Q
 <p>写入处理确实不能与其他的写入处理以及包含读取处理的其他某些处理并行执行。但是如果读取处理只是与读取处理并行执行，那么多个并行执行就不会发生问题。</p>
 <p><figure>
   <a class="paragraph-image">
-    <img src="/media/blog_gcd_barrier.png" data-action="zoom" alt="Dispatch_barrier_async函数的处理流程"  loading="lazy" decoding="async">
+    <img data-src="/media/blog_gcd_barrier.png" data-action="zoom" alt="Dispatch_barrier_async函数的处理流程"  class="lazyload">
   </a>
   
 </figure></p>
@@ -455,9 +458,11 @@ dispatch_suspend(queue);
   data-emit-metadata="0" 
   data-input-position="top"
   data-theme="light"
-  crossorigin="anonymous" 
+  data-lang="en"
+  crossorigin="anonymous"
   async>
   </script>
+
 
 
 

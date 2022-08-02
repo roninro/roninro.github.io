@@ -15,6 +15,7 @@
 
   
   <meta name="author" content="RoninRo">
+  
   <meta name="description" content="在 Mac 下，文件夹的默认菜单选项是不支持在其它应用中打开，只能先打开应用，然后选择目标文件夹。 以 Sublime Text 为例，如何使用 Automator 快速为文件夹添加一个菜单选项">
   <meta name="keywords" content="blog,developer,personal,golang">
 
@@ -43,8 +44,10 @@
   
   <link rel="stylesheet" href="/zoomjs/zoom.min.css">
 
-
   
+
+  <script src="/js/lazysizes.min.js"></script>
+
   
   
 
@@ -225,13 +228,13 @@
 </ul>
 <p><figure>
   <a class="paragraph-image">
-    <img src="/media/automator-00.png" data-action="zoom" alt="finder"  loading="lazy" decoding="async">
+    <img data-src="/media/automator-00.png" data-action="zoom" alt="finder"  class="lazyload">
   </a>
   
 </figure></p>
 <p><figure>
   <a class="paragraph-image">
-    <img src="/media/automator-01.png" data-action="zoom" alt="finder-end"  loading="lazy" decoding="async">
+    <img data-src="/media/automator-01.png" data-action="zoom" alt="finder-end"  class="lazyload">
   </a>
   
 </figure></p>
@@ -284,9 +287,11 @@
   data-emit-metadata="0" 
   data-input-position="top"
   data-theme="light"
-  crossorigin="anonymous" 
+  data-lang="en"
+  crossorigin="anonymous"
   async>
   </script>
+
 
 
 

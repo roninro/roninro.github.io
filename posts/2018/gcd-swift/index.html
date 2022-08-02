@@ -15,6 +15,7 @@
 
   
   <meta name="author" content="RoninRo">
+  
   <meta name="description" content="
 内容主要翻译自：
 
@@ -76,8 +77,10 @@ Grand Central Dispatch(GCD) 是管理并发操作的低级API，GCD 可以通过
   
   <link rel="stylesheet" href="/zoomjs/zoom.min.css">
 
-
   
+
+  <script src="/js/lazysizes.min.js"></script>
+
   
   
 
@@ -271,7 +274,7 @@ Grand Central Dispatch(GCD) 是管理并发操作的低级API，GCD 可以通过
 <p>主屏幕最初是空的，点击 + 然后选择 <strong>Le Internet</strong> 从网络下载预定义的图像，点击第一张图片，会看到添加在脸上的有趣的眼睛。</p>
 <p><figure>
   <a class="paragraph-image">
-    <img src="/media/1805-starter_app_flow.png" data-action="zoom" alt=""  loading="lazy" decoding="async">
+    <img data-src="/media/1805-starter_app_flow.png" data-action="zoom" alt=""  class="lazyload">
   </a>
   
 </figure></p>
@@ -292,7 +295,7 @@ AssetPhoto，用于实例化来自PHAsset实例的照片。</li>
 <p>单核设备可以通过<code>time-slicing</code>(时间切片)。他们将运行一个线程，执行上下文切换，然后运行另一个线程。</p>
 <p><figure>
   <a class="paragraph-image">
-    <img src="/media/1805-Concurrency_vs_Parallelism.png" data-action="zoom" alt="Concurrency_vs_Parallelism"  loading="lazy" decoding="async">
+    <img data-src="/media/1805-Concurrency_vs_Parallelism.png" data-action="zoom" alt="Concurrency_vs_Parallelism"  class="lazyload">
   </a>
   
 </figure></p>
@@ -309,14 +312,14 @@ AssetPhoto，用于实例化来自PHAsset实例的照片。</li>
 你不会知道一个任务结束和下一个任务开始之间的时间长短：</p>
 <p><figure>
   <a class="paragraph-image">
-    <img src="/media/Serial-Queue-Swift.png" data-action="zoom" alt="Serial Queue Swift"  loading="lazy" decoding="async">
+    <img data-src="/media/Serial-Queue-Swift.png" data-action="zoom" alt="Serial Queue Swift"  class="lazyload">
   </a>
   
 </figure></p>
 <p>并发队列允许同时运行多个任务。保证任务按照他们添加的顺序开始。任务可以按任意顺序完成，并且您不知道下次启动任务所需的时间，也不知道在任何给定时间运行的任务数量。</p>
 <p><figure>
   <a class="paragraph-image">
-    <img src="/media/Concurrent-Queue-Swift.png" data-action="zoom" alt="Concurrent-Queue-Swift"  loading="lazy" decoding="async">
+    <img data-src="/media/Concurrent-Queue-Swift.png" data-action="zoom" alt="Concurrent-Queue-Swift"  class="lazyload">
   </a>
   
 </figure></p>
@@ -370,7 +373,7 @@ AssetPhoto，用于实例化来自PHAsset实例的照片。</li>
 <p>构建并运行应用程序。通过<code>Le Internet</code>选项下载照片。选择一张照片，你会注意到视图控制器加载速度明显加快，并在短暂延迟后添加了googly眼睛</p>
 <p><figure>
   <a class="paragraph-image">
-    <img src="/media/after_background_task_2.png" data-action="zoom" alt=""  loading="lazy" decoding="async">
+    <img data-src="/media/after_background_task_2.png" data-action="zoom" alt=""  class="lazyload">
   </a>
   
 </figure></p>
@@ -415,7 +418,7 @@ AssetPhoto，用于实例化来自PHAsset实例的照片。</li>
 <p>构建并运行应用程序。显示提示之前应该会有稍微延迟：</p>
 <p><figure>
   <a class="paragraph-image">
-    <img src="/media/app_with_prompt_2.png" data-action="zoom" alt=""  loading="lazy" decoding="async">
+    <img data-src="/media/app_with_prompt_2.png" data-action="zoom" alt=""  class="lazyload">
   </a>
   
 </figure></p>
@@ -484,7 +487,7 @@ Dispatch barriers 是一组函数，当处理并发队列，作为串行式的�
 <p>下图说明了 barrier 对各种异步任务的影响:</p>
 <p><figure>
   <a class="paragraph-image">
-    <img src="/media/Dispatch-Barrier-Swift.png" data-action="zoom" alt=""  loading="lazy" decoding="async">
+    <img data-src="/media/Dispatch-Barrier-Swift.png" data-action="zoom" alt=""  class="lazyload">
   </a>
   
 </figure></p>
@@ -555,7 +558,7 @@ Dispatch barriers 是一组函数，当处理并发队列，作为串行式的�
 它应该像以前一样行动，但是在引擎盖下，你有一些非常快乐的线程。</p>
 <p><figure>
   <a class="paragraph-image">
-    <img src="/media/starter_photos_2.png" data-action="zoom" alt=""  loading="lazy" decoding="async">
+    <img data-src="/media/starter_photos_2.png" data-action="zoom" alt=""  class="lazyload">
   </a>
   
 </figure></p>
@@ -563,7 +566,7 @@ Dispatch barriers 是一组函数，当处理并发队列，作为串行式的�
 <h1 id="-part-2-">[ Part 2 ]<a class="anchorjs-link" href="#-part-2-"></a></h1><h2 id="getting-started-1">Getting Started<a class="anchorjs-link" href="#getting-started-1"></a></h2><p>运行 app，点击 + ，然后选择 <strong>Le Internet</strong> 来添加网络图片，你可能注意到下载完成警报消息在图像下载完成之前弹出：</p>
 <p><figure>
   <a class="paragraph-image">
-    <img src="/media/photos_early_alert_2.png" data-action="zoom" alt=""  loading="lazy" decoding="async">
+    <img data-src="/media/photos_early_alert_2.png" data-action="zoom" alt=""  class="lazyload">
   </a>
   
 </figure></p>
@@ -627,7 +630,7 @@ Dispatch barriers 是一组函数，当处理并发队列，作为串行式的�
 <p>构建并运行应用程序。通过 Le Internet 选项下载照片并确认在下载所有图像之前警告不会显示。</p>
 <p><figure>
   <a class="paragraph-image">
-    <img src="/media/fixed_early_popup.png" data-action="zoom" alt=""  loading="lazy" decoding="async">
+    <img data-src="/media/fixed_early_popup.png" data-action="zoom" alt=""  class="lazyload">
   </a>
   
 </figure></p>
@@ -665,7 +668,7 @@ Dispatch barriers 是一组函数，当处理并发队列，作为串行式的�
 <p>构建并运行应用程序。确认所有互联网照片下载完成后都仍显示完成警告.</p>
 <h3 id="concurrency-looping并发循环">Concurrency Looping（并发循环）<a class="anchorjs-link" href="#concurrency-looping%e5%b9%b6%e5%8f%91%e5%be%aa%e7%8e%af"></a></h3><p><figure>
   <a class="paragraph-image">
-    <img src="/media/Thread_All_The_Code_Meme.jpg" data-action="zoom" alt=""  loading="lazy" decoding="async">
+    <img data-src="/media/Thread_All_The_Code_Meme.jpg" data-action="zoom" alt=""  class="lazyload">
   </a>
   
 </figure></p>
@@ -862,7 +865,7 @@ DEBUG 通过 在 Project Settings -&gt; Build Settings -&gt; Swift Compiler - Cu
 </span></span></code></pre></div><p>构建并运行应用程序。暂停程序执行并通过点击暂停然后在Xcode调试器中播放按钮来立即恢复应用程序：</p>
 <p><figure>
   <a class="paragraph-image">
-    <img src="/media/debugger_pause.png" data-action="zoom" alt=""  loading="lazy" decoding="async">
+    <img data-src="/media/debugger_pause.png" data-action="zoom" alt=""  class="lazyload">
   </a>
   
 </figure></p>
@@ -889,7 +892,7 @@ DEBUG 通过 在 Project Settings -&gt; Build Settings -&gt; Swift Compiler - Cu
 </span></span></code></pre></div><p>现在恢复执行应用程序。你会看到以下内容：</p>
 <p><figure>
   <a class="paragraph-image">
-    <img src="/media/debug_change_navitem_2.png" data-action="zoom" alt=""  loading="lazy" decoding="async">
+    <img data-src="/media/debug_change_navitem_2.png" data-action="zoom" alt=""  class="lazyload">
   </a>
   
 </figure></p>
@@ -936,9 +939,11 @@ DEBUG 通过 在 Project Settings -&gt; Build Settings -&gt; Swift Compiler - Cu
   data-emit-metadata="0" 
   data-input-position="top"
   data-theme="light"
-  crossorigin="anonymous" 
+  data-lang="en"
+  crossorigin="anonymous"
   async>
   </script>
+
 
 
 

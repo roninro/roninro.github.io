@@ -15,6 +15,7 @@
 
   
   <meta name="author" content="RoninRo">
+  
   <meta name="description" content="在本文，我们将讨论如何 用 Model-View-ViewModel(MVVM) 模式来组织 table view 代码。MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可以使用很多 Swift 技术， 使 UI 逻辑包装成数据模型。例如使用协议和闭包简化 table view 中的代码。">
   <meta name="keywords" content="blog,developer,personal,golang">
 
@@ -43,8 +44,10 @@
   
   <link rel="stylesheet" href="/zoomjs/zoom.min.css">
 
-
   
+
+  <script src="/js/lazysizes.min.js"></script>
+
   
   
 
@@ -232,7 +235,7 @@ MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可
 <p>界面如下：</p>
 <p><figure>
   <a class="paragraph-image">
-    <img src="/media/mvvm-screen.gif" data-action="zoom" alt=""  loading="lazy" decoding="async">
+    <img data-src="/media/mvvm-screen.gif" data-action="zoom" alt=""  class="lazyload">
   </a>
   
 </figure></p>
@@ -242,7 +245,7 @@ MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可
 <p>Normal
 <figure>
   <a class="paragraph-image">
-    <img src="/media/state_normal-3.png" data-action="zoom" alt=""  loading="lazy" decoding="async">
+    <img data-src="/media/state_normal-3.png" data-action="zoom" alt=""  class="lazyload">
   </a>
   
 </figure></p>
@@ -251,7 +254,7 @@ MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可
 <p>Loading
 <figure>
   <a class="paragraph-image">
-    <img src="/media/state_checked-3.png" data-action="zoom" alt=""  loading="lazy" decoding="async">
+    <img data-src="/media/state_checked-3.png" data-action="zoom" alt=""  class="lazyload">
   </a>
   
 </figure></p>
@@ -260,7 +263,7 @@ MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可
 <p>Checked
 <figure>
   <a class="paragraph-image">
-    <img src="/media/state_loading-3.png" data-action="zoom" alt=""  loading="lazy" decoding="async">
+    <img data-src="/media/state_loading-3.png" data-action="zoom" alt=""  class="lazyload">
   </a>
   
 </figure></p>
@@ -269,7 +272,7 @@ MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可
 <h3 id="photocell">PhotoCell<a class="anchorjs-link" href="#photocell"></a></h3><p>第二个 cell 会展示照片跟它的标题与介绍，用户点击了这个 cell 就会打开照片的详细介绍。</p>
 <p><figure>
   <a class="paragraph-image">
-    <img src="/media/state_normal-3.png" data-action="zoom" alt=""  loading="lazy" decoding="async">
+    <img data-src="/media/state_normal-3.png" data-action="zoom" alt=""  class="lazyload">
   </a>
   
 </figure></p>
@@ -327,7 +330,7 @@ MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可
 <p>下图显示了体系结构：</p>
 <p><figure>
   <a class="paragraph-image">
-    <img src="/media/mvvm-table-architecture.png" data-action="zoom" alt=""  loading="lazy" decoding="async">
+    <img data-src="/media/mvvm-table-architecture.png" data-action="zoom" alt=""  class="lazyload">
   </a>
   
 </figure></p>
@@ -372,7 +375,7 @@ MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可
 <h2 id="为-cell-设计-viewmodel">为 Cell 设计 ViewModel<a class="anchorjs-link" href="#%e4%b8%ba-cell-%e8%ae%be%e8%ae%a1-viewmodel"></a></h2><p>先看架构：</p>
 <p><figure>
   <a class="paragraph-image">
-    <img src="/media/mvvm-architecture-viewmodel.png" data-action="zoom" alt=""  loading="lazy" decoding="async">
+    <img data-src="/media/mvvm-architecture-viewmodel.png" data-action="zoom" alt=""  class="lazyload">
   </a>
   
 </figure></p>
@@ -417,7 +420,7 @@ MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可
 <p>在这里，我们还有一件事要做。在单元格中，我们使用转义闭包 valueChanged 来通知单元格 UI 更新。基本上，当用户滚动表视图时，将重用该单元格。 ViewModel 和 Cell 之间的关系可以用下图表示</p>
 <p><figure>
   <a class="paragraph-image">
-    <img src="/media/mvvm-img1.004-3.png" data-action="zoom" alt=""  loading="lazy" decoding="async">
+    <img data-src="/media/mvvm-img1.004-3.png" data-action="zoom" alt=""  class="lazyload">
   </a>
   
 </figure></p>
@@ -515,7 +518,7 @@ MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可
 <p>新的构架：</p>
 <p><figure>
   <a class="paragraph-image">
-    <img src="/media/mvvm-img1.006-3.png" data-action="zoom" alt=""  loading="lazy" decoding="async">
+    <img data-src="/media/mvvm-img1.006-3.png" data-action="zoom" alt=""  class="lazyload">
   </a>
   
 </figure></p>
@@ -641,9 +644,11 @@ MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可
   data-emit-metadata="0" 
   data-input-position="top"
   data-theme="light"
-  crossorigin="anonymous" 
+  data-lang="en"
+  crossorigin="anonymous"
   async>
   </script>
+
 
 
 
