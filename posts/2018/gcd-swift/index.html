@@ -65,7 +65,7 @@ Grand Central Dispatch(GCD) 是管理并发操作的低级API，GCD 可以通过
 
 
 
-  <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/bootstrap.min.css"  crossorigin="anonymous">
   
   <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"
     type="text/css">
@@ -79,12 +79,19 @@ Grand Central Dispatch(GCD) 是管理并发操作的低级API，GCD 可以通过
 
   
 
-  <script src="/js/lazysizes.min.js"></script>
+  <script src=/js/lazysizes.min.js></script>
 
   
   
 
-  </head>
+  
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/logo.svg" sizes="any" type="image/svg+xml" />
+
+
+</head>
 
 
 
@@ -260,16 +267,16 @@ Grand Central Dispatch(GCD) 是管理并发操作的低级API，GCD 可以通过
 </blockquote>
 <blockquote>
 <ol>
-<li><a href="https://www.raywenderlich.com/148513/grand-central-dispatch-tutorial-swift-3-part-1">Grand Central Dispatch Tutorial for Swift 3: Part 1</a></li>
+<li><a href="https://www.raywenderlich.com/148513/grand-central-dispatch-tutorial-swift-3-part-1" target="_blank">Grand Central Dispatch Tutorial for Swift 3: Part 1</a></li>
 </ol>
 <ul>
-<li><a href="https://www.raywenderlich.com/148515/grand-central-dispatch-tutorial-swift-3-part-2">Grand Central Dispatch Tutorial for Swft 3: Part 2</a></li>
+<li><a href="https://www.raywenderlich.com/148515/grand-central-dispatch-tutorial-swift-3-part-2" target="_blank">Grand Central Dispatch Tutorial for Swft 3: Part 2</a></li>
 </ul>
 </blockquote>
 <p>Grand Central Dispatch(GCD) 是管理并发操作的低级API，GCD 可以通过将计算量大的任务推迟到后台从而提高应用的响应速度。与锁和线程相比，它是一个更简单的并发模型。</p>
 <p>在 Swift 3 中， GCD 得到了重大改进，从基于 C 的 API 转向包含新类和新的数据结构的 Swiftier API。</p>
 <p>建立在名为 GooglyPuff 的现有应用程序上。 GooglyPuff 是一款未优化的，“线程不安全”的应用程序，它使用Core Image的人脸检测API，在检测到的人脸上覆盖Google眼睛。您可以从照片库中选择图像,或选择从互联网上下载图像应用此效果。</p>
-<h1 id="-part-1-">[ Part 1 ]<a class="anchorjs-link" href="#-part-1-"></a></h1><h2 id="getting-started">Getting Started<a class="anchorjs-link" href="#getting-started"></a></h2><p>下载 <a href="https://koenig-media.raywenderlich.com/uploads/2016/12/GooglyPuff_Swift3_Part1_Starter.zip">starter project</a>
+<h1 id="-part-1-">[ Part 1 ]<a class="anchorjs-link" href="#-part-1-"></a></h1><h2 id="getting-started">Getting Started<a class="anchorjs-link" href="#getting-started"></a></h2><p>下载 <a href="https://koenig-media.raywenderlich.com/uploads/2016/12/GooglyPuff_Swift3_Part1_Starter.zip" target="_blank">starter project</a>
 并在 Xcode 中打开它。</p>
 <p>主屏幕最初是空的，点击 + 然后选择 <strong>Le Internet</strong> 从网络下载预定义的图像，点击第一张图片，会看到添加在脸上的有趣的眼睛。</p>
 <p><figure>
@@ -343,7 +350,7 @@ AssetPhoto，用于实例化来自PHAsset实例的照片。</li>
 <h3 id="同步-vs-异步">同步 vs 异步<a class="anchorjs-link" href="#%e5%90%8c%e6%ad%a5-vs-%e5%bc%82%e6%ad%a5"></a></h3><p>通过GCD，可以同步或者异步分派任务</p>
 <p>同步函数在任务完成后将控制权返回调用者。</p>
 <p>异步函数立即返回，命令完成任务但不等待它。因此，异步函数不会阻止当前的执行线程继续执行下一个函数。</p>
-<h3 id="管理任务">管理任务<a class="anchorjs-link" href="#%e7%ae%a1%e7%90%86%e4%bb%bb%e5%8a%a1"></a></h3><p>到目前为止，你已经听说过很多“任务”。为了本教程的目的，您可以将任务视为 <a href="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Closures.html">closure</a>。闭包是可以存储和传递的自包含，可调用的代码块。</p>
+<h3 id="管理任务">管理任务<a class="anchorjs-link" href="#%e7%ae%a1%e7%90%86%e4%bb%bb%e5%8a%a1"></a></h3><p>到目前为止，你已经听说过很多“任务”。为了本教程的目的，您可以将任务视为 <a href="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Closures.html" target="_blank">closure</a>。闭包是可以存储和传递的自包含，可调用的代码块。</p>
 <p>你提交到 <code>DispatchQueue</code> 的任务被封装成 <code>DispatchWorkItem</code>。您可以配置 <code>DispatchWorkItem</code> 的行为，例如其QoS等级或是否产生新的分离线程(detached thread)。</p>
 <h2 id="处理后台任务">处理后台任务<a class="anchorjs-link" href="#%e5%a4%84%e7%90%86%e5%90%8e%e5%8f%b0%e4%bb%bb%e5%8a%a1"></a></h2><p>回到 app，从你的相册或者 使用 <strong>Le Internet</strong> 选项去下载一些图片。点击一个照片，注意照片线节显示花费了多长时间。在较慢的设备上查看较大图像时，延迟更加明显。</p>
 <p>重载视图控制器的viewDidLoad（）很容易造成视图出现之前的长时间等待。如果它在加载时不是绝对必要的，最好将工作移到后台。</p>
@@ -478,8 +485,8 @@ Swift的内置数据类型，如数组和字典，被实现为结构体。</p>
 <p>它可能看起来像在代码中来回传递集合时有很多 coping 。
 不要担心这个内存使用的影响。 Swift集合类型经过优化，只在必要时才进行复制，例如，在传递数值时第一次修改数组。</p>
 </blockquote>
-<p>这是经典的软件开发 <a href="https://en.wikipedia.org/wiki/Readers%E2%80%93writers_problem">Reader-Writers Problem</a>。
-GCD 通过使用 <code>dispatch barriers</code> 创建一个 <a href="https://en.wikipedia.org/wiki/Readers%E2%80%93writer_lock">read/write lock</a> 提供了一个优雅的解决方式。
+<p>这是经典的软件开发 <a href="https://en.wikipedia.org/wiki/Readers%E2%80%93writers_problem" target="_blank">Reader-Writers Problem</a>。
+GCD 通过使用 <code>dispatch barriers</code> 创建一个 <a href="https://en.wikipedia.org/wiki/Readers%E2%80%93writer_lock" target="_blank">read/write lock</a> 提供了一个优雅的解决方式。
 Dispatch barriers 是一组函数，当处理并发队列，作为串行式的瓶颈(serial-style bottleneck)</p>
 <p>将 <code>DispatchWorkItem</code> 提交到调度队列时，可以设置标志来指示它应该是在特定时间内在指定队列上执行的唯一项目。
 这意味着在 dispatch barrier 之前提交给队列的所有项目必须在 <code>DispatchWorkItem</code> 执行之前完成。</p>
@@ -775,7 +782,7 @@ Dispatch barriers 是一组函数，当处理并发队列，作为串行式的�
 </ol>
 <p>构建并运行应用程序，然后从Le Internet添加图像。会看到该应用程序现在下载了三个以上的图像。每次重新运行应用程序时，额外图像的数量都会发生变化。队列中的某些其他图像下载在开始之前会被取消。</p>
 <p>这是一个人为的例子，但它很好地说明了如何使用和取消分派块对象。</p>
-<p>Dispatch block 可以做的事情有很多，<a href="https://developer.apple.com/reference/dispatch/dispatchworkitem">Apple&rsquo;s documentation</a></p>
+<p>Dispatch block 可以做的事情有很多，<a href="https://developer.apple.com/reference/dispatch/dispatchworkitem" target="_blank">Apple&rsquo;s documentation</a></p>
 <h2 id="miscellaneous-gcd-fun-其它gcd乐趣">Miscellaneous GCD Fun (其它GCD乐趣)<a class="anchorjs-link" href="#miscellaneous-gcd-fun-%e5%85%b6%e5%ae%83gcd%e4%b9%90%e8%b6%a3"></a></h2><h3 id="testing-asynchronous-code">Testing Asynchronous Code<a class="anchorjs-link" href="#testing-asynchronous-code"></a></h3><p>Xcode 中的测试是在 XCTestCase 的子类中上执行的，并在方法签名中运行任何以 <code>test</code> 开头的方法。
 测试是在主线程上进行测量的，因此您可以假定每个测试都以串行方式进行。
 只要给定的测试方法完成，XCTest方法就会考虑完成测试并转到下一个测试。
@@ -783,7 +790,7 @@ Dispatch barriers 是一组函数，当处理并发队列，作为串行式的�
 <p>网络相关的代码通常是异步的，因为您不想在执行网络请求时阻塞主线程。再加上当测试方法结束时测试完成的事实，可能使测试网络代码变得困难。</p>
 <p>我们来简单介绍一下测试异步代码的两种常用技术：一种使用（<strong>semaphores</strong>）信号量，另一种使用（<strong>expectations</strong>）期望值。</p>
 <h3 id="semaphores">Semaphores<a class="anchorjs-link" href="#semaphores"></a></h3><p>信号量是一种古老的线程概念，由 Edsger W. Dijkstra 提出。信号量是一个复杂的话题，因为它建立在操作系统功能的提杂性之上。</p>
-<p>如果你想要学习更多信号量的知识，请查看 <a href="http://greenteapress.com/semaphores/">detail discussion</a> 和 <a href="http://en.wikipedia.org/wiki/Dining_philosophers_problem">Dining Philosophers Problem</a></p>
+<p>如果你想要学习更多信号量的知识，请查看 <a href="http://greenteapress.com/semaphores/" target="_blank">detail discussion</a> 和 <a href="http://en.wikipedia.org/wiki/Dining_philosophers_problem" target="_blank">Dining Philosophers Problem</a></p>
 <p>打开 <strong>GooglyPuffTests.swfit</strong> 在 <code>downloadImageURLWithString(_:) </code>  中替换如下代码：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">url</span> = URL(string: urlString)
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span><span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">semaphore</span> = DispatchSemaphore(value: <span style="color:#bd93f9">0</span>) <span style="color:#6272a4">// 1</span>
@@ -898,7 +905,7 @@ DEBUG 通过 在 Project Settings -&gt; Build Settings -&gt; Swift Compiler - Cu
 </figure></p>
 <p>使用这种方法，您可以更新UI，查询类的属性，甚至执行方法 - 而无需重新启动应用程序即可进入该特殊工作流程状态。很简约。</p>
 <h2 id="end">End<a class="anchorjs-link" href="#end"></a></h2><ul>
-<li>完整的项目 <a href="https://koenig-media.raywenderlich.com/uploads/2016/12/GooglyPuff_Swift3_Part2_Final-1.zip">代码</a>。</li>
+<li>完整的项目 <a href="https://koenig-media.raywenderlich.com/uploads/2016/12/GooglyPuff_Swift3_Part2_Final-1.zip" target="_blank">代码</a>。</li>
 </ul>
 
         <hr style="visibility: hidden;" />
@@ -994,8 +1001,6 @@ DEBUG 通过 在 Project Settings -&gt; Build Settings -&gt; Swift Compiler - Cu
     
     <a href="/tags/git/">git</a>
     
-    <a href="/tags/go/">go</a>
-    
     <a href="/tags/golang/">golang</a>
     
     <a href="/tags/hugo/">hugo</a>
@@ -1022,8 +1027,6 @@ DEBUG 通过 在 Project Settings -&gt; Build Settings -&gt; Swift Compiler - Cu
     
     <a href="/tags/vim/">vim</a>
     
-    <a href="/tags/webhook/">webhook</a>
-    
     <a href="/tags/wubi/">wubi</a>
     
     <a href="/tags/zabbix/">zabbix</a>
@@ -1038,7 +1041,7 @@ DEBUG 通过 在 Project Settings -&gt; Build Settings -&gt; Swift Compiler - Cu
 <h5>FRIENDS</h5>
 <ul class="list-inline">
   
-  <li><a href=""></a></li>
+  <li><a href="" target="_blank"></a></li>
   
 </ul>
 
@@ -1062,7 +1065,7 @@ DEBUG 通过 在 Project Settings -&gt; Build Settings -&gt; Swift Compiler - Cu
 
   
   <li>
-    <a href="/index.xml">
+    <a href=/index.xml>
       <span class="fa-stack fa-lg">
         <i class="fa fa-circle fa-stack-2x"></i>
         <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
@@ -1087,7 +1090,7 @@ DEBUG 通过 在 Project Settings -&gt; Build Settings -&gt; Swift Compiler - Cu
   
 </ul>
         <p class="copyright text-muted">
-          Copyright &copy; RoninRo&#39;s Blog 2022
+          Copyright &copy; RoninRo&#39;s Blog 2022  
           <br>
           Powered by <a href="https://gohugo.io">Hugo</a>
         </p>
@@ -1096,15 +1099,15 @@ DEBUG 通过 在 Project Settings -&gt; Build Settings -&gt; Swift Compiler - Cu
   </div>
 </footer>
 
-<script src="/js/jquery.min.js"></script>
-<script src="/js/bootstrap.min.js" crossorigin="anonymous"></script>
+<script src=/js/jquery.min.js></script>
+<script src=/js/bootstrap.min.js crossorigin="anonymous"></script>
 
 
 
 <script src="/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js"></script>
 
 
-<script src="/js/simple-jekyll-search.min.js"></script>
+<script src=/js/simple-jekyll-search.min.js></script>
 
 
 <script src="/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js"></script>
@@ -1172,6 +1175,7 @@ DEBUG 通过 在 Project Settings -&gt; Build Settings -&gt; Swift Compiler - Cu
 
 
 <script src="/zoomjs/zoom.min.js"></script>
+
 </body>
 
 </html>

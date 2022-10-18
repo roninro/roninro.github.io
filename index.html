@@ -29,7 +29,7 @@
 
 
 
-  <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/bootstrap.min.css"  crossorigin="anonymous">
   
   <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"
     type="text/css">
@@ -43,14 +43,21 @@
 
   
 
-  <script src="/js/lazysizes.min.js"></script>
+  <script src=/js/lazysizes.min.js></script>
 
   
   
 
   <link rel="alternate" type="application/json" href="/index.json" title="RoninRo's Blog" />
   <link rel="alternate" type="application/rss+xml" href="/index.xml" title="RoninRo's Blog" />
-  </head>
+  
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/logo.svg" sizes="any" type="image/svg+xml" />
+
+
+</head>
 
 
 
@@ -184,18 +191,18 @@
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
         
-          <div class="site-heading">
-            
-            <h1>RoninRo&#39;s Blog</h1>
-            
-            
-            
-            
-            <span class="subheading">一花一世界，一叶一菩提</span>
-          </div>
+        <div class="site-heading">
+        
+          <h1>RoninRo&#39;s Blog</h1>
+          
+          
+          
+          
+          <span class="subheading">一花一世界，一叶一菩提</span>
         </div>
       </div>
     </div>
+  </div>
 </header>
 
 
@@ -213,20 +220,6 @@
 
 
    <div class="post-preview">
-  <a href="/posts/2021/github-webhook/">
-      <h2 class="post-title">[Go] 添加 Github Webhook</h2>
-      
-      <div class="post-content-preview">
-        Github 支持为指定的仓库添加 Webhook 。借助 go-github 库可以快速实现一个 Webhook Server 。 首先为仓库添加 Webhooks 配置： Setting - Webhooks - Add webhook : 在 Payload URL 下填写服务器接口地址，Content type 选择
-      </div>
-  </a>
-  <p class="post-meta">
-      Posted by  RoninRo  on Sat, Sep 18, 2021
-  </p>
-</div>
-<hr>
-
-   <div class="post-preview">
   <a href="/posts/2021/ss-rust/">
       <h2 class="post-title">Shadowsocks-Rust 简介</h2>
       
@@ -234,6 +227,8 @@
       
       <div class="post-content-preview">
         
+        
+         
       </div>
   </a>
   <p class="post-meta">
@@ -247,7 +242,8 @@
       <h2 class="post-title">Add Tailwind Css to Svelte</h2>
       
       <div class="post-content-preview">
-        SvelteKit 目前是 beta 版本，本文可能只适用于 SvelteKit v1.0.0-next.102 首先我们用 SvelteKit 新建一个项目1npm init svelte@next my-app 2cd my-app 3npm install 4npm run dev -- --open 为项目添加 @sveltejs/adapter-static 适配器以支持编译静态网页。1npm i
+         如果在 Svelte 项目中使用 Tailwind Css
+         
       </div>
   </a>
   <p class="post-meta">
@@ -261,7 +257,8 @@
       <h2 class="post-title">[Vim] 快速对齐插件 vim-easy-align</h2>
       
       <div class="post-content-preview">
-        vim-easy-align 是一款简单易用的 Vim 对齐插件。 安装并添加配置： 1&amp;#34; in .vimrc 2Plug &amp;#39;junegunn/vim-easy-align&amp;#39; 3 4&amp;#34; Start interactive EasyAlign in visual mode (e.g. vipga) 5xmap ga &amp;lt;Plug&amp;gt;(EasyAlign) 6 7&amp;#34; Start interactive EasyAlign for a motion/text object (e.g. gaip) 8nmap ga &amp;lt;Plug&amp;gt;(EasyAlign) 用法： vipga= vip 多行选中 ga 进入 EasyAlign 模式
+         A simple, easy-to-use Vim alignment plugin.
+         
       </div>
   </a>
   <p class="post-meta">
@@ -275,7 +272,8 @@
       <h2 class="post-title">[整理] 五笔基础</h2>
       
       <div class="post-content-preview">
-        概述“五笔” 原意是也指五种基本笔画：横、竖、撇、捺（点）、折，任何一个汉字，也都是由这五种基本笔画及其衍生字根组成，通过使用一定的映射规则，
+         五笔字型是一种纯字型的编码方案，它由 130 个字根组字，重码少，便于盲打，输入速度快。
+         
       </div>
   </a>
   <p class="post-meta">
@@ -289,7 +287,8 @@
       <h2 class="post-title">[Vim] 使用 YouCompleteMe 对 Rust/Golang 代码补全</h2>
       
       <div class="post-content-preview">
-        YouCompleteMe 是 Vim 下的自动补全插件。自从 Vim8 与 YouCompleteMe 支持异步 IO 后，在 Vim 下的使用体验也是直线上升。 使用 YouCompleteMe 有几个先决条件，不然可能会不能正常使用： Ycm 依赖于 Pyth
+         YouCompleteMe 是 Vim 下的自动补全插件
+         
       </div>
   </a>
   <p class="post-meta">
@@ -303,7 +302,8 @@
       <h2 class="post-title">Zabbix 监控 Postgres 和 Redis</h2>
       
       <div class="post-content-preview">
-        非教程贴，布署完成后的回忆记录。 Zabbix Agent 布署机器： CentOS 7&#43; Zabbix Server 版本： 4.4.4 安装 Zabbix Agent 。Step1 添加 Zabbix 的存储库不同版本的 Zabbix 存储库地址可以在 https://www.zabbix.com/cn/download 。找到 1CentOS/RHEL 7: 2rpm -Uvh
+         布署 Zabbix Agent，监控一下 Postgresql 和 Redis 
+         
       </div>
   </a>
   <p class="post-meta">
@@ -317,9 +317,8 @@
       <h2 class="post-title">Mac 为 Linux 交叉编译 Rust 程序</h2>
       
       <div class="post-content-preview">
-        默认情况下，Rust 将静态链接所有 Rust 代码。但是，如果使用标准库，它将动态链接到系统的 libc 。
-如何想要 100% 静态二进制文件。可以使用 MUSL libc 提供的 Linux-based 支持。
-
+         
+         
       </div>
   </a>
   <p class="post-meta">
@@ -333,7 +332,8 @@
       <h2 class="post-title">[PIN] Linux 下常用命令</h2>
       
       <div class="post-content-preview">
-        tar命令选项： 1-z(gzip) 用 gzip 来压缩/解压缩文件 2-j(bzip2) 用 bzip2 来压缩/解压缩文件 3-v(verbose) 详细报告 tar 处理的文件信息 4-c(create) 创建新的档案文件 5-x(extract) 解压缩文件或目录 6-f(file) 使用档案文件
+          
+         
       </div>
   </a>
   <p class="post-meta">
@@ -347,11 +347,27 @@
       <h2 class="post-title">Vim 分割窗口</h2>
       
       <div class="post-content-preview">
-        在操作 Vim 窗口之前，最好了解下面几个概念： 缓冲区（buffer）是加载到内存中进行编辑的文件，原始文件在将缓冲区写到文件中之前保持不变。 窗口（
+         
+         
       </div>
   </a>
   <p class="post-meta">
       Posted by  RoninRo  on Thu, Oct 24, 2019
+  </p>
+</div>
+<hr>
+
+   <div class="post-preview">
+  <a href="/posts/2020/gergelyorosz-advice/">
+      <h2 class="post-title">[转]当我开始做软件开发时，最希望听到的七条建议</h2>
+      
+      <div class="post-content-preview">
+         Uber 工程师 Gergely Orosz 近日在 Twitter 上发出如题的7条建议
+         
+      </div>
+  </a>
+  <p class="post-meta">
+      Posted by  Gergely Orosz  on Tue, Jul 16, 2019
   </p>
 </div>
 <hr>
@@ -392,8 +408,6 @@
     
     <a href="/tags/git/">git</a>
     
-    <a href="/tags/go/">go</a>
-    
     <a href="/tags/golang/">golang</a>
     
     <a href="/tags/hugo/">hugo</a>
@@ -420,8 +434,6 @@
     
     <a href="/tags/vim/">vim</a>
     
-    <a href="/tags/webhook/">webhook</a>
-    
     <a href="/tags/wubi/">wubi</a>
     
     <a href="/tags/zabbix/">zabbix</a>
@@ -432,7 +444,7 @@
 <section class="visible-md visible-lg">
   <hr>
   
-  <h5><a href="/about/">ABOUT ME</a></h5>
+  <h5><a href=/about/>ABOUT ME</a></h5>
   
 
   
@@ -451,7 +463,7 @@
 
   
   <li>
-    <a href="/index.xml">
+    <a href=/index.xml>
       <span class="fa-stack fa-lg">
         <i class="fa fa-circle fa-stack-2x"></i>
         <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
@@ -484,7 +496,7 @@
 <h5>FRIENDS</h5>
 <ul class="list-inline">
   
-  <li><a href=""></a></li>
+  <li><a href="" target="_blank"></a></li>
   
 </ul>
 
@@ -510,7 +522,7 @@
 
   
   <li>
-    <a href="/index.xml">
+    <a href=/index.xml>
       <span class="fa-stack fa-lg">
         <i class="fa fa-circle fa-stack-2x"></i>
         <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
@@ -535,7 +547,7 @@
   
 </ul>
         <p class="copyright text-muted">
-          Copyright &copy; RoninRo&#39;s Blog 2022
+          Copyright &copy; RoninRo&#39;s Blog 2022  
           <br>
           Powered by <a href="https://gohugo.io">Hugo</a>
         </p>
@@ -544,15 +556,15 @@
   </div>
 </footer>
 
-<script src="/js/jquery.min.js"></script>
-<script src="/js/bootstrap.min.js" crossorigin="anonymous"></script>
+<script src=/js/jquery.min.js></script>
+<script src=/js/bootstrap.min.js crossorigin="anonymous"></script>
 
 
 
 <script src="/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js"></script>
 
 
-<script src="/js/simple-jekyll-search.min.js"></script>
+<script src=/js/simple-jekyll-search.min.js></script>
 
 
 <script src="/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js"></script>
@@ -570,6 +582,7 @@
 
 
 <script src="/zoomjs/zoom.min.js"></script>
+
 </body>
 
 </html>

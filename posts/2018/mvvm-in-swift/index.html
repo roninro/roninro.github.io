@@ -32,7 +32,7 @@
 
 
 
-  <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/bootstrap.min.css"  crossorigin="anonymous">
   
   <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"
     type="text/css">
@@ -46,12 +46,19 @@
 
   
 
-  <script src="/js/lazysizes.min.js"></script>
+  <script src=/js/lazysizes.min.js></script>
 
   
   
 
-  </head>
+  
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/logo.svg" sizes="any" type="image/svg+xml" />
+
+
+</head>
 
 
 
@@ -219,7 +226,7 @@
               col-md-10 col-md-offset-1
               post-container">
         <blockquote>
-<p>原文：<a href="http://artsy.github.io/blog/2015/09/24/mvvm-in-swift/">MVVM in Swift</a></p>
+<p>原文：<a href="http://artsy.github.io/blog/2015/09/24/mvvm-in-swift/" target="_blank">MVVM in Swift</a></p>
 </blockquote>
 <p>编程归结起来就是让代码以一种聪明的方式与其他代码进行通信。
 软件模式是约束程序员使编程更容易的方法。</p>
@@ -302,7 +309,7 @@ view controller 负责将该信号映射到配置的布局，然后在集合视�
 <p>第二种方法是我比较喜欢的，它看起来更像是 “Swift”的风格。
 当我们离开 RAC的Objective-C 接口时，ViewModel 将用基于 Swift 泛型的序列替换它的RACSignal属性，这将提供编译时类型检查。</p>
 <p>在 ViewModel 中定义这些 信号可能比较棘手，Swift 初始化器在分配属性时有严格的规则
-<a href="https://ashfurrow.com/blog/swift-initializers/">strict rules</a>。
+<a href="https://ashfurrow.com/blog/swift-initializers/" target="_blank">strict rules</a>。
 信号需要访问 ViewModel 的内部状态，因此它们在调用 <code>super.init()</code>后创建。
 但是，我们不能直到所有的属性都被赋值，包括信号属性，才调用<code>super.init()</code>。</p>
 <p>这是个典型的<code>鸡生蛋，蛋生鸡</code>的问题。</p>
@@ -362,7 +369,7 @@ view controller 负责将该信号映射到配置的布局，然后在集合视�
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7</span><span>}()
 </span></span></code></pre></div><p>view controller 首先在 <code>viewDidLoad()</code> 中访问 <code>viewModel</code> 属性，我们可以在此之前的任何时候通过测试双倍来替换属性。</p>
 <p>view controller 使用
-<a href="https://github.com/facebookarchive/ios-snapshot-test-case">snapshots</a>
+<a href="https://github.com/facebookarchive/ios-snapshot-test-case" target="_blank">snapshots</a>
 进行测试，以验证用户界面没有被意外更改。测试很简单:</p>
 <ol>
 <li>创建一个 view controller 去测试。</li>
@@ -461,8 +468,6 @@ view controller 负责将该信号映射到配置的布局，然后在集合视�
     
     <a href="/tags/git/">git</a>
     
-    <a href="/tags/go/">go</a>
-    
     <a href="/tags/golang/">golang</a>
     
     <a href="/tags/hugo/">hugo</a>
@@ -489,8 +494,6 @@ view controller 负责将该信号映射到配置的布局，然后在集合视�
     
     <a href="/tags/vim/">vim</a>
     
-    <a href="/tags/webhook/">webhook</a>
-    
     <a href="/tags/wubi/">wubi</a>
     
     <a href="/tags/zabbix/">zabbix</a>
@@ -505,7 +508,7 @@ view controller 负责将该信号映射到配置的布局，然后在集合视�
 <h5>FRIENDS</h5>
 <ul class="list-inline">
   
-  <li><a href=""></a></li>
+  <li><a href="" target="_blank"></a></li>
   
 </ul>
 
@@ -529,7 +532,7 @@ view controller 负责将该信号映射到配置的布局，然后在集合视�
 
   
   <li>
-    <a href="/index.xml">
+    <a href=/index.xml>
       <span class="fa-stack fa-lg">
         <i class="fa fa-circle fa-stack-2x"></i>
         <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
@@ -554,7 +557,7 @@ view controller 负责将该信号映射到配置的布局，然后在集合视�
   
 </ul>
         <p class="copyright text-muted">
-          Copyright &copy; RoninRo&#39;s Blog 2022
+          Copyright &copy; RoninRo&#39;s Blog 2022  
           <br>
           Powered by <a href="https://gohugo.io">Hugo</a>
         </p>
@@ -563,15 +566,15 @@ view controller 负责将该信号映射到配置的布局，然后在集合视�
   </div>
 </footer>
 
-<script src="/js/jquery.min.js"></script>
-<script src="/js/bootstrap.min.js" crossorigin="anonymous"></script>
+<script src=/js/jquery.min.js></script>
+<script src=/js/bootstrap.min.js crossorigin="anonymous"></script>
 
 
 
 <script src="/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js"></script>
 
 
-<script src="/js/simple-jekyll-search.min.js"></script>
+<script src=/js/simple-jekyll-search.min.js></script>
 
 
 <script src="/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js"></script>
@@ -589,6 +592,7 @@ view controller 负责将该信号映射到配置的布局，然后在集合视�
 
 
 <script src="/zoomjs/zoom.min.js"></script>
+
 </body>
 
 </html>

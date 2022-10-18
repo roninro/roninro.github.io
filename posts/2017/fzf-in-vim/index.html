@@ -32,7 +32,7 @@
 
 
 
-  <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/bootstrap.min.css"  crossorigin="anonymous">
   
   <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"
     type="text/css">
@@ -46,12 +46,19 @@
 
   
 
-  <script src="/js/lazysizes.min.js"></script>
+  <script src=/js/lazysizes.min.js></script>
 
   
   
 
-  </head>
+  
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/logo.svg" sizes="any" type="image/svg+xml" />
+
+
+</head>
 
 
 
@@ -218,7 +225,7 @@
               col-lg-8 col-lg-offset-2
               col-md-10 col-md-offset-1
               post-container">
-        <p><a href="https://github.com/junegunn/fzf">fzf</a> 是一个基于<code>Go</code>实现的一个交互式的命令行搜索工具，可以搜索如：文件，历史命令，git提交等。功能非常强大。</p>
+        <p><a href="https://github.com/junegunn/fzf" target="_blank">fzf</a> 是一个基于<code>Go</code>实现的一个交互式的命令行搜索工具，可以搜索如：文件，历史命令，git提交等。功能非常强大。</p>
 <p>基于<code>FZF</code>实现的<code>vim</code>插件，让我们在<code>vim</code>中 <strong>搜索</strong> 更加高效。</p>
 <blockquote>
 <p>OS: MacOS 10.13<br>
@@ -241,7 +248,7 @@ Vim: <em>Neovim v0.2.2</em></p>
 <li>安装插件<code>fzf.vim</code>, 配置<code>fzf</code>命令。</li>
 </ol>
 <h4 id="安装-fzf">安装 fzf<a class="anchorjs-link" href="#%e5%ae%89%e8%a3%85-fzf"></a></h4><ol>
-<li>使用 <a href="https://brew.sh/">Homebrew</a> 安装<code>fzf</code></li>
+<li>使用 <a href="https://brew.sh/" target="_blank">Homebrew</a> 安装<code>fzf</code></li>
 </ol>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>brew install fzf
 </span></span></code></pre></div><ol start="2">
@@ -249,7 +256,7 @@ Vim: <em>Neovim v0.2.2</em></p>
 </ol>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>~/.fzf/install
-</span></span></code></pre></div><h4 id="安装-fzfvim">安装 fzf.vim<a class="anchorjs-link" href="#%e5%ae%89%e8%a3%85-fzfvim"></a></h4><p>使用 <a href="https://github.com/junegunn/vim-plug">Vim-plug</a> 作为插件管理工具。</p>
+</span></span></code></pre></div><h4 id="安装-fzfvim">安装 fzf.vim<a class="anchorjs-link" href="#%e5%ae%89%e8%a3%85-fzfvim"></a></h4><p>使用 <a href="https://github.com/junegunn/vim-plug" target="_blank">Vim-plug</a> 作为插件管理工具。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>Plug <span style="color:#f1fa8c">&#39;/usr/local/opt/fzf&#39;</span>
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>Plug <span style="color:#f1fa8c">&#39;junegunn/fzf.vim&#39;</span>
 </span></span></code></pre></div><p>OR 使用<code>vim-plug</code>安装 <code>fzf</code></p>
@@ -285,7 +292,7 @@ Vim: <em>Neovim v0.2.2</em></p>
 </tr>
 <tr>
 <td><code>Ag [PATTERN]</code></td>
-<td><a href="https://github.com/ggreer/the_silver_searcher">ag</a> search result (<code>ALT-A</code> to select all, <code>ALT-D</code> to deselect all)</td>
+<td><a href="https://github.com/ggreer/the_silver_searcher" target="_blank">ag</a> search result (<code>ALT-A</code> to select all, <code>ALT-D</code> to deselect all)</td>
 </tr>
 <tr>
 <td><code>Lines [QUERY]</code></td>
@@ -329,11 +336,11 @@ Vim: <em>Neovim v0.2.2</em></p>
 </tr>
 <tr>
 <td><code>Snippets</code></td>
-<td>Snippets (<a href="https://github.com/SirVer/ultisnips">UltiSnips</a>)</td>
+<td>Snippets (<a href="https://github.com/SirVer/ultisnips" target="_blank">UltiSnips</a>)</td>
 </tr>
 <tr>
 <td><code>Commits</code></td>
-<td>Git commits (requires <a href="https://github.com/tpope/vim-fugitive">fugitive.vim</a>)</td>
+<td>Git commits (requires <a href="https://github.com/tpope/vim-fugitive" target="_blank">fugitive.vim</a>)</td>
 </tr>
 <tr>
 <td><code>BCommits</code></td>
@@ -349,7 +356,7 @@ Vim: <em>Neovim v0.2.2</em></p>
 </tr>
 <tr>
 <td><code>Helptags</code></td>
-<td>Help tags <sup id="a1"><a href="#helptags">1</a></sup></td>
+<td>Help tags <sup id="a1"><a href="/#helptags">1</a></sup></td>
 </tr>
 <tr>
 <td><code>Filetypes</code></td>
@@ -357,9 +364,9 @@ Vim: <em>Neovim v0.2.2</em></p>
 </tr>
 </tbody>
 </table>
-<p><strong>表格来自<a href="https://github.com/junegunn/fzf.vim">fzf.vim</a></strong></p>
+<p><strong>表格来自<a href="https://github.com/junegunn/fzf.vim" target="_blank">fzf.vim</a></strong></p>
 <p>在普通模式下，使用<code>:Command</code> 调用命令。</p>
-<h3 id="配置-fzfvim-快捷键">配置 fzf.vim 快捷键<a class="anchorjs-link" href="#%e9%85%8d%e7%bd%ae-fzfvim-%e5%bf%ab%e6%8d%b7%e9%94%ae"></a></h3><p>在 <a href="https://github.com/junegunn/fzf.vim">fzf.vim</a> 中有着非常详细的设置教程。这里笔者举出自己经常使用的一些快捷键设置：</p>
+<h3 id="配置-fzfvim-快捷键">配置 fzf.vim 快捷键<a class="anchorjs-link" href="#%e9%85%8d%e7%bd%ae-fzfvim-%e5%bf%ab%e6%8d%b7%e9%94%ae"></a></h3><p>在 <a href="https://github.com/junegunn/fzf.vim" target="_blank">fzf.vim</a> 中有着非常详细的设置教程。这里笔者举出自己经常使用的一些快捷键设置：</p>
 <ul>
 <li>
 <p>将<code>Files [PATH]</code>命令绑定到快捷键<code>&lt;leader&gt;f</code>上，快速搜索当前工程目录下的文件</p>
@@ -371,9 +378,9 @@ Vim: <em>Neovim v0.2.2</em></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>nnoremap &lt;silent&gt; &lt;Leader&gt;f :Files&lt;CR&gt;
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>nnoremap &lt;silent&gt; &lt;Leader&gt;b :Buffers&lt;CR&gt;
 </span></span></code></pre></div><p><code>&lt;Esc&gt;</code> 或 <code>&lt;C-c&gt;</code>退出 <code>fzf</code></p>
-<h4 id="使用-ag-实现文本搜索">使用 Ag 实现文本搜索<a class="anchorjs-link" href="#%e4%bd%bf%e7%94%a8-ag-%e5%ae%9e%e7%8e%b0%e6%96%87%e6%9c%ac%e6%90%9c%e7%b4%a2"></a></h4><p>实现<code>Ag</code> 命令需要安装 <a href="https://github.com/ggreer/the_silver_searcher">the_silver_searcher</a></p>
+<h4 id="使用-ag-实现文本搜索">使用 Ag 实现文本搜索<a class="anchorjs-link" href="#%e4%bd%bf%e7%94%a8-ag-%e5%ae%9e%e7%8e%b0%e6%96%87%e6%9c%ac%e6%90%9c%e7%b4%a2"></a></h4><p>实现<code>Ag</code> 命令需要安装 <a href="https://github.com/ggreer/the_silver_searcher" target="_blank">the_silver_searcher</a></p>
 <ol>
-<li>安装 <a href="https://github.com/ggreer/the_silver_searcher">the_silver_searcher</a></li>
+<li>安装 <a href="https://github.com/ggreer/the_silver_searcher" target="_blank">the_silver_searcher</a></li>
 </ol>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>brew install the_silver_searcher
 </span></span></code></pre></div><ol start="2">
@@ -386,7 +393,7 @@ Vim: <em>Neovim v0.2.2</em></p>
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>  \                 &lt;bang&gt;<span style="color:#bd93f9">0</span>)
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6</span><span>nnoremap &lt;silent&gt; &lt;Leader&gt;A :Ag&lt;CR&gt;
 </span></span></code></pre></div><p>将<code>:Ag</code>命令绑定到<code>&lt;leader&gt;A</code>上，这样就可以在<code>Vim</code>内搜索项目内的文本了。</p>
-<h3 id="小结">小结<a class="anchorjs-link" href="#%e5%b0%8f%e7%bb%93"></a></h3><p>由于大多命令笔者并不是经常使用，所以并没有对它们进行设置。更多更全的命令读者可以到 <a href="https://github.com/junegunn/fzf.vim">fzf.vim</a> 或者向<code>fzf</code>发起 <a href="https://github.com/junegunn/fzf.vim/issues/new">Issues</a> 和大神们讨论。</p>
+<h3 id="小结">小结<a class="anchorjs-link" href="#%e5%b0%8f%e7%bb%93"></a></h3><p>由于大多命令笔者并不是经常使用，所以并没有对它们进行设置。更多更全的命令读者可以到 <a href="https://github.com/junegunn/fzf.vim" target="_blank">fzf.vim</a> 或者向<code>fzf</code>发起 <a href="https://github.com/junegunn/fzf.vim/issues/new" target="_blank">Issues</a> 和大神们讨论。</p>
 <p>希望大家有所收获。</p>
 
 
@@ -469,8 +476,6 @@ Vim: <em>Neovim v0.2.2</em></p>
     
     <a href="/tags/git/">git</a>
     
-    <a href="/tags/go/">go</a>
-    
     <a href="/tags/golang/">golang</a>
     
     <a href="/tags/hugo/">hugo</a>
@@ -497,8 +502,6 @@ Vim: <em>Neovim v0.2.2</em></p>
     
     <a href="/tags/vim/">vim</a>
     
-    <a href="/tags/webhook/">webhook</a>
-    
     <a href="/tags/wubi/">wubi</a>
     
     <a href="/tags/zabbix/">zabbix</a>
@@ -513,7 +516,7 @@ Vim: <em>Neovim v0.2.2</em></p>
 <h5>FRIENDS</h5>
 <ul class="list-inline">
   
-  <li><a href=""></a></li>
+  <li><a href="" target="_blank"></a></li>
   
 </ul>
 
@@ -537,7 +540,7 @@ Vim: <em>Neovim v0.2.2</em></p>
 
   
   <li>
-    <a href="/index.xml">
+    <a href=/index.xml>
       <span class="fa-stack fa-lg">
         <i class="fa fa-circle fa-stack-2x"></i>
         <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
@@ -562,7 +565,7 @@ Vim: <em>Neovim v0.2.2</em></p>
   
 </ul>
         <p class="copyright text-muted">
-          Copyright &copy; RoninRo&#39;s Blog 2022
+          Copyright &copy; RoninRo&#39;s Blog 2022  
           <br>
           Powered by <a href="https://gohugo.io">Hugo</a>
         </p>
@@ -571,15 +574,15 @@ Vim: <em>Neovim v0.2.2</em></p>
   </div>
 </footer>
 
-<script src="/js/jquery.min.js"></script>
-<script src="/js/bootstrap.min.js" crossorigin="anonymous"></script>
+<script src=/js/jquery.min.js></script>
+<script src=/js/bootstrap.min.js crossorigin="anonymous"></script>
 
 
 
 <script src="/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js"></script>
 
 
-<script src="/js/simple-jekyll-search.min.js"></script>
+<script src=/js/simple-jekyll-search.min.js></script>
 
 
 <script src="/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js"></script>
@@ -597,6 +600,7 @@ Vim: <em>Neovim v0.2.2</em></p>
 
 
 <script src="/zoomjs/zoom.min.js"></script>
+
 </body>
 
 </html>

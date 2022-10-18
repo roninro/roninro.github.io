@@ -29,7 +29,7 @@
 
 
 
-  <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/bootstrap.min.css"  crossorigin="anonymous">
   
   <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"
     type="text/css">
@@ -43,14 +43,21 @@
 
   
 
-  <script src="/js/lazysizes.min.js"></script>
+  <script src=/js/lazysizes.min.js></script>
 
   
   
 
   <link rel="alternate" type="application/json" href="/index.json" title="RoninRo's Blog" />
   <link rel="alternate" type="application/rss+xml" href="/index.xml" title="RoninRo's Blog" />
-  </head>
+  
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/logo.svg" sizes="any" type="image/svg+xml" />
+
+
+</head>
 
 
 
@@ -184,18 +191,18 @@
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
         
-          <div class="site-heading">
-            
-            <h1>RoninRo&#39;s Blog</h1>
-            
-            
-            
-            
-            <span class="subheading">一花一世界，一叶一菩提</span>
-          </div>
+        <div class="site-heading">
+        
+          <h1>RoninRo&#39;s Blog</h1>
+          
+          
+          
+          
+          <span class="subheading">一花一世界，一叶一菩提</span>
         </div>
       </div>
     </div>
+  </div>
 </header>
 
 
@@ -213,26 +220,13 @@
 
 
    <div class="post-preview">
-  <a href="/posts/2018/git-submodule/">
-      <h2 class="post-title">Git Submodule</h2>
-      
-      <div class="post-content-preview">
-        Submodule 允许你将一个 Git 仓库作为另一个 Git 仓库的子目录。它能让你将另一个仓库克隆到自己的项目中，同时还保持提交的独立。
-
-      </div>
-  </a>
-  <p class="post-meta">
-      Posted by  RoninRo  on Mon, Apr 30, 2018
-  </p>
-</div>
-<hr>
-
-   <div class="post-preview">
   <a href="/posts/2018/swift-closures/">
       <h2 class="post-title">Swift 闭包</h2>
       
       <div class="post-content-preview">
+        
         根据 The Swift Programming Language (Swift 4.1) - Closures 整理。 Swift 中闭包与 Objective-C 中的 Blocks 以及其他一些编程语言中的匿名函数比较相似，是自包含的函数代码块。 闭包可以捕获和存储其所在上下文中
+         
       </div>
   </a>
   <p class="post-meta">
@@ -246,7 +240,9 @@
       <h2 class="post-title">使用 Automator 为文件夹添加一个快捷操作</h2>
       
       <div class="post-content-preview">
+        
         在 Mac 下，文件夹的默认菜单选项是不支持在其它应用中打开，只能先打开应用，然后选择目标文件夹。 以 Sublime Text 为例，如何使用 Automator 快速为文件夹添加一个菜单选项
+         
       </div>
   </a>
   <p class="post-meta">
@@ -260,7 +256,9 @@
       <h2 class="post-title">在Vim中使用fzf</h2>
       
       <div class="post-content-preview">
+        
         fzf 是一个基于Go实现的一个交互式的命令行搜索工具，可以搜索如：文件，历史命令，git提交等。功能非常强大。 基于FZF实现的vim插件，让我们
+         
       </div>
   </a>
   <p class="post-meta">
@@ -274,7 +272,9 @@
       <h2 class="post-title">Neovim 下配置 golang 开发环境</h2>
       
       <div class="post-content-preview">
+        
         golang 开发者在Vim 上贡献了许多成熟的插件。站在巨人的肩膀上，我们可以非常轻松的在Vim 下配置出属于自己的golang的开发环境。 电脑环境： Mac 10.13
+         
       </div>
   </a>
   <p class="post-meta">
@@ -288,7 +288,9 @@
       <h2 class="post-title">配置SSH登入远程Linux</h2>
       
       <div class="post-content-preview">
+        
         所谓公钥登录，就是用户将自己的公钥储存在远程主机上。登录的时候远程主机回向用户发送一段随机字符串，用户用自己的秘钥加密后再发送给远程主机。远
+         
       </div>
   </a>
   <p class="post-meta">
@@ -302,9 +304,11 @@
       <h2 class="post-title">关于Vim不能正常显示中文的解决方法</h2>
       
       <div class="post-content-preview">
+        
         这类问题一般都是由于编码问题导致的。在 ~/.vimrc 添加如下设置：
 1set fileencodings=utf-8,gb2312,gbk,gb18030 2set termencoding=utf-8 3set fileformats=unix 4set encoding=prc 保存退出。
 
+         
       </div>
   </a>
   <p class="post-meta">
@@ -318,7 +322,9 @@
       <h2 class="post-title">KVO &amp; KVOController</h2>
       
       <div class="post-content-preview">
+        
         KVO的实现机制KVO 是 Objective-C 对观察者模式的实现。从苹果的 文档 中对于它的实现描述可以知道： KVO 是通过 isa-swizzling 实现的。 当你观察一个对象时，该对象的isa指
+         
       </div>
   </a>
   <p class="post-meta">
@@ -332,7 +338,9 @@
       <h2 class="post-title">Carthage 的简单使用</h2>
       
       <div class="post-content-preview">
+        
         Carthage 是和 Cocoapods 类似的第三方库管理工具。和 Cocoapods 相比，Carthage 仅导入 framework 文件，做到更少的入侵性。但是Carthage 仅支持动态框架，只支持iOS 8
+         
       </div>
   </a>
   <p class="post-meta">
@@ -346,11 +354,29 @@
       <h2 class="post-title">Hugo 主题 Gemini</h2>
       
       <div class="post-content-preview">
+        
         最近在https://www.linpx.com/上看到了博主的博客主题，感觉很漂亮，不过是Typecho 主题的。于是便用了周末的时间将它转
+         
       </div>
   </a>
   <p class="post-meta">
       Posted by  RoninRo  on Mon, Jun 5, 2017
+  </p>
+</div>
+<hr>
+
+   <div class="post-preview">
+  <a href="/posts/2017/runtime-messaging/">
+      <h2 class="post-title">Objective-C Messaging</h2>
+      
+      <div class="post-content-preview">
+        
+        消息传递（Messaging）在C语言中，调用一个方法其实就是跳转到内存中的某一点，并开始执行一段代码。没有动态特性特性，因为这个是在编译时
+         
+      </div>
+  </a>
+  <p class="post-meta">
+      Posted by  RoninRo  on Thu, May 25, 2017
   </p>
 </div>
 <hr>
@@ -395,8 +421,6 @@
     
     <a href="/tags/git/">git</a>
     
-    <a href="/tags/go/">go</a>
-    
     <a href="/tags/golang/">golang</a>
     
     <a href="/tags/hugo/">hugo</a>
@@ -423,8 +447,6 @@
     
     <a href="/tags/vim/">vim</a>
     
-    <a href="/tags/webhook/">webhook</a>
-    
     <a href="/tags/wubi/">wubi</a>
     
     <a href="/tags/zabbix/">zabbix</a>
@@ -435,7 +457,7 @@
 <section class="visible-md visible-lg">
   <hr>
   
-  <h5><a href="/about/">ABOUT ME</a></h5>
+  <h5><a href=/about/>ABOUT ME</a></h5>
   
 
   
@@ -454,7 +476,7 @@
 
   
   <li>
-    <a href="/index.xml">
+    <a href=/index.xml>
       <span class="fa-stack fa-lg">
         <i class="fa fa-circle fa-stack-2x"></i>
         <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
@@ -487,7 +509,7 @@
 <h5>FRIENDS</h5>
 <ul class="list-inline">
   
-  <li><a href=""></a></li>
+  <li><a href="" target="_blank"></a></li>
   
 </ul>
 
@@ -513,7 +535,7 @@
 
   
   <li>
-    <a href="/index.xml">
+    <a href=/index.xml>
       <span class="fa-stack fa-lg">
         <i class="fa fa-circle fa-stack-2x"></i>
         <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
@@ -538,7 +560,7 @@
   
 </ul>
         <p class="copyright text-muted">
-          Copyright &copy; RoninRo&#39;s Blog 2022
+          Copyright &copy; RoninRo&#39;s Blog 2022  
           <br>
           Powered by <a href="https://gohugo.io">Hugo</a>
         </p>
@@ -547,15 +569,15 @@
   </div>
 </footer>
 
-<script src="/js/jquery.min.js"></script>
-<script src="/js/bootstrap.min.js" crossorigin="anonymous"></script>
+<script src=/js/jquery.min.js></script>
+<script src=/js/bootstrap.min.js crossorigin="anonymous"></script>
 
 
 
 <script src="/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js"></script>
 
 
-<script src="/js/simple-jekyll-search.min.js"></script>
+<script src=/js/simple-jekyll-search.min.js></script>
 
 
 <script src="/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js"></script>
@@ -573,6 +595,7 @@
 
 
 <script src="/zoomjs/zoom.min.js"></script>
+
 </body>
 
 </html>

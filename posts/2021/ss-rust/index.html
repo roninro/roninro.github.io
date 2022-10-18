@@ -32,7 +32,7 @@
 
 
 
-  <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/bootstrap.min.css"  crossorigin="anonymous">
   
   <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"
     type="text/css">
@@ -46,12 +46,19 @@
 
   
 
-  <script src="/js/lazysizes.min.js"></script>
+  <script src=/js/lazysizes.min.js></script>
 
   
   
 
-  </head>
+  
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/logo.svg" sizes="any" type="image/svg+xml" />
+
+
+</head>
 
 
 
@@ -218,19 +225,19 @@
               col-lg-8 col-lg-offset-2
               col-md-10 col-md-offset-1
               post-container">
-        <p><a href="https://github.com/shadowsocks/shadowsocks-rust">shadowsocks-rust</a> 是 Shadowsocks 的 Rust 语言实现，它不仅具有传统 Shadowsocks 特性，而且还具有：</p>
+        <p><a href="https://github.com/shadowsocks/shadowsocks-rust" target="_blank">shadowsocks-rust</a> 是 Shadowsocks 的 Rust 语言实现，它不仅具有传统 Shadowsocks 特性，而且还具有：</p>
 <ul>
 <li>负载均衡 多个 Shadowsocks 服务器的能力。</li>
 <li>探测 Shadowsocks 服务器延迟的能力。</li>
 </ul>
-<p>相比于 <a href="https://github.com/shadowsocks/shadowsocks-libev">shadowsocks-libev</a>
+<p>相比于 <a href="https://github.com/shadowsocks/shadowsocks-libev" target="_blank">shadowsocks-libev</a>
 , 优点在于提供构建好的二进制文件，大大降低了安装成本。</p>
-<h2 id="安装">安装<a class="anchorjs-link" href="#%e5%ae%89%e8%a3%85"></a></h2><p>从 <a href="https://github.com/shadowsocks/shadowsocks-rust/releases">Release</a>
+<h2 id="安装">安装<a class="anchorjs-link" href="#%e5%ae%89%e8%a3%85"></a></h2><p>从 <a href="https://github.com/shadowsocks/shadowsocks-rust/releases" target="_blank">Release</a>
 下载静态链接构建包</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>wget https://github.com/shadowsocks/shadowsocks-rust/releases/download/v1.11.2/shadowsocks-v1.11.2.x86_64-unknown-linux-gnu.tar.xz
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>tar -xvf shadowsocks-v1.11.2.x86_64-unknown-linux-gnu.tar.xz -C /usr/local/bin
-</span></span></code></pre></div><h2 id="配置">配置<a class="anchorjs-link" href="#%e9%85%8d%e7%bd%ae"></a></h2><p>配置文件参考 <a href="https://github.com/shadowsocks/shadowsocks-rust#configuration">Configuration</a> 。</p>
+</span></span></code></pre></div><h2 id="配置">配置<a class="anchorjs-link" href="#%e9%85%8d%e7%bd%ae"></a></h2><p>配置文件参考 <a href="https://github.com/shadowsocks/shadowsocks-rust#configuration" target="_blank">Configuration</a> 。</p>
 <p>以 root 用户创建 <code>/etc/systemd/system/shadowsocks-rust-server.service</code> 。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span>#  This file is part of shadowsocks-rust.
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>#
@@ -266,13 +273,6 @@
             </a>
           </li>
           
-          
-          <li class="next">
-            <a href="/posts/2021/github-webhook/" data-toggle="tooltip" data-placement="top" title="[Go] 添加 Github Webhook">
-              Next<br>
-              <span>[Go] 添加 Github Webhook</span>
-            </a>
-          </li>
           
         </ul>
         <hr style="visibility: hidden;" />
@@ -335,8 +335,6 @@
     
     <a href="/tags/git/">git</a>
     
-    <a href="/tags/go/">go</a>
-    
     <a href="/tags/golang/">golang</a>
     
     <a href="/tags/hugo/">hugo</a>
@@ -363,8 +361,6 @@
     
     <a href="/tags/vim/">vim</a>
     
-    <a href="/tags/webhook/">webhook</a>
-    
     <a href="/tags/wubi/">wubi</a>
     
     <a href="/tags/zabbix/">zabbix</a>
@@ -379,7 +375,7 @@
 <h5>FRIENDS</h5>
 <ul class="list-inline">
   
-  <li><a href=""></a></li>
+  <li><a href="" target="_blank"></a></li>
   
 </ul>
 
@@ -403,7 +399,7 @@
 
   
   <li>
-    <a href="/index.xml">
+    <a href=/index.xml>
       <span class="fa-stack fa-lg">
         <i class="fa fa-circle fa-stack-2x"></i>
         <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
@@ -428,7 +424,7 @@
   
 </ul>
         <p class="copyright text-muted">
-          Copyright &copy; RoninRo&#39;s Blog 2022
+          Copyright &copy; RoninRo&#39;s Blog 2022  
           <br>
           Powered by <a href="https://gohugo.io">Hugo</a>
         </p>
@@ -437,15 +433,15 @@
   </div>
 </footer>
 
-<script src="/js/jquery.min.js"></script>
-<script src="/js/bootstrap.min.js" crossorigin="anonymous"></script>
+<script src=/js/jquery.min.js></script>
+<script src=/js/bootstrap.min.js crossorigin="anonymous"></script>
 
 
 
 <script src="/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js"></script>
 
 
-<script src="/js/simple-jekyll-search.min.js"></script>
+<script src=/js/simple-jekyll-search.min.js></script>
 
 
 <script src="/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js"></script>
@@ -463,6 +459,7 @@
 
 
 <script src="/zoomjs/zoom.min.js"></script>
+
 </body>
 
 </html>

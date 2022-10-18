@@ -6,22 +6,22 @@
     <description>Recent content in Categories on RoninRo&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 18 Sep 2021 11:34:04 +0800</lastBuildDate><atom:link href="https://roninro.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Tech</title>
-      <link>https://roninro.github.io/categories/technology/</link>
-      <pubDate>Sat, 18 Sep 2021 11:34:04 +0800</pubDate>
-      
-      <guid>https://roninro.github.io/categories/technology/</guid>
-      <description></description>
-    </item>
-    
+    <lastBuildDate>Fri, 27 Aug 2021 15:54:29 +0800</lastBuildDate><atom:link href="https://roninro.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>工具</title>
       <link>https://roninro.github.io/categories/tool/</link>
       <pubDate>Fri, 27 Aug 2021 15:54:29 +0800</pubDate>
       
       <guid>https://roninro.github.io/categories/tool/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Tech</title>
+      <link>https://roninro.github.io/categories/technology/</link>
+      <pubDate>Sat, 08 May 2021 09:36:35 +0000</pubDate>
+      
+      <guid>https://roninro.github.io/categories/technology/</guid>
       <description></description>
     </item>
     

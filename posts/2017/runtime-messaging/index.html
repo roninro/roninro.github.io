@@ -32,7 +32,7 @@
 
 
 
-  <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/bootstrap.min.css"  crossorigin="anonymous">
   
   <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"
     type="text/css">
@@ -46,12 +46,19 @@
 
   
 
-  <script src="/js/lazysizes.min.js"></script>
+  <script src=/js/lazysizes.min.js></script>
 
   
   
 
-  </head>
+  
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/logo.svg" sizes="any" type="image/svg+xml" />
+
+
+</head>
 
 
 
@@ -272,8 +279,8 @@
 </span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38</span><span><span style="color:#ff79c6"></span>
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39</span><span>} OBJC2_UNAVAILABLE;
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40</span><span><span style="color:#6272a4">/* Use `Class` instead of `struct objc_class *` */</span>
-</span></span></code></pre></div><p>objc 关于runtime的代码可以在<a href="https://opensource.apple.com/tarballs/objc4/">https://opensource.apple.com/tarballs/objc4/</a>下载查看</p>
-<p>char *method_types 参考：<a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html">Type Encodings</a></p>
+</span></span></code></pre></div><p>objc 关于runtime的代码可以在<a href="https://opensource.apple.com/tarballs/objc4/" target="_blank">https://opensource.apple.com/tarballs/objc4/</a>下载查看</p>
+<p>char *method_types 参考：<a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html" target="_blank">Type Encodings</a></p>
 <p><code>objc_method_list</code> 可以看作一个有 <code>objc_method</code> 元素的可变长度的数组。</p>
 <p>从上面的定义可以很好理解<code>objc_msgSend</code>做了什么。拿 <code>objc_msgSend(receiver, selector)</code> 为例：</p>
 <ol>
@@ -414,9 +421,9 @@
 <pre><code>Cat eat
 </code></pre>
 <h2 id="总结">总结<a class="anchorjs-link" href="#%e6%80%bb%e7%bb%93"></a></h2><p><code>Runtime</code>是Objective-C 面向对象和动态特性的基础。了解消息传递机制。有助于更好的解决开发中的项目技术和设计问题。</p>
-<p><a href="https://github.com/mjyi/objc-Message-Forwarding.git">示例代码</a></p>
-<h2 id="reference">Reference<a class="anchorjs-link" href="#reference"></a></h2><p><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008048">Objective-C Runtime Programming Guide</a></p>
-<p><a href="http://tech.glowing.com/cn/objective-c-runtime/">Objective-C Runtime</a></p>
+<p><a href="https://github.com/mjyi/objc-Message-Forwarding.git" target="_blank">示例代码</a></p>
+<h2 id="reference">Reference<a class="anchorjs-link" href="#reference"></a></h2><p><a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008048" target="_blank">Objective-C Runtime Programming Guide</a></p>
+<p><a href="http://tech.glowing.com/cn/objective-c-runtime/" target="_blank">Objective-C Runtime</a></p>
 
 
         <hr style="visibility: hidden;" />
@@ -512,8 +519,6 @@
     
     <a href="/tags/git/">git</a>
     
-    <a href="/tags/go/">go</a>
-    
     <a href="/tags/golang/">golang</a>
     
     <a href="/tags/hugo/">hugo</a>
@@ -540,8 +545,6 @@
     
     <a href="/tags/vim/">vim</a>
     
-    <a href="/tags/webhook/">webhook</a>
-    
     <a href="/tags/wubi/">wubi</a>
     
     <a href="/tags/zabbix/">zabbix</a>
@@ -556,7 +559,7 @@
 <h5>FRIENDS</h5>
 <ul class="list-inline">
   
-  <li><a href=""></a></li>
+  <li><a href="" target="_blank"></a></li>
   
 </ul>
 
@@ -580,7 +583,7 @@
 
   
   <li>
-    <a href="/index.xml">
+    <a href=/index.xml>
       <span class="fa-stack fa-lg">
         <i class="fa fa-circle fa-stack-2x"></i>
         <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
@@ -605,7 +608,7 @@
   
 </ul>
         <p class="copyright text-muted">
-          Copyright &copy; RoninRo&#39;s Blog 2022
+          Copyright &copy; RoninRo&#39;s Blog 2022  
           <br>
           Powered by <a href="https://gohugo.io">Hugo</a>
         </p>
@@ -614,15 +617,15 @@
   </div>
 </footer>
 
-<script src="/js/jquery.min.js"></script>
-<script src="/js/bootstrap.min.js" crossorigin="anonymous"></script>
+<script src=/js/jquery.min.js></script>
+<script src=/js/bootstrap.min.js crossorigin="anonymous"></script>
 
 
 
 <script src="/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js"></script>
 
 
-<script src="/js/simple-jekyll-search.min.js"></script>
+<script src=/js/simple-jekyll-search.min.js></script>
 
 
 <script src="/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js"></script>
@@ -690,6 +693,7 @@
 
 
 <script src="/zoomjs/zoom.min.js"></script>
+
 </body>
 
 </html>

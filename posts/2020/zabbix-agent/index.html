@@ -32,7 +32,7 @@
 
 
 
-  <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/bootstrap.min.css"  crossorigin="anonymous">
   
   <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"
     type="text/css">
@@ -46,12 +46,19 @@
 
   
 
-  <script src="/js/lazysizes.min.js"></script>
+  <script src=/js/lazysizes.min.js></script>
 
   
   
 
-  </head>
+  
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/logo.svg" sizes="any" type="image/svg+xml" />
+
+
+</head>
 
 
 
@@ -225,7 +232,7 @@
 <li>Zabbix Agent 布署机器： CentOS 7+</li>
 <li>Zabbix Server 版本： 4.4.4</li>
 </ul>
-<h2 id="安装-zabbix-agent-">安装 Zabbix Agent 。<a class="anchorjs-link" href="#%e5%ae%89%e8%a3%85-zabbix-agent-"></a></h2><h3 id="step1-添加-zabbix-的存储库">Step1 添加 Zabbix 的存储库<a class="anchorjs-link" href="#step1-%e6%b7%bb%e5%8a%a0-zabbix-%e7%9a%84%e5%ad%98%e5%82%a8%e5%ba%93"></a></h3><p>不同版本的 Zabbix 存储库地址可以在 <a href="https://www.zabbix.com/cn/download">https://www.zabbix.com/cn/download</a> 。找到</p>
+<h2 id="安装-zabbix-agent-">安装 Zabbix Agent 。<a class="anchorjs-link" href="#%e5%ae%89%e8%a3%85-zabbix-agent-"></a></h2><h3 id="step1-添加-zabbix-的存储库">Step1 添加 Zabbix 的存储库<a class="anchorjs-link" href="#step1-%e6%b7%bb%e5%8a%a0-zabbix-%e7%9a%84%e5%ad%98%e5%82%a8%e5%ba%93"></a></h3><p>不同版本的 Zabbix 存储库地址可以在 <a href="https://www.zabbix.com/cn/download" target="_blank">https://www.zabbix.com/cn/download</a> 。找到</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>CentOS/RHEL 7:
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>rpm -Uvh https://repo.zabbix.com/zabbix/4.0/rhel/7/x86_64/zabbix-release-4.0-2.el7.noarch.rpm
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>
@@ -244,8 +251,8 @@
 <p>像阿里云可能要通过 Web 后台配置开放端口。</p>
 </blockquote>
 <h3 id="step5-重启-zabbix-agent">Step5 重启 Zabbix Agent<a class="anchorjs-link" href="#step5-%e9%87%8d%e5%90%af-zabbix-agent"></a></h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>service zabbix-agent restart
-</span></span></code></pre></div><h2 id="zabbix--postgresql">Zabbix + Postgresql<a class="anchorjs-link" href="#zabbix--postgresql"></a></h2><p>这里使用官方的配置方式: <a href="https://www.zabbix.com/cn/integrations/postgresql">https://www.zabbix.com/cn/integrations/postgresql</a></p>
-<p><a href="https://git.zabbix.com/projects/ZBX/repos/zabbix/browse/templates/db/postgresql">源码</a></p>
+</span></span></code></pre></div><h2 id="zabbix--postgresql">Zabbix + Postgresql<a class="anchorjs-link" href="#zabbix--postgresql"></a></h2><p>这里使用官方的配置方式: <a href="https://www.zabbix.com/cn/integrations/postgresql" target="_blank">https://www.zabbix.com/cn/integrations/postgresql</a></p>
+<p><a href="https://git.zabbix.com/projects/ZBX/repos/zabbix/browse/templates/db/postgresql" target="_blank">源码</a></p>
 <ol>
 <li>创建对PostgreSQL服务器具有适当访问权限的只读zbx_monitor用户, PostgreSQL-11</li>
 </ol>
@@ -277,7 +284,7 @@
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>~# cat /etc/zabbix/zbbix_agentd.d/redis.conf
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span><span style="color:#8be9fd;font-style:italic">UserParameter</span><span style="color:#ff79c6">=</span>redis<span style="color:#ff79c6">[</span>*<span style="color:#ff79c6">]</span>,redis-cli -a password info 2&gt;/dev/null | grep <span style="color:#8be9fd;font-style:italic">$1</span><span style="color:#f1fa8c">&#34;:&#34;</span> | cut -d <span style="color:#f1fa8c">&#39;:&#39;</span> -f <span style="color:#bd93f9">2</span>
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span><span style="color:#8be9fd;font-style:italic">UserParameter</span><span style="color:#ff79c6">=</span>redis-ping,redis-cli -a password ping 2&gt;/dev/null | grep -c PONG
-</span></span></code></pre></div><p>模板文件：<a href="https://gist.github.com/mjyi/09be985184c34b9957d5a1bba09b42b8">Template App Redis.xml</a></p>
+</span></span></code></pre></div><p>模板文件：<a href="https://gist.github.com/mjyi/09be985184c34b9957d5a1bba09b42b8" target="_blank">Template App Redis.xml</a></p>
 
 
         <hr style="visibility: hidden;" />
@@ -373,8 +380,6 @@
     
     <a href="/tags/git/">git</a>
     
-    <a href="/tags/go/">go</a>
-    
     <a href="/tags/golang/">golang</a>
     
     <a href="/tags/hugo/">hugo</a>
@@ -401,8 +406,6 @@
     
     <a href="/tags/vim/">vim</a>
     
-    <a href="/tags/webhook/">webhook</a>
-    
     <a href="/tags/wubi/">wubi</a>
     
     <a href="/tags/zabbix/">zabbix</a>
@@ -417,7 +420,7 @@
 <h5>FRIENDS</h5>
 <ul class="list-inline">
   
-  <li><a href=""></a></li>
+  <li><a href="" target="_blank"></a></li>
   
 </ul>
 
@@ -441,7 +444,7 @@
 
   
   <li>
-    <a href="/index.xml">
+    <a href=/index.xml>
       <span class="fa-stack fa-lg">
         <i class="fa fa-circle fa-stack-2x"></i>
         <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
@@ -466,7 +469,7 @@
   
 </ul>
         <p class="copyright text-muted">
-          Copyright &copy; RoninRo&#39;s Blog 2022
+          Copyright &copy; RoninRo&#39;s Blog 2022  
           <br>
           Powered by <a href="https://gohugo.io">Hugo</a>
         </p>
@@ -475,15 +478,15 @@
   </div>
 </footer>
 
-<script src="/js/jquery.min.js"></script>
-<script src="/js/bootstrap.min.js" crossorigin="anonymous"></script>
+<script src=/js/jquery.min.js></script>
+<script src=/js/bootstrap.min.js crossorigin="anonymous"></script>
 
 
 
 <script src="/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js"></script>
 
 
-<script src="/js/simple-jekyll-search.min.js"></script>
+<script src=/js/simple-jekyll-search.min.js></script>
 
 
 <script src="/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js"></script>
@@ -551,6 +554,7 @@
 
 
 <script src="/zoomjs/zoom.min.js"></script>
+
 </body>
 
 </html>

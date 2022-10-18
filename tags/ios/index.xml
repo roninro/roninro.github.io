@@ -14,10 +14,10 @@
       
       <guid>https://roninro.github.io/posts/2019/ios-mvvm-tableview/</guid>
       <description>&lt;blockquote&gt;
-&lt;p&gt;原文：&lt;a href=&#34;https://flawlessapp.io/blog/advanced-mvvm-tableview-tutorial/#viewmodel&#34;&gt;Advanced iOS tutorial: Use MVVM to tackle complicated TableView&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;原文：&lt;a href=&#34;https://flawlessapp.io/blog/advanced-mvvm-tableview-tutorial/#viewmodel&#34; target=&#34;_blank&#34;&gt;Advanced iOS tutorial: Use MVVM to tackle complicated TableView&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;在本文，我们将讨论如何 用 Model-View-ViewModel(MVVM) 模式来组织 table view 代码。
-MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可以使用很多 Swift 技术， 使 UI 逻辑包装成数据模型。例如使用协议和闭包简化 table view 中的代码。建议查看 &lt;a href=&#34;https://medium.com/flawless-app-stories/how-to-use-a-model-view-viewmodel-architecture-for-ios-46963c67be1b&#34;&gt;文章&lt;/a&gt; 以全面了解 MVVM 模式。&lt;/p&gt;</description>
+MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可以使用很多 Swift 技术， 使 UI 逻辑包装成数据模型。例如使用协议和闭包简化 table view 中的代码。建议查看 &lt;a href=&#34;https://medium.com/flawless-app-stories/how-to-use-a-model-view-viewmodel-architecture-for-ios-46963c67be1b&#34; target=&#34;_blank&#34;&gt;文章&lt;/a&gt; 以全面了解 MVVM 模式。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -40,10 +40,10 @@ MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可
 &lt;/blockquote&gt;
 &lt;blockquote&gt;
 &lt;ol&gt;
-&lt;li&gt;&lt;a href=&#34;https://www.raywenderlich.com/148513/grand-central-dispatch-tutorial-swift-3-part-1&#34;&gt;Grand Central Dispatch Tutorial for Swift 3: Part 1&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.raywenderlich.com/148513/grand-central-dispatch-tutorial-swift-3-part-1&#34; target=&#34;_blank&#34;&gt;Grand Central Dispatch Tutorial for Swift 3: Part 1&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://www.raywenderlich.com/148515/grand-central-dispatch-tutorial-swift-3-part-2&#34;&gt;Grand Central Dispatch Tutorial for Swft 3: Part 2&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.raywenderlich.com/148515/grand-central-dispatch-tutorial-swift-3-part-2&#34; target=&#34;_blank&#34;&gt;Grand Central Dispatch Tutorial for Swft 3: Part 2&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;Grand Central Dispatch(GCD) 是管理并发操作的低级API，GCD 可以通过将计算量大的任务推迟到后台从而提高应用的响应速度。与锁和线程相比，它是一个更简单的并发模型。&lt;/p&gt;</description>

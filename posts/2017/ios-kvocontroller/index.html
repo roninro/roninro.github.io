@@ -32,7 +32,7 @@
 
 
 
-  <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/bootstrap.min.css"  crossorigin="anonymous">
   
   <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"
     type="text/css">
@@ -46,12 +46,19 @@
 
   
 
-  <script src="/js/lazysizes.min.js"></script>
+  <script src=/js/lazysizes.min.js></script>
 
   
   
 
-  </head>
+  
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/logo.svg" sizes="any" type="image/svg+xml" />
+
+
+</head>
 
 
 
@@ -217,18 +224,18 @@
               col-md-10 col-md-offset-1
               post-container">
         <h3 id="kvo的实现机制">KVO的实现机制<a class="anchorjs-link" href="#kvo%e7%9a%84%e5%ae%9e%e7%8e%b0%e6%9c%ba%e5%88%b6"></a></h3><p>KVO 是 Objective-C 对观察者模式的实现。从苹果的
-<a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/KeyValueObserving/Articles/KVOImplementation.html">文档</a>
+<a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/KeyValueObserving/Articles/KVOImplementation.html" target="_blank">文档</a>
 中对于它的实现描述可以知道： KVO 是通过 isa-swizzling 实现的。
 当你观察一个对象时，该对象的isa指针被修改，指向一个中间类，而不是其真实的类。但是具体的实现苹果的文档里并没有详细说明。</p>
 <p>事实上，这个中间类会在对象被观察时动态地被创建。继承自该对象原来的类，并且重写被观察属性的 setter 方法。重写的方法负责在调用原 setter 方法之前和之后，通知所有观察对象值的更改。然后将 isa 指针指向新创建的类。这样对象就变成了新创建的子类的实例了。</p>
-<p>参考 Mike Ash 的 <a href="https://www.mikeash.com/pyblog/friday-qa-2009-01-23.html">Friday Q&amp;A 2009-01-23</a>。</p>
-<p><a href="https://github.com/mjyi/blogdemos/tree/master/kvo">测试代码地址</a></p>
+<p>参考 Mike Ash 的 <a href="https://www.mikeash.com/pyblog/friday-qa-2009-01-23.html" target="_blank">Friday Q&amp;A 2009-01-23</a>。</p>
+<p><a href="https://github.com/mjyi/blogdemos/tree/master/kvo" target="_blank">测试代码地址</a></p>
 <h3 id="kvo-的缺点">KVO 的缺点<a class="anchorjs-link" href="#kvo-%e7%9a%84%e7%bc%ba%e7%82%b9"></a></h3><p>KVO的缺点在于它的API，我们只能通过
 observeValueForKeyPath: ofObject: change: context: 来获得通知。无法通过自定义 selector 或 block 来处理通知事件。因此我们可能需要一些判断来处理不同的情况。</p>
 <p>在了解了kov的实现机制后，我们可以使用block实现KVO.</p>
-<p>参考：<a href="https://knightsj.github.io/2017/05/15/%E4%BD%BF%E7%94%A8Block%E5%AE%9E%E7%8E%B0KVO/">使用Block实现KVO</a> 、
-<a href="http://tech.glowing.com/cn/implement-kvo/">如何自己动手实现 KVO</a></p>
-<h3 id="kvocontroller">KVOController<a class="anchorjs-link" href="#kvocontroller"></a></h3><p><a href="https://github.com/facebook/KVOController">KVOController</a>是Facebook 推出的一个开源库。它是基于 Cocoa 的KVO 的一次封装，提供简单的API，并且是线程安全的。</p>
+<p>参考：<a href="https://knightsj.github.io/2017/05/15/%E4%BD%BF%E7%94%A8Block%E5%AE%9E%E7%8E%B0KVO/" target="_blank">使用Block实现KVO</a> 、
+<a href="http://tech.glowing.com/cn/implement-kvo/" target="_blank">如何自己动手实现 KVO</a></p>
+<h3 id="kvocontroller">KVOController<a class="anchorjs-link" href="#kvocontroller"></a></h3><p><a href="https://github.com/facebook/KVOController" target="_blank">KVOController</a>是Facebook 推出的一个开源库。它是基于 Cocoa 的KVO 的一次封装，提供简单的API，并且是线程安全的。</p>
 <p>使用方法：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-objectivec" data-lang="objectivec"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#6272a4">// create KVO controller with observer
 </span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span><span style="color:#6272a4"></span>FBKVOController <span style="color:#ff79c6">*</span>KVOController <span style="color:#ff79c6">=</span> [FBKVOController <span style="color:#8be9fd;font-style:italic">controllerWithObserver</span>:<span style="color:#8be9fd;font-style:italic">self</span>];
@@ -463,8 +470,8 @@ observeValueForKeyPath: ofObject: change: context: 来获得通知。无法通�
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>  FBKVONotificationBlock _block;
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>  _FBKVOInfoState _state;
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>}
-</span></span></code></pre></div><h3 id="reference">Reference<a class="anchorjs-link" href="#reference"></a></h3><p><a href="https://github.com/facebook/KVOController">KVOController</a><br>
-<a href="http://draveness.me/kvocontroller.html">如何优雅地使用KVO</a></p>
+</span></span></code></pre></div><h3 id="reference">Reference<a class="anchorjs-link" href="#reference"></a></h3><p><a href="https://github.com/facebook/KVOController" target="_blank">KVOController</a><br>
+<a href="http://draveness.me/kvocontroller.html" target="_blank">如何优雅地使用KVO</a></p>
 <p>[EOF]</p>
 
 
@@ -547,8 +554,6 @@ observeValueForKeyPath: ofObject: change: context: 来获得通知。无法通�
     
     <a href="/tags/git/">git</a>
     
-    <a href="/tags/go/">go</a>
-    
     <a href="/tags/golang/">golang</a>
     
     <a href="/tags/hugo/">hugo</a>
@@ -575,8 +580,6 @@ observeValueForKeyPath: ofObject: change: context: 来获得通知。无法通�
     
     <a href="/tags/vim/">vim</a>
     
-    <a href="/tags/webhook/">webhook</a>
-    
     <a href="/tags/wubi/">wubi</a>
     
     <a href="/tags/zabbix/">zabbix</a>
@@ -591,7 +594,7 @@ observeValueForKeyPath: ofObject: change: context: 来获得通知。无法通�
 <h5>FRIENDS</h5>
 <ul class="list-inline">
   
-  <li><a href=""></a></li>
+  <li><a href="" target="_blank"></a></li>
   
 </ul>
 
@@ -615,7 +618,7 @@ observeValueForKeyPath: ofObject: change: context: 来获得通知。无法通�
 
   
   <li>
-    <a href="/index.xml">
+    <a href=/index.xml>
       <span class="fa-stack fa-lg">
         <i class="fa fa-circle fa-stack-2x"></i>
         <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
@@ -640,7 +643,7 @@ observeValueForKeyPath: ofObject: change: context: 来获得通知。无法通�
   
 </ul>
         <p class="copyright text-muted">
-          Copyright &copy; RoninRo&#39;s Blog 2022
+          Copyright &copy; RoninRo&#39;s Blog 2022  
           <br>
           Powered by <a href="https://gohugo.io">Hugo</a>
         </p>
@@ -649,15 +652,15 @@ observeValueForKeyPath: ofObject: change: context: 来获得通知。无法通�
   </div>
 </footer>
 
-<script src="/js/jquery.min.js"></script>
-<script src="/js/bootstrap.min.js" crossorigin="anonymous"></script>
+<script src=/js/jquery.min.js></script>
+<script src=/js/bootstrap.min.js crossorigin="anonymous"></script>
 
 
 
 <script src="/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js"></script>
 
 
-<script src="/js/simple-jekyll-search.min.js"></script>
+<script src=/js/simple-jekyll-search.min.js></script>
 
 
 <script src="/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js"></script>
@@ -675,6 +678,7 @@ observeValueForKeyPath: ofObject: change: context: 来获得通知。无法通�
 
 
 <script src="/zoomjs/zoom.min.js"></script>
+
 </body>
 
 </html>

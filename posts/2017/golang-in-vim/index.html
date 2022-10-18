@@ -32,7 +32,7 @@
 
 
 
-  <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/bootstrap.min.css"  crossorigin="anonymous">
   
   <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"
     type="text/css">
@@ -46,12 +46,19 @@
 
   
 
-  <script src="/js/lazysizes.min.js"></script>
+  <script src=/js/lazysizes.min.js></script>
 
   
   
 
-  </head>
+  
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/logo.svg" sizes="any" type="image/svg+xml" />
+
+
+</head>
 
 
 
@@ -231,11 +238,11 @@
 <li>快速的启动体验</li>
 </ul>
 <p><strong>核心插件:</strong>
-<a href="https://github.com/fatih/vim-go">vim-go</a>、
-<a href="https://github.com/morhetz/gruvbox">gruvbox</a>、
-<a href="https://github.com/Shougo/deoplete.nvim">deoplete.nvim</a>、
-<a href="https://github.com/w0rp/ale">ALE</a> &hellip;</p>
-<h3 id="使用neovim">使用Neovim<a class="anchorjs-link" href="#%e4%bd%bf%e7%94%a8neovim"></a></h3><p><a href="https://github.com/neovim/neovim">neovim</a>用起来与<code>vim</code> 完全兼容，但体验上要更好一些，从 Vim 上的迁移成本也很低。</p>
+<a href="https://github.com/fatih/vim-go" target="_blank">vim-go</a>、
+<a href="https://github.com/morhetz/gruvbox" target="_blank">gruvbox</a>、
+<a href="https://github.com/Shougo/deoplete.nvim" target="_blank">deoplete.nvim</a>、
+<a href="https://github.com/w0rp/ale" target="_blank">ALE</a> &hellip;</p>
+<h3 id="使用neovim">使用Neovim<a class="anchorjs-link" href="#%e4%bd%bf%e7%94%a8neovim"></a></h3><p><a href="https://github.com/neovim/neovim" target="_blank">neovim</a>用起来与<code>vim</code> 完全兼容，但体验上要更好一些，从 Vim 上的迁移成本也很低。</p>
 <ul>
 <li>使用 <code>brew install neovim</code> 安装 <code>neovim</code>,安装成功后便可以使用<code>nvim</code>命令来使用了。</li>
 <li>从<code>Vim</code>中迁移,创建 <code>~/.config/nvim/init.vim</code> 文件，并写入以下内容：</li>
@@ -244,7 +251,7 @@
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span><span style="color:#ff79c6">let</span> &amp;packpath = &amp;runtimepath
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>source ~/.vimrc
 </span></span></code></pre></div><p>至此，<code>vim</code> 的配置便迁移成功了。</p>
-<h3 id="安装-vim-plug">安装 vim-plug<a class="anchorjs-link" href="#%e5%ae%89%e8%a3%85-vim-plug"></a></h3><p><a href="https://github.com/junegunn/vim-plug">vim-plug</a> 是一个vim插件管理工具，有了它，我们就可以便捷地管理<code>vim</code> 插件了。</p>
+<h3 id="安装-vim-plug">安装 vim-plug<a class="anchorjs-link" href="#%e5%ae%89%e8%a3%85-vim-plug"></a></h3><p><a href="https://github.com/junegunn/vim-plug" target="_blank">vim-plug</a> 是一个vim插件管理工具，有了它，我们就可以便捷地管理<code>vim</code> 插件了。</p>
 <p>1.安装</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>curl -fLo ~/.vim/autoload/plug.vim --create-dirs <span style="color:#f1fa8c">\
 </span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span><span style="color:#f1fa8c"></span>    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -255,10 +262,10 @@
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>Plug <span style="color:#f1fa8c">&#39;fatih/vim-go&#39;</span>
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>call plug#end()
 </span></span></code></pre></div><p>3.普通模式下使用命令 <code>:PlugInstall</code> 安装插件👋。</p>
-<h3 id="安装-vim-go">安装 vim-go<a class="anchorjs-link" href="#%e5%ae%89%e8%a3%85-vim-go"></a></h3><p>按照上一步，将<code>vim-go</code>安装到<code>vim</code>中，通过<code>:help vim-go.txt</code> 或者到<a href="https://github.com/fatih/vim-go">github.com/fatih/vim-go</a> 了解详细的说明。</p>
+<h3 id="安装-vim-go">安装 vim-go<a class="anchorjs-link" href="#%e5%ae%89%e8%a3%85-vim-go"></a></h3><p>按照上一步，将<code>vim-go</code>安装到<code>vim</code>中，通过<code>:help vim-go.txt</code> 或者到<a href="https://github.com/fatih/vim-go" target="_blank">github.com/fatih/vim-go</a> 了解详细的说明。</p>
 <p>可以使用<code>&lt;C-x&gt;&lt;C-o&gt;</code>触发补全机制，且一般需要在 <code>.</code> 之后使用。</p>
-<h3 id="代码补全插件">代码补全插件<a class="anchorjs-link" href="#%e4%bb%a3%e7%a0%81%e8%a1%a5%e5%85%a8%e6%8f%92%e4%bb%b6"></a></h3><h4 id="deopletenvim">deoplete.nvim<a class="anchorjs-link" href="#deopletenvim"></a></h4><p>安装 <a href="https://github.com/Shougo/deoplete.nvim">deoplete.nvim</a> 可以实现代码实时提示功能。</p>
-<p><a href="https://github.com/Shougo/deoplete.nvim">deoplete</a> 是 <code>neovim/Vim8</code> 的一个异步补全框架。比起 <code>YouCompleteMe</code>要轻量的多。
+<h3 id="代码补全插件">代码补全插件<a class="anchorjs-link" href="#%e4%bb%a3%e7%a0%81%e8%a1%a5%e5%85%a8%e6%8f%92%e4%bb%b6"></a></h3><h4 id="deopletenvim">deoplete.nvim<a class="anchorjs-link" href="#deopletenvim"></a></h4><p>安装 <a href="https://github.com/Shougo/deoplete.nvim" target="_blank">deoplete.nvim</a> 可以实现代码实时提示功能。</p>
+<p><a href="https://github.com/Shougo/deoplete.nvim" target="_blank">deoplete</a> 是 <code>neovim/Vim8</code> 的一个异步补全框架。比起 <code>YouCompleteMe</code>要轻量的多。
 并且在开启自动加载时，也没有对启动速度造成太大的影响。</p>
 <h5 id="for-plug">For Plug<a class="anchorjs-link" href="#for-plug"></a></h5><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span><span style="color:#ff79c6">if</span> has(<span style="color:#f1fa8c">&#39;nvim&#39;</span>)
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>  Plug <span style="color:#f1fa8c">&#39;Shougo/deoplete.nvim&#39;</span>, { <span style="color:#f1fa8c">&#39;do&#39;</span>: <span style="color:#f1fa8c">&#39;:UpdateRemotePlugins&#39;</span> }
@@ -279,14 +286,14 @@
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span>inoremap &lt;expr&gt; &lt;Tab&gt; pumvisible() ? <span style="color:#f1fa8c">&#34;\&lt;C-n&gt;&#34;</span> : <span style="color:#f1fa8c">&#34;\&lt;Tab&gt;&#34;</span>
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span><span>inoremap &lt;expr&gt; &lt;S-Tab&gt; pumvisible() ? <span style="color:#f1fa8c">&#34;\&lt;C-p&gt;&#34;</span> : <span style="color:#f1fa8c">&#34;\&lt;S-Tab&gt;&#34;</span>
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span><span>inoremap &lt;expr&gt; &lt;cr&gt; pumvisible() ? <span style="color:#f1fa8c">&#34;\&lt;C-y&gt;&#34;</span> : <span style="color:#f1fa8c">&#34;\&lt;cr&gt;&#34;</span>
-</span></span></code></pre></div><h4 id="deoplete-go">deoplete-go<a class="anchorjs-link" href="#deoplete-go"></a></h4><p>下面使用<a href="https://github.com/zchee/deoplete-go">deoplete-go</a></p>
+</span></span></code></pre></div><h4 id="deoplete-go">deoplete-go<a class="anchorjs-link" href="#deoplete-go"></a></h4><p>下面使用<a href="https://github.com/zchee/deoplete-go" target="_blank">deoplete-go</a></p>
 <ol>
-<li>安装<a href="https://github.com/neovim/python-client">neovim/python-client</a></li>
+<li>安装<a href="https://github.com/neovim/python-client" target="_blank">neovim/python-client</a></li>
 </ol>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>pip2 install --upgrade neovim
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>pip3 install --upgrade neovim
 </span></span></code></pre></div><ol start="2">
-<li>安装 <a href="https://github.com/nsf/gocode">nsf/gocode</a></li>
+<li>安装 <a href="https://github.com/nsf/gocode" target="_blank">nsf/gocode</a></li>
 </ol>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>go get -u github.com/nsf/gocode
 </span></span></code></pre></div><ol start="3">
@@ -307,7 +314,7 @@
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span><span style="color:#ff79c6">let</span> g:UltiSnipsJumpForwardTrigger=<span style="color:#f1fa8c">&#34;&lt;Tab&gt;&#34;</span>
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span><span style="color:#ff79c6">let</span> g:UltiSnipsJumpBackwardTrigger=<span style="color:#f1fa8c">&#34;&lt;S-Tab&gt;&#34;</span>
 </span></span></code></pre></div><p>这样便可以通过<code>&lt;tab&gt;</code>来选择，<code>&lt;leader&gt;&lt;tab&gt;</code>来触发代码块。</p>
-<h3 id="语法检测">语法检测<a class="anchorjs-link" href="#%e8%af%ad%e6%b3%95%e6%a3%80%e6%b5%8b"></a></h3><p><a href="https://github.com/w0rp/ale">ALE</a> 是 <code>neovim/Vim8</code> 的一款异步语法检测的插件，并且支持多种语言。</p>
+<h3 id="语法检测">语法检测<a class="anchorjs-link" href="#%e8%af%ad%e6%b3%95%e6%a3%80%e6%b5%8b"></a></h3><p><a href="https://github.com/w0rp/ale" target="_blank">ALE</a> 是 <code>neovim/Vim8</code> 的一款异步语法检测的插件，并且支持多种语言。</p>
 <ol>
 <li>使用<code>vim-plug</code>安装</li>
 </ol>
@@ -329,7 +336,7 @@
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>      \ }
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>nmap ]a &lt;Plug&gt;(ale_next_wrap)
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>nmap [a &lt;Plug&gt;(ale_previous_wrap)
-</span></span></code></pre></div><h3 id="gruvbox-主题">gruvbox 主题<a class="anchorjs-link" href="#gruvbox-%e4%b8%bb%e9%a2%98"></a></h3><p><a href="https://github.com/morhetz/gruvbox">gruvbox</a> 是一款比较受欢迎的 <code>Vim</code> 主题，它支持自定义风格，并且实现多种文件类型的语法高亮，并且对许多插件支持。</p>
+</span></span></code></pre></div><h3 id="gruvbox-主题">gruvbox 主题<a class="anchorjs-link" href="#gruvbox-%e4%b8%bb%e9%a2%98"></a></h3><p><a href="https://github.com/morhetz/gruvbox" target="_blank">gruvbox</a> 是一款比较受欢迎的 <code>Vim</code> 主题，它支持自定义风格，并且实现多种文件类型的语法高亮，并且对许多插件支持。</p>
 <ol>
 <li>
 <p><code>Plug 'morhetz/gruvbox'</code></p>
@@ -340,7 +347,7 @@
 </ol>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>colorscheme gruvbox
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>set background=<span style="color:#8be9fd;font-style:italic">dark</span>
-</span></span></code></pre></div><p>下面就是我<code>Vim</code> 界面了。左右分别是 <a href="https://github.com/scrooloose/nerdtree">NERDTree</a> 和 <a href="https://github.com/majutsushi/tagbar">Tagbar</a> 以及底部的 <a href="https://github.com/itchyny/lightline.vim">lightline.vim</a>。</p>
+</span></span></code></pre></div><p>下面就是我<code>Vim</code> 界面了。左右分别是 <a href="https://github.com/scrooloose/nerdtree" target="_blank">NERDTree</a> 和 <a href="https://github.com/majutsushi/tagbar" target="_blank">Tagbar</a> 以及底部的 <a href="https://github.com/itchyny/lightline.vim" target="_blank">lightline.vim</a>。</p>
 <p>并且在我的电脑上可以做到小于 400ms 的启动速度，感觉还是挺不错的。
 感兴趣的同学可以到我的<code>vimrc</code>中查看设置。</p>
 <p>感兴趣可以到我的<code>vimrc</code>中查看设置。</p>
@@ -351,7 +358,7 @@
   
 </figure></p>
 <h3 id="附">附<a class="anchorjs-link" href="#%e9%99%84"></a></h3><ul>
-<li>我的 <a href="https://gist.github.com/mjyi/d6d410e71227321551c7b580205c430e">.vimrc</a></li>
+<li>我的 <a href="https://gist.github.com/mjyi/d6d410e71227321551c7b580205c430e" target="_blank">.vimrc</a></li>
 </ul>
 
 
@@ -434,8 +441,6 @@
     
     <a href="/tags/git/">git</a>
     
-    <a href="/tags/go/">go</a>
-    
     <a href="/tags/golang/">golang</a>
     
     <a href="/tags/hugo/">hugo</a>
@@ -462,8 +467,6 @@
     
     <a href="/tags/vim/">vim</a>
     
-    <a href="/tags/webhook/">webhook</a>
-    
     <a href="/tags/wubi/">wubi</a>
     
     <a href="/tags/zabbix/">zabbix</a>
@@ -478,7 +481,7 @@
 <h5>FRIENDS</h5>
 <ul class="list-inline">
   
-  <li><a href=""></a></li>
+  <li><a href="" target="_blank"></a></li>
   
 </ul>
 
@@ -502,7 +505,7 @@
 
   
   <li>
-    <a href="/index.xml">
+    <a href=/index.xml>
       <span class="fa-stack fa-lg">
         <i class="fa fa-circle fa-stack-2x"></i>
         <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
@@ -527,7 +530,7 @@
   
 </ul>
         <p class="copyright text-muted">
-          Copyright &copy; RoninRo&#39;s Blog 2022
+          Copyright &copy; RoninRo&#39;s Blog 2022  
           <br>
           Powered by <a href="https://gohugo.io">Hugo</a>
         </p>
@@ -536,15 +539,15 @@
   </div>
 </footer>
 
-<script src="/js/jquery.min.js"></script>
-<script src="/js/bootstrap.min.js" crossorigin="anonymous"></script>
+<script src=/js/jquery.min.js></script>
+<script src=/js/bootstrap.min.js crossorigin="anonymous"></script>
 
 
 
 <script src="/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js"></script>
 
 
-<script src="/js/simple-jekyll-search.min.js"></script>
+<script src=/js/simple-jekyll-search.min.js></script>
 
 
 <script src="/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js"></script>
@@ -562,6 +565,7 @@
 
 
 <script src="/zoomjs/zoom.min.js"></script>
+
 </body>
 
 </html>

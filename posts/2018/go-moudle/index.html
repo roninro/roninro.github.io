@@ -32,7 +32,7 @@
 
 
 
-  <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/bootstrap.min.css"  crossorigin="anonymous">
   
   <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"
     type="text/css">
@@ -46,12 +46,19 @@
 
   
 
-  <script src="/js/lazysizes.min.js"></script>
+  <script src=/js/lazysizes.min.js></script>
 
   
   
 
-  </head>
+  
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/logo.svg" sizes="any" type="image/svg+xml" />
+
+
+</head>
 
 
 
@@ -218,7 +225,7 @@
               post-container">
         <p>Go 1.11 为 <em>modules</em> 带来了实验性支持，这是Go的一个新的依赖管理系统。</p>
 <h2 id="1-modules">1. Modules<a class="anchorjs-link" href="#1-modules"></a></h2><blockquote>
-<p>示例来自 <a href="https://roberto.selbach.ca/intro-to-go-modules/">Introduction to Go Modules</a></p>
+<p>示例来自 <a href="https://roberto.selbach.ca/intro-to-go-modules/" target="_blank">Introduction to Go Modules</a></p>
 </blockquote>
 <p><code>go module</code> 支持在 <code>$GOPATH</code> 之外建立 <code>package</code>。并且在 <code>$GOPATH</code> 中是默认禁止的。</p>
 <blockquote>
@@ -257,8 +264,8 @@
 </span></span></code></pre></div><p>现在，我们可以通过 <code>go get</code> 在任何地方使用它：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>$ go get github.com/robteix/testmod
 </span></span></code></pre></div><p>这样将获取 <code>master</code> 上的最新代码，但是，本质上，获取 <code>master</code> 使用是非常危险的，因为我们不知道包的作者作出了什么改变可能影响我们的使用。这也是 <code>modules</code> 旨在解决的问题。</p>
-<h2 id="module-版本">Module 版本<a class="anchorjs-link" href="#module-%e7%89%88%e6%9c%ac"></a></h2><p>一个 <code>module</code> 必须以 <code>v(major).(minor).(patch)</code> 的形式进行语义版本化，例如v0.1.0，v1.2.3或v3.0.1。 <code>v</code> 是必需的。如果使用Git，发布 <a href="https://git-scm.com/book/en/v2/Git-Basics-Tagging">tag</a> 提交版本。</p>
-<p>关于语义化版本参考：<a href="https://semver.org/lang/zh-CN/">语义化版本 2.0</a></p>
+<h2 id="module-版本">Module 版本<a class="anchorjs-link" href="#module-%e7%89%88%e6%9c%ac"></a></h2><p>一个 <code>module</code> 必须以 <code>v(major).(minor).(patch)</code> 的形式进行语义版本化，例如v0.1.0，v1.2.3或v3.0.1。 <code>v</code> 是必需的。如果使用Git，发布 <a href="https://git-scm.com/book/en/v2/Git-Basics-Tagging" target="_blank">tag</a> 提交版本。</p>
+<p>关于语义化版本参考：<a href="https://semver.org/lang/zh-CN/" target="_blank">语义化版本 2.0</a></p>
 <h3 id="发布一个-release-版本">发布一个 release 版本<a class="anchorjs-link" href="#%e5%8f%91%e5%b8%83%e4%b8%80%e4%b8%aa-release-%e7%89%88%e6%9c%ac"></a></h3><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span>git tag v1.0.0
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span><span>git push --tags
 </span></span></code></pre></div><p>这样就创建了在 Github 上面创建了一个tag，release 1.0.0。</p>
@@ -320,8 +327,8 @@
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>}
 </span></span></code></pre></div><h2 id="vendoring">Vendoring<a class="anchorjs-link" href="#vendoring"></a></h2><p><code>Go modules</code> 默认会忽略 <code>vendor/</code> 目录。</p>
 <p><code>go mod vendor</code> 会在项目根目录创建一个 <code>vendor/</code> 目录，其包含项目的所有依赖项。</p>
-<h2 id="参考">参考<a class="anchorjs-link" href="#%e5%8f%82%e8%80%83"></a></h2><p><a href="https://github.com/golang/go/wiki/Modules">Go Modules</a>
-<a href="https://roberto.selbach.ca/intro-to-go-modules/">Introduction to Go Modules</a></p>
+<h2 id="参考">参考<a class="anchorjs-link" href="#%e5%8f%82%e8%80%83"></a></h2><p><a href="https://github.com/golang/go/wiki/Modules" target="_blank">Go Modules</a>
+<a href="https://roberto.selbach.ca/intro-to-go-modules/" target="_blank">Introduction to Go Modules</a></p>
 
         <hr style="visibility: hidden;" />
         <ul class="pager">
@@ -402,8 +409,6 @@
     
     <a href="/tags/git/">git</a>
     
-    <a href="/tags/go/">go</a>
-    
     <a href="/tags/golang/">golang</a>
     
     <a href="/tags/hugo/">hugo</a>
@@ -430,8 +435,6 @@
     
     <a href="/tags/vim/">vim</a>
     
-    <a href="/tags/webhook/">webhook</a>
-    
     <a href="/tags/wubi/">wubi</a>
     
     <a href="/tags/zabbix/">zabbix</a>
@@ -446,7 +449,7 @@
 <h5>FRIENDS</h5>
 <ul class="list-inline">
   
-  <li><a href=""></a></li>
+  <li><a href="" target="_blank"></a></li>
   
 </ul>
 
@@ -470,7 +473,7 @@
 
   
   <li>
-    <a href="/index.xml">
+    <a href=/index.xml>
       <span class="fa-stack fa-lg">
         <i class="fa fa-circle fa-stack-2x"></i>
         <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
@@ -495,7 +498,7 @@
   
 </ul>
         <p class="copyright text-muted">
-          Copyright &copy; RoninRo&#39;s Blog 2022
+          Copyright &copy; RoninRo&#39;s Blog 2022  
           <br>
           Powered by <a href="https://gohugo.io">Hugo</a>
         </p>
@@ -504,15 +507,15 @@
   </div>
 </footer>
 
-<script src="/js/jquery.min.js"></script>
-<script src="/js/bootstrap.min.js" crossorigin="anonymous"></script>
+<script src=/js/jquery.min.js></script>
+<script src=/js/bootstrap.min.js crossorigin="anonymous"></script>
 
 
 
 <script src="/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js"></script>
 
 
-<script src="/js/simple-jekyll-search.min.js"></script>
+<script src=/js/simple-jekyll-search.min.js></script>
 
 
 <script src="/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js"></script>
@@ -530,6 +533,7 @@
 
 
 <script src="/zoomjs/zoom.min.js"></script>
+
 </body>
 
 </html>

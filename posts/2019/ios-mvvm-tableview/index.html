@@ -32,7 +32,7 @@
 
 
 
-  <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/bootstrap.min.css"  crossorigin="anonymous">
   
   <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"
     type="text/css">
@@ -46,12 +46,19 @@
 
   
 
-  <script src="/js/lazysizes.min.js"></script>
+  <script src=/js/lazysizes.min.js></script>
 
   
   
 
-  </head>
+  
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/logo.svg" sizes="any" type="image/svg+xml" />
+
+
+</head>
 
 
 
@@ -219,10 +226,10 @@
               col-md-10 col-md-offset-1
               post-container">
         <blockquote>
-<p>原文：<a href="https://flawlessapp.io/blog/advanced-mvvm-tableview-tutorial/#viewmodel">Advanced iOS tutorial: Use MVVM to tackle complicated TableView</a></p>
+<p>原文：<a href="https://flawlessapp.io/blog/advanced-mvvm-tableview-tutorial/#viewmodel" target="_blank">Advanced iOS tutorial: Use MVVM to tackle complicated TableView</a></p>
 </blockquote>
 <p>在本文，我们将讨论如何 用 Model-View-ViewModel(MVVM) 模式来组织 table view 代码。
-MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可以使用很多 Swift 技术， 使 UI 逻辑包装成数据模型。例如使用协议和闭包简化 table view 中的代码。建议查看 <a href="https://medium.com/flawless-app-stories/how-to-use-a-model-view-viewmodel-architecture-for-ios-46963c67be1b">文章</a> 以全面了解 MVVM 模式。</p>
+MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可以使用很多 Swift 技术， 使 UI 逻辑包装成数据模型。例如使用协议和闭包简化 table view 中的代码。建议查看 <a href="https://medium.com/flawless-app-stories/how-to-use-a-model-view-viewmodel-architecture-for-ios-46963c67be1b" target="_blank">文章</a> 以全面了解 MVVM 模式。</p>
 <h2 id="newsfeed-app">Newsfeed App<a class="anchorjs-link" href="#newsfeed-app"></a></h2><p>今天，我们将要做一个 newsfeed app 。App 主页是一个墙（wall）。在墙上，有两种 feed ，一种是照片的 feed，一种是用户的 feed。
 我们包含介绍以下用例：</p>
 <ol>
@@ -277,7 +284,7 @@ MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可
   
 </figure></p>
 <p>我们假设 API 的响应被解析为两种 model: Member 和 Photo.</p>
-<p>你可以在 Github 上找到这个项目的完整代码：<a href="https://github.com/koromiko/TheGreatWall">GitHub – koromiko/TheGreatWall: Using MVVM to tackle complicated feed view</a>。</p>
+<p>你可以在 Github 上找到这个项目的完整代码：<a href="https://github.com/koromiko/TheGreatWall" target="_blank">GitHub – koromiko/TheGreatWall: Using MVVM to tackle complicated feed view</a>。</p>
 <h2 id="开始">开始<a class="anchorjs-link" href="#%e5%bc%80%e5%a7%8b"></a></h2><p>我们新建一个 FeedListViewController ，并将它设置为 tableView 的 dataSource，这个 viewController 大概会长这个样子：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">feeds</span>: [Feed] = [Feed]()
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span> 
@@ -397,7 +404,7 @@ MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>    }
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>    <span style="color:#8be9fd;font-style:italic">var</span> <span style="color:#8be9fd;font-style:italic">valueChanged</span>: ((T) -&gt; <span style="color:#8be9fd;font-style:italic">Void</span>)?
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>}
-</span></span></code></pre></div><p>如果你对更多的 绑定技术感兴趣，请看 Srđan Rašić 的文章 <a href="https://five.agency/solving-the-binding-problem-with-swift/">Solving the binding problem with Swfit - Five</a></p>
+</span></span></code></pre></div><p>如果你对更多的 绑定技术感兴趣，请看 Srđan Rašić 的文章 <a href="https://five.agency/solving-the-binding-problem-with-swift/" target="_blank">Solving the binding problem with Swfit - Five</a></p>
 <p>回到文章， 相应的 MemberCell 看起来如下：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#6272a4">// In MemberCell.swift</span>
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">setup</span>(viewModel: MemberViewModel) {
@@ -597,13 +604,13 @@ MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可
 <li>使用 Controller 来处理业务逻辑。</li>
 </ul>
 <p>Massive View Controller 是一个臭名昭着的反模式。现在我们知道问题不是 MVC 模式本身。有许多方法可以分离系统的职责，包括但不限于 MVVM 模式。我会说 MVVM 模式是提高代码质量的少数工具，但它不是一个灵丹妙药。
-除了 MVVM 之外，我们还需要处理诸如可扩展性，可测试性以及 <a href="https://en.wikipedia.org/wiki/SOLID">SOLID-Wikipedia</a> 等更多原则之类的事情。
+除了 MVVM 之外，我们还需要处理诸如可扩展性，可测试性以及 <a href="https://en.wikipedia.org/wiki/SOLID" target="_blank">SOLID-Wikipedia</a> 等更多原则之类的事情。
 因此，在采用任何架构之前，请彻底了解架构的设计，仔细选择最适合您需求的架构。</p>
 <h2 id="相关文章">相关文章<a class="anchorjs-link" href="#%e7%9b%b8%e5%85%b3%e6%96%87%e7%ab%a0"></a></h2><ul>
-<li><a href="https://medium.com/@stasost/ios-how-to-build-a-table-view-with-multiple-cell-types-2df91a206429">iOS: How to build a Table View with multiple cell types</a></li>
-<li><a href="https://medium.cobeisfresh.com/dealing-with-complex-table-views-in-ios-and-keeping-your-sanity-ff5fee1fbb83">Dealing with Complex Table Views in iOS and Keeping Your Sanity</a></li>
-<li><a href="https://academy.realm.io/posts/doios-natasha-murashev-protocol-oriented-mvvm/">Introduction to Protocol-Oriented MVVM</a></li>
-<li><a href="https://blog.jayway.com/2016/11/15/clean-table-view-code-using-swift-protocols/">Clean Table View Code Using Swift Protocols - Jayway</a></li>
+<li><a href="https://medium.com/@stasost/ios-how-to-build-a-table-view-with-multiple-cell-types-2df91a206429" target="_blank">iOS: How to build a Table View with multiple cell types</a></li>
+<li><a href="https://medium.cobeisfresh.com/dealing-with-complex-table-views-in-ios-and-keeping-your-sanity-ff5fee1fbb83" target="_blank">Dealing with Complex Table Views in iOS and Keeping Your Sanity</a></li>
+<li><a href="https://academy.realm.io/posts/doios-natasha-murashev-protocol-oriented-mvvm/" target="_blank">Introduction to Protocol-Oriented MVVM</a></li>
+<li><a href="https://blog.jayway.com/2016/11/15/clean-table-view-code-using-swift-protocols/" target="_blank">Clean Table View Code Using Swift Protocols - Jayway</a></li>
 </ul>
 
         <hr style="visibility: hidden;" />
@@ -699,8 +706,6 @@ MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可
     
     <a href="/tags/git/">git</a>
     
-    <a href="/tags/go/">go</a>
-    
     <a href="/tags/golang/">golang</a>
     
     <a href="/tags/hugo/">hugo</a>
@@ -727,8 +732,6 @@ MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可
     
     <a href="/tags/vim/">vim</a>
     
-    <a href="/tags/webhook/">webhook</a>
-    
     <a href="/tags/wubi/">wubi</a>
     
     <a href="/tags/zabbix/">zabbix</a>
@@ -743,7 +746,7 @@ MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可
 <h5>FRIENDS</h5>
 <ul class="list-inline">
   
-  <li><a href=""></a></li>
+  <li><a href="" target="_blank"></a></li>
   
 </ul>
 
@@ -767,7 +770,7 @@ MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可
 
   
   <li>
-    <a href="/index.xml">
+    <a href=/index.xml>
       <span class="fa-stack fa-lg">
         <i class="fa fa-circle fa-stack-2x"></i>
         <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
@@ -792,7 +795,7 @@ MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可
   
 </ul>
         <p class="copyright text-muted">
-          Copyright &copy; RoninRo&#39;s Blog 2022
+          Copyright &copy; RoninRo&#39;s Blog 2022  
           <br>
           Powered by <a href="https://gohugo.io">Hugo</a>
         </p>
@@ -801,15 +804,15 @@ MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可
   </div>
 </footer>
 
-<script src="/js/jquery.min.js"></script>
-<script src="/js/bootstrap.min.js" crossorigin="anonymous"></script>
+<script src=/js/jquery.min.js></script>
+<script src=/js/bootstrap.min.js crossorigin="anonymous"></script>
 
 
 
 <script src="/js/hux-blog.min.c4ea77041cd3edbfc8b2622cd887a9a5d8760a4162d14489e36d2a3fa4c90172.js"></script>
 
 
-<script src="/js/simple-jekyll-search.min.js"></script>
+<script src=/js/simple-jekyll-search.min.js></script>
 
 
 <script src="/js/search.min.53bce5da475b4d362500e5ce5dddfa22e20e1b9018777411d2020b4b839c9310.js"></script>
@@ -877,6 +880,7 @@ MVVM 是一种架构模型，它使用数据模型表示视图状态。我们可
 
 
 <script src="/zoomjs/zoom.min.js"></script>
+
 </body>
 
 </html>
