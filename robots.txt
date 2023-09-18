@@ -1,5 +1,2 @@
-User-agent: Googlebot
-Disallow: /nogooglebot/
-
-User-agent: *
-Allow: /
+User-Agent: *
+Sitemap: https://roninro.github.io/sitemap.xml
